@@ -69,7 +69,8 @@ boolean Push(elemento e, pila *p){
 Descripción: Desempila o saca el elemento del tope de la pila, eliminándolo
 Recibe: pila *p (apuntador a pila)
 Devuelve: elemento (elemento que se desempiló)
-Observaciones: es necesaria una referencia válida a la pila y que esté inicializada, además, si la pila estab vacía, devuelve un elemento e no especificado
+Observaciones: es necesaria una referencia válida a la pila y que esté inicializada.
+Además, si la pila estaba vacía, devuelve un elemento e no especificado
 */
 elemento Pop(pila *p){
 	elemento e;
