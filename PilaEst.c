@@ -85,7 +85,8 @@ elemento Pop(pila *p){
 Descripción: Consultar el elemento del tope de la pila, sin eliminarlo
 Recibe: pila *p (apuntador a pila)
 Devuelve: elemento (elemento que se desempiló)
-Observaciones: es necesaria una referencia válida a la pila y que esté inicializada, además, si la pila estab vacía, devuelve un elemento e no especificado
+Observaciones: es necesaria una referencia válida a la pila y que esté inicializada.
+Además, si la pila estaba vacía, devuelve un elemento e no especificado
 */
 elemento Top(pila *p){
 	elemento e;
