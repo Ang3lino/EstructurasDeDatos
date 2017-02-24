@@ -1,10 +1,12 @@
 /*
 CONVERSIÓN DE EXPRESIONES INFIJAS A POSTFIJAS Y EVALUACIONES
-Compilación: gcc InfijaAPostFija.c PilaDin.c -o InfijaAPostFija.exe
+Compilación usando pila dinámica: gcc InfijaAPostFija.c PilaDin.c -o InfijaAPostFija.exe
+Compilación usando pila dinámica: gcc InfijaAPostFija.c PilaEst.c -o InfijaAPostFija.exe
 */
 
 //LIBRERIAS
-#include "PilaDin/PilaDin.h"
+#include "PilaDin.h"
+//#include "PilaEst.h"
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
