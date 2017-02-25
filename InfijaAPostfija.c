@@ -30,6 +30,16 @@ FALSE en caso contrario
 */
 boolean EsOperador(char operador);
 
+/*  Solo retorna TRUE si se es uno de los operadores especificados  */
+boolean
+EsOperador (char c){
+    switch (c){
+        case '+': case '-': case '*': 
+        case '/': case '^': return TRUE;
+        default: return FALSE;
+    }
+}
+
 /*Descripción: Indica si un caracter específico
 es alguna letra de la A a la Z
 Recibe: char operador (el operador a revisar)
@@ -37,6 +47,15 @@ Devuelve: boolean, TRUE si el caracter es una
 letra, FALSE en caso contrario 
 */
 boolean EsCaracter(char operador);
+
+/* Esta funcion se aprovecha de los valores ASCII y retorna TRUE si el caracter se encuentra en el rango    */
+boolean
+EsCaracter (char c){
+  if (c >= 'A' && c <= 'Z')
+    return TRUE;
+  return FALSE;
+}
+  
 
 /*
 Descripción: Verifica si una expresión
