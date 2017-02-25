@@ -15,11 +15,28 @@ Compilación usando pila dinámica: gcc InfijaAPostFija.c PilaEst.c -o InfijaAPo
 
 /*
 Descripción: Devuelve la precedencia de los operadores
-aritméticos "+", "-", "*", "/", "("
+aritméticos "+", "-", "*", "/"
 Recibe: char operador
 Devuelve: int, indicando la precedencia del operador
 */
 int PrecedenciaOperador(char operador);
+
+/*
+Descripción: Indica si un caracter específico
+es alguno de los cinco operadores: +, -, *, /, ^
+Recibe: char operador (el operador a revisar)
+Devuelve: boolean, TRUE si el caracter es operador,
+FALSE en caso contrario 
+*/
+boolean EsOperador(char operador);
+
+/*Descripción: Indica si un caracter específico
+es alguna letra de la A a la Z
+Recibe: char operador (el operador a revisar)
+Devuelve: boolean, TRUE si el caracter es una
+letra, FALSE en caso contrario 
+*/
+boolean EsCaracter(char operador);
 
 /*
 Descripción: Verifica si una expresión
