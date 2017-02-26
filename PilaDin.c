@@ -3,7 +3,6 @@
 //Bibliotecas
 
 #include "PilaDin.h"
-#include <stdlib.h>
 
 //DEFINICIÓN DE FUNCIONES
 
