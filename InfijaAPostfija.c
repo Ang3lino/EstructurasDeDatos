@@ -15,7 +15,7 @@ Compilación usando pila dinámica: gcc InfijaAPostFija.c PilaEst.c -o InfijaAPo
 
 /*
 Descripción: Devuelve la precedencia de los operadores
-aritméticos "+", "-", "*", "/"
+aritméticos "+", "-", "*", "/", "^"
 Recibe: char operador
 Devuelve: int, indicando la precedencia del operador
 */
