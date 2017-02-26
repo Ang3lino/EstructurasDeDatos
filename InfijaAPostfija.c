@@ -68,6 +68,33 @@ Devuelve: int (1 si la expresión es correcta,
 */
 int VerificarParentesis(char * cadena);
 
+int 
+VerificarParentesis (char *st){
+	int i = 0, lim = strlen (st);
+	elemento e;
+	pila *p;
+
+	Initialize (p);
+
+	for (i = 0; i < lim; i++){
+		if (st[i] == '('){
+			e.caracter = st[i];
+			Push (e, p);
+		}
+		if (st[i] == ')')
+			e = Pop (p);
+	}
+
+	if (Size (p) == 0)
+		return 1;
+	else if (Size (p) < 0)
+		return 0;
+	else 
+		return -1;
+}
+
+
+
 /*
 Descripción: Convierte una expresión aritmética
 de su forma infija a su forma postfija.
@@ -141,5 +168,14 @@ EvaluaExpresionPostFija (char *postf, double *var){
 
 //PROGRAMA PRINCIPAL
 int main(){
-  return 0;
+
+	char infijo[100], postfijo[100];
+
+	printf ("Introduzca la expresion: ");
+	fgets (infijo, 100, stdin);
+
+	printf ("%d \n", VerificarParentesis (infijo));
+	
+
+    return 0;
 }
