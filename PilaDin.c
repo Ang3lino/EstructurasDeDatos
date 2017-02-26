@@ -55,29 +55,21 @@ boolean IsEmpty(pila *p){
 	return Size(p) == 0;
 }
 
+/*  Crea un nodo y lo rellena con los campos de el elemento e.  */
+
+nodo *CreateNode (elemento e){
+	nodo *nuevo = (nodo *) malloc (sizeof (nodo));
+	nuevo->e = e;
+	nuevo->abajo = NULL;
+	return nuevo;
+}
+
 /*
 Descripción: Empila o introduce un elemento a la pila
 Recibe: elemento e (elemento a empilar), pila *p (apuntador a pila)
 Devuelve: boolean (TRUE si la inserción fue correcta, FALSE en caso de que la función malloc() no haya podido apartar memoria)
 Observaciones: es necesaria una referencia válida a la pila y que esté inicializada
 */
-
-/*  Crea un nodo y lo rellena con los campos de el elemento e.  */
-
-nodo *CreateNode (elemento e){
-	nodo *nuevo = (nodo *) malloc (sizeof (nodo));
-
-	nuevo->e.entero = e.entero;
-	nuevo->e.caracter = e.caracter;
-	nuevo->e.flotante = e.flotante;
-	nuevo->e.doble = e.doble;
-	nuevo->e.x = e.x;
-	nuevo->e.y = e.y;
-
-	nuevo->abajo = NULL;
-
-	return nuevo;
-}
 
 boolean
 Push (elemento e, pila *p){
