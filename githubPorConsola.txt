@@ -1,0 +1,24 @@
+
+Guia de como usar Github en consola (testeado en Linux)
+
+instalar git:
+
+	sudo apt-get install git	o con el pacman		sudo pacman -S install git
+
+para clonar un repositorio (se creara una carpeta en donde estes):
+
+	git clone https://github.com/Om3Ga-Z/Quick-coding.git
+
+te metes en la carpeta clonada con cd, ingresas el comando
+	
+	git commit -m "blablabla"
+
+Te preguntara tus datos (Correo y apodo), solo ingresalos. Una vez hecho esto ya estas
+listo para subir tus archivos al repositorio. Para hacerlo, una vez situada en la carpeta 
+situada haces lo siguiete:
+
+	git add ejemplo.c	donde ejemplo es tu archivo nuevo, si ya existia uno con el mismo nombre se sobreescribira
+	git commit -m "comentario"	en comentario colocas tus cambios (Opcional)
+	git push	Subes tu ejemplo
+
+Ahora solo tendras que poner tu apodo y tu contrasenia cada que subas algo. Eso es todo.
