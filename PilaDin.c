@@ -1,7 +1,9 @@
 //IMPLEMENTACIONES DE LA PILA DINÁMICA
 
-//Librerías
+//Bibliotecas
+
 #include "PilaDin.h"
+#include <stdlib.h>
 
 //DEFINICIÓN DE FUNCIONES
 
@@ -12,6 +14,8 @@ Devuelve:
 Observaciones: la pila debe de estar referenciada correctamente por el usuario
 */
 void Initialize(pila *p){
+	p = (pila *) malloc (sizeof (pila));
+
 	p->tope = NULL;
 	p->tamano = 0;
 	return;
