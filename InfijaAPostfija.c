@@ -51,9 +51,9 @@ boolean EsCaracter(char operador);
 /* Esta funcion se aprovecha de los valores ASCII y retorna TRUE si el caracter se encuentra en el rango    */
 boolean
 EsCaracter (char c){
-  if (c >= 'A' && c <= 'Z')
-    return TRUE;
-  return FALSE;
+    if (c >= 'A' && c <= 'Z')
+        return TRUE;
+    return FALSE;
 }
   
 
@@ -92,6 +92,52 @@ valores numéricos de todas las incógnitas)
 Devuelve: double (la evaluación de la expresión)
 */
 double EvaluaExpresionPostFija(char * expresion_postfija, double * valores_variables);
+
+/*	Dado un caracter, esta funcion retornara su correspondiente 
+ *	posicion
+ *	A = 0, B = 1, ..., Z = 25 
+ */
+
+int hash (char c){ return c - 'A'; }
+
+double
+EvaluaExpresionPostFija (char *postf, double *var){
+	int i = 0, lim = strlen (postf), indice = 0;
+	elemento e, aux;
+	pila *p;
+	double acum = 0;
+
+	Initialize (p);
+
+
+	for (i = 0; i < n; lim++){
+		if (EsCaracter (postf[i])){
+			indice = hash (postf[i]);
+			e.doble = var[indice];
+			push (e, p);
+		}
+		else{
+			switch (postf[i]){
+				case '+': case '-':
+					aux = pop (p); e = pop (p);	e.doble = aux.doble + e.doble; break;
+				case '*': 
+					aux = pop (p); e = pop (p); e.doble = aux.doble * e.doble; break;
+				case '/': 
+					aux = pop (p); e = pop (p); e.doble = e.doble / aux.doble; break;
+				case '^': 
+					aux = pop (p); e = pop (p); e.doble = pow (e.doble, aux.doble); break;
+			}
+		
+			push (e, p);
+		}
+	}
+
+	aux = pop (p);
+	acum = aux.doble;
+	Destroy (p);
+
+	return acum;
+}
 
 //PROGRAMA PRINCIPAL
 int main(){
