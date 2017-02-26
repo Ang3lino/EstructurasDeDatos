@@ -65,40 +65,34 @@ Devuelve: boolean (TRUE si la inserción fue correcta, FALSE en caso de que la f
 Observaciones: es necesaria una referencia válida a la pila y que esté inicializada
 */
 
-/*
-boolean Push(elemento e, pila *p){
-	boolean r;
-	nodo * nuevo = (nodo*)malloc(sizeof(nodo));
-	if(nuevo == NULL){
-		r = FALSE;
-	}else{
-		nuevo->e = e;
-		nuevo->abajo = p->tope;
-		p->tope = nuevo;
-		p->tamano++;
-		r = TRUE;
-	}
-	return r;
+/*  Crea un nodo y lo rellena con los campos de el elemento e.  */
+
+nodo *CreateNode (elemento e){
+	nodo *nuevo = (nodo *) malloc (sizeof (nodo));
+
+	nuevo->e.entero = e.entero;
+	nuevo->e.caracter = e.caracter;
+	nuevo->e.flotante = e.flotante;
+	nuevo->e.doble = e.doble;
+	nuevo->e.x = e.x;
+	nuevo->e.y = e.y;
+
+	nuevo->abajo = NULL;
+
+	return nuevo;
 }
-*/
 
 boolean
 Push (elemento e, pila *p){
 	boolean r;
-	nodo *nuevo = (nodo *) malloc (sizeof (nodo));
-	
+	nodo *nuevo = CreateNode (e);
+
 	if (!nuevo)
 		r = FALSE;
 	else{
 		r = TRUE;
-		if (!p->tope)
-			(p->tope)->e = e; 
-		else {
-			nuevo->e = e;
-			nuevo->abajo = p->tope;
-			p->tope = nuevo;
-		}
-
+		nuevo->abajo = p->tope;
+		p->tope = nuevo;
 		p->tamano++;
 	}
 
