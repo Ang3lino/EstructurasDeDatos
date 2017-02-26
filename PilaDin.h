@@ -36,7 +36,7 @@ typedef struct pila{
 
 //Declaración de funciones
 
-nodo *CreateNode (elemento e)	   //Retorna un nodo que ya tiene los datos del elemento e
+nodo *CreateNode (elemento e);	   //Retorna un nodo que ya tiene los datos del elemento e
 void Initialize(pila *p);          //Inicializar pila para su uso normal
 void Destroy(pila *p);             //Eliminar la pila
 int Size(pila *p);                 //Obtener el número de elementos en la pila
