@@ -49,19 +49,10 @@ int Size(pila *p){
 Descripción: Consultar si la pila está vacía
 Recibe: pila *p (apuntador a pila)
 Devuelve: boolean (TRUE si está vacía, FALSE en caso contrario)
-Observaciones: es necesaria una referencia válida a la pila y que esté inicializada
+Observaciones: es necesaria una referencia válida a la pila y que esté inicializada<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 */
 boolean IsEmpty(pila *p){
 	return Size(p) == 0;
-}
-
-/*  Crea un nodo y lo rellena con los campos de el elemento e.  */
-
-nodo *CreateNode (elemento e){
-	nodo *nuevo = (nodo *) malloc (sizeof (nodo));
-	nuevo->e = e;
-	nuevo->abajo = NULL;
-	return nuevo;
 }
 
 /*
@@ -74,21 +65,18 @@ Observaciones: es necesaria una referencia válida a la pila y que esté inicial
 boolean
 Push (elemento e, pila *p){
 	boolean r;
-	nodo *nuevo = CreateNode (e);
-
+	nodo *nuevo = (nodo*)malloc(sizeof(nodo));
 	if (!nuevo)
 		r = FALSE;
 	else{
 		r = TRUE;
+		nuevo->e = e;
 		nuevo->abajo = p->tope;
 		p->tope = nuevo;
 		p->tamano++;
 	}
-
 	return r;
 }
-
-		
 
 /*
 Descripción: Desempila o saca el elemento del tope de la pila, eliminándolo
