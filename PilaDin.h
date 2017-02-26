@@ -13,7 +13,7 @@
 typedef char boolean;
 
 //Definimos un elemento, que dentro puede tener lo que sea
-typedef struct{
+typedef struct elemento{
 	int entero;
 	char caracter;
 	float flotante;
@@ -29,12 +29,14 @@ typedef struct nodo{
 } nodo;
 
 //Definimos la pila, que incluirá un apuntador a nodo representando el tope de la pila y una variable entera para almacenar el tamaño
-typedef struct{
+typedef struct pila{
 	nodo * tope;
 	int tamano;
 } pila;
 
 //Declaración de funciones
+
+nodo *CreateNode (elemento e)	   //Retorna un nodo que ya tiene los datos del elemento e
 void Initialize(pila *p);          //Inicializar pila para su uso normal
 void Destroy(pila *p);             //Eliminar la pila
 int Size(pila *p);                 //Obtener el número de elementos en la pila
