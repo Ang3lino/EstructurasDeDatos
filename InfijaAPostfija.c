@@ -110,29 +110,29 @@ EvaluaExpresionPostFija (char *postf, double *var){
 	Initialize (p);
 
 
-	for (i = 0; i < n; lim++){
+	for (i = 0; i < lim; lim++){
 		if (EsCaracter (postf[i])){
 			indice = hash (postf[i]);
 			e.doble = var[indice];
-			push (e, p);
+			Push (e, p);
 		}
 		else{
 			switch (postf[i]){
 				case '+': case '-':
-					aux = pop (p); e = pop (p);	e.doble = aux.doble + e.doble; break;
+					aux = Pop (p); e = Pop (p);	e.doble = aux.doble + e.doble; break;
 				case '*': 
-					aux = pop (p); e = pop (p); e.doble = aux.doble * e.doble; break;
+					aux = Pop (p); e = Pop (p); e.doble = aux.doble * e.doble; break;
 				case '/': 
-					aux = pop (p); e = pop (p); e.doble = e.doble / aux.doble; break;
+					aux = Pop (p); e = Pop (p); e.doble = e.doble / aux.doble; break;
 				case '^': 
-					aux = pop (p); e = pop (p); e.doble = pow (e.doble, aux.doble); break;
+					aux = Pop (p); e = Pop (p); e.doble = pow (e.doble, aux.doble); break;
 			}
 		
-			push (e, p);
+			Push (e, p);
 		}
 	}
 
-	aux = pop (p);
+	aux = Pop (p);
 	acum = aux.doble;
 	Destroy (p);
 
