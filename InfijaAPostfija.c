@@ -71,11 +71,11 @@ VerificarParentesis (char *cadena){
 	Initialize (&p);
 
 	for (i = 0; i < lim; i++){
-		if (st[i] == '('){
-			e.caracter = st[i];
+		if (cadena[i] == '('){
+			e.caracter = cadena[i];
 			Push (e, &p);
 		}
-		if (st[i] == ')'){
+		if (cadena[i] == ')'){
 			if(IsEmpty(&p)){
 				Destroy(&p);
 				return 0;
@@ -94,7 +94,11 @@ VerificarParentesis (char *cadena){
 	
 }
 
-
+/*	Dado un caracter, esta funcion retornara su correspondiente 
+ *	posicion
+ *	A = 0, B = 1, ..., Z = 25 
+ */
+int hash (char c){ return c - 'A'; }
 
 /*
 Descripción: Convierte una expresión aritmética
@@ -114,57 +118,52 @@ void ConvierteInfijaAPostFija(char * expresion_infija, char * expresion_postfija
 /*
 Descripción: Evalua el resultado numérico de una expresión
 en su forma postfija, dados los valores de sus incógnitas
-Recibe: char * expresion_postfija (expresión en su forma
-postfija), double * valores_variables (arreglo con los
+Recibe: char * postfija (expresión en su forma
+postfija), double * valores (arreglo con los
 valores numéricos de todas las incógnitas)
 Devuelve: double (la evaluación de la expresión)
 */
-double EvaluaExpresionPostFija(char * expresion_postfija, double * valores_variables);
-
-/*	Dado un caracter, esta funcion retornara su correspondiente 
- *	posicion
- *	A = 0, B = 1, ..., Z = 25 
- */
-
-int hash (char c){ return c - 'A'; }
 
 double
-EvaluaExpresionPostFija (char *postf, double *var){
-	int i = 0, lim = strlen (postf), indice = 0;
-	elemento e, aux;
-	pila *p;
-	double acum = 0;
+EvaluaExpresionPostFija (char *postfija, double *valores){
+	int i = 0, lim = strlen (postfija);
+	elemento e;
+	pila p;
+	double primero, segundo;
 
-	Initialize (p);
-
-
+	Initialize (&p);
+	
 	for (i = 0; i < lim; i++){
-		if (EsCaracter (postf[i])){
-			indice = hash (postf[i]);
-			e.doble = var[indice];
-			Push (e, p);
+		if (EsCaracter (postfija[i])){
+			e.doble = var[hash (postfija[i])];
+			Push (e, &p);
 		}
-		else{
-			switch (postf[i]){
-				case '+': case '-':
-					aux = Pop (p); e = Pop (p);	e.doble = aux.doble + e.doble; break;
+		else if(EsOperador (postfija[i])){
+			segundo = Pop (&p).doble;
+			primero = Pop (&p).doble;
+			switch (postfija[i]){
+				case '+':
+					e.doble = primero + segundo;
+					break;
+				case '-':
+					e.doble = primero - segundo;
+					break;
 				case '*': 
-					aux = Pop (p); e = Pop (p); e.doble = aux.doble * e.doble; break;
+					e.doble = primero * segundo;
+					break;
 				case '/': 
-					aux = Pop (p); e = Pop (p); e.doble = e.doble / aux.doble; break;
+					e.doble = primero / segundo;
+					break;
 				case '^': 
-					aux = Pop (p); e = Pop (p); e.doble = pow (e.doble, aux.doble); break;
+					e.doble = pow(primero, segundo);
+					break;
 			}
-		
-			Push (e, p);
+			Push (e, &p);
 		}
 	}
-
-	aux = Pop (p);
-	acum = aux.doble;
-	Destroy (p);
-
-	return acum;
+	e = Pop(&p);
+	Destroy (&p);
+	return e.doble;
 }
 
 //PROGRAMA PRINCIPAL
