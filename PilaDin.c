@@ -18,7 +18,7 @@ void Initialize(pila *p){
 
 	p->tope = NULL;
 	p->tamano = 0;
-	return;
+
 }
 
 /*
@@ -64,6 +64,8 @@ Recibe: elemento e (elemento a empilar), pila *p (apuntador a pila)
 Devuelve: boolean (TRUE si la inserción fue correcta, FALSE en caso de que la función malloc() no haya podido apartar memoria)
 Observaciones: es necesaria una referencia válida a la pila y que esté inicializada
 */
+
+/*
 boolean Push(elemento e, pila *p){
 	boolean r;
 	nodo * nuevo = (nodo*)malloc(sizeof(nodo));
@@ -78,6 +80,32 @@ boolean Push(elemento e, pila *p){
 	}
 	return r;
 }
+*/
+
+boolean
+Push (elemento e, pila *p){
+	boolean r;
+	nodo *nuevo = (nodo *) malloc (sizeof (nodo));
+	
+	if (!nuevo)
+		r = FALSE;
+	else{
+		r = TRUE;
+		if (!p->tope)
+			(p->tope)->e = e; 
+		else {
+			nuevo->e = e;
+			nuevo->abajo = p->tope;
+			p->tope = nuevo;
+		}
+
+		p->tamano++;
+	}
+
+	return r;
+}
+
+		
 
 /*
 Descripción: Desempila o saca el elemento del tope de la pila, eliminándolo
