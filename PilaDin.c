@@ -1,7 +1,7 @@
 //IMPLEMENTACIONES DE LA PILA DINÁMICA
 
 //Librerías
-#include "PilaEst.h"
+#include "PilaDin.h"
 
 //DEFINICIÓN DE FUNCIONES
 
