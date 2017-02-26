@@ -28,9 +28,6 @@ Recibe: char operador (el operador a revisar)
 Devuelve: boolean, TRUE si el caracter es operador,
 FALSE en caso contrario 
 */
-boolean EsOperador(char operador);
-
-/*  Solo retorna TRUE si se es uno de los operadores especificados  */
 boolean
 EsOperador (char c){
     switch (c){
@@ -44,11 +41,10 @@ EsOperador (char c){
 es alguna letra de la A a la Z
 Recibe: char operador (el operador a revisar)
 Devuelve: boolean, TRUE si el caracter es una
-letra, FALSE en caso contrario 
+letra, FALSE en caso contrario.
+Esta funcion se aprovecha de los valores ASCII
+y retorna TRUE si el caracter se encuentra en el rango
 */
-boolean EsCaracter(char operador);
-
-/* Esta funcion se aprovecha de los valores ASCII y retorna TRUE si el caracter se encuentra en el rango    */
 boolean
 EsCaracter (char c){
     if (c >= 'A' && c <= 'Z')
@@ -66,31 +62,36 @@ Devuelve: int (1 si la expresión es correcta,
 0 si un parentesis cierra sin haber abierto,
 -1 si un parentesis abre y no cierra)
 */
-int VerificarParentesis(char * cadena);
-
 int 
-VerificarParentesis (char *st){
-	int i = 0, lim = strlen (st);
+VerificarParentesis (char *cadena){
+	int i = 0, lim = strlen (cadena);
 	elemento e;
-	pila *p;
+	pila p;
 
-	Initialize (p);
+	Initialize (&p);
 
 	for (i = 0; i < lim; i++){
 		if (st[i] == '('){
 			e.caracter = st[i];
-			Push (e, p);
+			Push (e, &p);
 		}
-		if (st[i] == ')')
-			e = Pop (p);
+		if (st[i] == ')'){
+			if(IsEmpty(&p)){
+				Destroy(&p);
+				return 0;
+			}else{
+				Pop (&p);
+			}
+		}
 	}
-
-	if (Size (p) == 0)
+	if(IsEmpty(&p)){
+		Destroy(&p);
 		return 1;
-	else if (Size (p) < 0)
-		return 0;
-	else 
+	}else{
+		Destroy(&p);
 		return -1;
+	}
+	
 }
 
 
