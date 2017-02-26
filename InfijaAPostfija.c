@@ -110,7 +110,7 @@ EvaluaExpresionPostFija (char *postf, double *var){
 	Initialize (p);
 
 
-	for (i = 0; i < lim; lim++){
+	for (i = 0; i < lim; i++){
 		if (EsCaracter (postf[i])){
 			indice = hash (postf[i]);
 			e.doble = var[indice];
