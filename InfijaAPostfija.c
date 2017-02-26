@@ -135,7 +135,7 @@ EvaluaExpresionPostFija (char *postfija, double *valores){
 	
 	for (i = 0; i < lim; i++){
 		if (EsCaracter (postfija[i])){
-			e.doble = var[hash (postfija[i])];
+			e.doble = valores[hash (postfija[i])];
 			Push (e, &p);
 		}
 		else if(EsOperador (postfija[i])){
