@@ -14,27 +14,33 @@ Compilación usando pila dinámica: gcc InfijaAPostFija.c PilaEst.c -o InfijaAPo
 //FUNCIONES PROPUESTAS
 
 /*
-Descripción: Devuelve la precedencia de los operadores
-aritméticos "+", "-", "*", "/", "^"
-Recibe: char operador
-Devuelve: int, indicando la precedencia del operador
-*/
-int PrecedenciaOperador(char operador);
-
-/*
 Descripción: Indica si un caracter específico
 es alguno de los cinco operadores: +, -, *, /, ^
 Recibe: char operador (el operador a revisar)
 Devuelve: boolean, TRUE si el caracter es operador,
 FALSE en caso contrario 
 */
-boolean
-EsOperador (char c){
+boolean EsOperador (char c){
     switch (c){
         case '+': case '-': case '*': 
         case '/': case '^': return TRUE;
         default: return FALSE;
     }
+}
+
+/*
+Descripción: Devuelve la precedencia de los operadores
+aritméticos "+", "-", "*", "/", "^"
+Recibe: char operador
+Devuelve: int, indicando la precedencia del operador
+*/
+int PrecedenciaOperador(char operador){
+	switch(operador){
+		case '^': return 3;
+		case '*': case '/': return 2;
+		case '+': case '-': return 1;
+		default: return 0;
+	}
 }
 
 /*Descripción: Indica si un caracter específico
@@ -45,8 +51,7 @@ letra, FALSE en caso contrario.
 Esta funcion se aprovecha de los valores ASCII
 y retorna TRUE si el caracter se encuentra en el rango
 */
-boolean
-EsCaracter (char c){
+boolean EsCaracter (char c){
     if (c >= 'A' && c <= 'Z')
         return TRUE;
     return FALSE;
@@ -62,8 +67,7 @@ Devuelve: int (1 si la expresión es correcta,
 0 si un parentesis cierra sin haber abierto,
 -1 si un parentesis abre y no cierra)
 */
-int 
-VerificarParentesis (char *cadena){
+int VerificarParentesis (char *cadena){
 	int i = 0, lim = strlen (cadena);
 	elemento e;
 	pila p;
@@ -113,7 +117,9 @@ Devuelve:
 Observaciones: Se asume que la expresión pasó el test
 de los paréntesis
 */
-void ConvierteInfijaAPostFija(char * expresion_infija, char * expresion_postfija, boolean * variables_introducidas);
+void ConvierteInfijaAPostFija(char * expresion_infija, char * expresion_postfija, boolean * variables_introducidas){
+	
+}
 
 /*
 Descripción: Evalua el resultado numérico de una expresión
@@ -124,8 +130,7 @@ valores numéricos de todas las incógnitas)
 Devuelve: double (la evaluación de la expresión)
 */
 
-double
-EvaluaExpresionPostFija (char *postfija, double *valores){
+double EvaluaExpresionPostFija (char *postfija, double *valores){
 	int i = 0, lim = strlen (postfija);
 	elemento e;
 	pila p;
