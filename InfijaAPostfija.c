@@ -168,14 +168,56 @@ EvaluaExpresionPostFija (char *postfija, double *valores){
 
 //PROGRAMA PRINCIPAL
 int main(){
-
-	char infijo[100], postfijo[100];
-
-	printf ("Introduzca la expresion: ");
-	fgets (infijo, 100, stdin);
-
-	printf ("%d \n", VerificarParentesis (infijo));
+	//Cadenas para guardar la expresión en su forma infija y postfija
+	char expresion_infija[101];
+	char expresion_postfija[101];
 	
+	//Arreglo de booleanos para marcar las variables que están contenidas en la expresión
+	boolean variables_introducidas[26];
+	
+	//Arreglo de dobles para almacenar los valores de las variables de la expresion
+	double valores_variables[26];
+	
+	//Entero que almacena el estado de la verificación de los paréntesis de la expresión infija
+	int VerificacionParentesis;
+	
+	//El valor numérico luego de evaluar la expresión postfija con los valores numéricos
+	double resultado;
 
-    return 0;
+	//Inicializamos el arreglo de variables introducidas a FALSE
+	int i;
+	for(i = 0; i < 26; i++)
+		variables_introducidas[i] = FALSE;
+	
+	//Leemos la expresión infija
+	printf("Introduce una expresion infija:\n");
+	scanf("%s", expresion_infija);
+	
+	//Verificamos los paréntesis de la expresión infija
+	VerificacionParentesis = VerificarParentesis(expresion_infija);
+	
+	if(VerificacionParentesis == 1){ //Expresión correcta
+		//Convertimos la expresión en su forma infija a postfija
+		ConvierteInfijaAPostFija(expresion_infija, expresion_postfija, variables_introducidas);
+		
+		//Leemos las diferentes variables contenidas en la expresión
+		printf("\nLa expresion introducida es correcta, y su equivalente en postfijo es:\n%s\n\nAhora, introduce los valores numericos de cada una de las variables:\n", expresion_postfija);
+		for(i = 0; i < 26; i++){
+			if(variables_introducidas[i] == TRUE){
+				printf("Valor de %c: ", i + 'A');
+				scanf("%lf", &valores_variables[i]);
+			}
+		}
+		
+		//Evaluamos la expresión de acuerdo a los valores numéricos de las variables
+		resultado = EvaluaExpresionPostFija(expresion_postfija, valores_variables);
+		
+		//Mostramos la evaluación
+		printf("El resultado de la expresion es: %f\n", resultado);
+	}else if(VerificacionParentesis == 0){ //Hay un parentesis que cierra pero nunca abre
+		printf("\nExpresion incorrecta, hay un parentesis que cierra pero nunca abre.\n");
+	}else{ //Hay un parentesis que abre pero nunca cerró
+		printf("\nExpresion incorrecta, hay un parentesis que abre pero nunca cerro.\n");
+	}
+	return 0; //Terminamos
 }
