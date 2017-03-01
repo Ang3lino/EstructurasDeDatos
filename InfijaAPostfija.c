@@ -169,7 +169,7 @@ double EvaluaExpresionPostFija (char *postfija, double *valores){
 	e = Pop(&p);
 	Destroy (&p);
 	return e.doble;
-}
+} 
 
 //PROGRAMA PRINCIPAL
 int main(){
