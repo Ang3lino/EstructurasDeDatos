@@ -70,17 +70,20 @@ procesar (cola *c){
     programa p, aux;
     int seg = 1e9;
 
-    if (!Empty (c)){
+   if (!Empty (c)){
         while (!Empty (c)){
             Sleep (seg);
             p = Dequeue (c);
+            p.contador++;
             mostrarActual (p);
             aux = p;
+            if (p.contador < p.tiempo)
+                Queue (c, p);
+            
             p = Dequeue (c);
             mostrarUltimo (p);
 
         }
-
     }
     else
         puts ("No hay nada que procesar.");
