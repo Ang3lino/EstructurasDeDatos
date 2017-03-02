@@ -118,7 +118,42 @@ Observaciones: Se asume que la expresión pasó el test
 de los paréntesis
 */
 void ConvierteInfijaAPostFija(char * expresion_infija, char * expresion_postfija, boolean * variables_introducidas){
-	
+	pila p;
+	elemento e;
+	int i, j;
+	char actual;
+	j = 0;
+	Initialize(&p);
+	for(i = 0; i < strlen(expresion_infija); i++){
+		actual = expresion_infija[i];
+		if('A' <= actual && actual <= 'Z'){
+			expresion_postfija[j] = actual;
+			j++;
+			variables_introducidas[hash(actual)] = TRUE;
+		}else if(actual == '('){
+			e.caracter = '(';
+			Push(e,  &p);
+		}else if(actual == ')'){
+			while((e = Pop(&p)).caracter != '('){
+				expresion_postfija[j] = e.caracter;
+				j++;
+			}
+		}else if(EsOperador(actual)){
+			while(!IsEmpty(&p) && EsOperador(Top(&p).caracter) && PrecedenciaOperador(actual) <= PrecedenciaOperador(Top(&p).caracter)){
+				expresion_postfija[j] = Pop(&p).caracter;
+				j++;
+			}
+			e.caracter = actual;
+			Push(e, &p);
+		}
+	}
+	while(!IsEmpty(&p)){
+		expresion_postfija[j] = Pop(&p).caracter;
+		j++;
+	}
+	Destroy(&p);
+	expresion_postfija[j] = '\0';
+	return;	
 }
 
 /*
