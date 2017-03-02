@@ -70,3 +70,20 @@ elemento Front(cola *c){ return c->frente->e; }
 elemento Final(cola *c){ return c->final->e; }
 
 int Size(cola *c){ return c->num_elem; }
+
+
+elemento Element(int n, cola * c){
+	int pos = 1;
+	nodo * aux = c->frente;
+	elemento e;
+	
+	if(n <= Size(c)){
+		while(pos < n){
+			aux = aux->siguiente;
+			pos++;
+		}
+		e = aux->e;
+	}
+	
+	return e;
+}
