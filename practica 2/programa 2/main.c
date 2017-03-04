@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "TADColaDin.c"
+#include "ColaDin.h"
 
 typedef elemento programa;
 
@@ -16,78 +16,110 @@ prueba (cola *c){
 
     strcpy (p.nombre, "word");
     strcpy (p.actividad, "Editor de texto");
+    strcpy (p.id, "43246");
     p.tiempo = 10;
     p.contador = 0;
     Queue (c, p);
 
     strcpy (p.nombre, "atom");
     strcpy (p.actividad, "editor de codigo");
+    strcpy (p.id, "43246");
     p.tiempo = 5;
     p.contador = 0;
     Queue (c, p);
 
     strcpy (p.nombre, "ccleaner");
     strcpy (p.actividad, "Limpia basura");
+    strcpy (p.id, "43246");
     p.tiempo = 20;
     p.contador = 0;
     Queue (c, p);
 
     strcpy (p.nombre, "firefox");
     strcpy (p.actividad, "navegador de internet");
+    strcpy (p.id, "43246");
     p.tiempo = 30;
     p.contador = 0;
     Queue (c, p);
 }
 
 void
-mostrarActual (programa p){
-    puts ("Proceso actual");
-    printf ("Nombre del programa: %s", p.nombre);
-    printf ("ID: %d", p.id);
-    printf ("Actividad: %s", p.actividad);
-    printf ("Tiempo que lleva ejecutandose: %d", p.contador);
+mostrarActual (programa p, int espera){
+    puts ("\nProceso actual");
+    printf ("Nombre del programa: %s \n", p.nombre);
+    printf ("ID: %s \n", p.id);
+    printf ("Actividad: %s \n", p.actividad);
+    printf ("Tiempo total que lleva ejecutandose: %d \n", p.contador + espera);
 }
 
 void
 mostrarUltimo (programa p){
-    puts ("Ultimo proceso");
-    printf ("ID: %d \t Nombre: %s", p.id, p.nombre);
+    puts ("\nUltimo proceso");
+    printf ("ID: %s \t Nombre: %s \n", p.id, p.nombre);
+    printf ("Tiempo restante: %d \n", p.tiempo - p.contador);
 }
 
 void
 mostrarSiguiente (programa p){
-    puts ("Proceso siguiente");
-    printf ("ID: %d \t Nombre: %s \t Tiempo restante: %d", p.id, p.tiempo - p.contador);
+    puts ("\nProceso siguiente");
+    printf ("ID: %s \t Nombre: %s \n", p.id, p.nombre);
+    printf ("Tiempo restante: %d \n", p.tiempo - p.contador);
 }
 
 void
 mostrarTerminado (programa p){
-    printf ("El programa %s se ha acabado de ejecutar", p.nombre);
+    printf ("\nEl programa %s se ha acabado de ejecutar. \n", p.nombre);
+}
+
+void
+mostrarFinalizados (cola *c){
+    programa p;
+
+    puts ("\nProgramas ejecutados exitosamente :D");
+
+    while (!Empty (c)){
+        p = Dequeue (c);
+        printf ("\nNombre: %s \t ID: %s \n", p.nombre, p.id);
+        printf ("Tiempo usado para finalizar el programa: %d \n", p.tiempo);
+    }
+
+    Destroy (c);
 }
 
 void
 procesar (cola *c){
     programa p, aux;
-    int seg = 1e9;
+    cola acabados;
+    int seg = 1e3, tiempo_espera = 0;
 
-   if (!Empty (c)){
-        while (!Empty (c)){
-            Sleep (seg);
-            p = Dequeue (c);
-            p.contador++;
-            mostrarActual (p);
-            aux = p;
-            if (p.contador < p.tiempo)
-                Queue (c, p);
-            
-            p = Dequeue (c);
-            mostrarUltimo (p);
+    Initialize (&acabados);
 
+    while (!Empty (c)){
+        p = Dequeue (c);
+        mostrarActual (p, tiempo_espera);
+
+        if (Size (c) >= 1){
+            mostrarUltimo (Final (c));
+            mostrarSiguiente (Front (c));
         }
+        p.contador++;
+
+        if (p.contador < p.tiempo)
+            Queue (c, p);
+        else {
+            mostrarTerminado (p);
+            p.tiempo += tiempo_espera;
+            Queue (&acabados, p);
+        }
+        tiempo_espera++;
+        Sleep (1 * seg);
+        system ("cls");
     }
-    else
-        puts ("No hay nada que procesar.");
+
+    mostrarFinalizados (&acabados);
+    return;
 }
+
 
 int
 main (void){
@@ -95,6 +127,12 @@ main (void){
     int n_programas = 4;
     Initialize (&c);
     prueba (&c);
+
+    if (Empty (&c)){
+        puts ("No hay nada que mostrar.");
+        Destroy (&c);
+        return 0;
+    }
 
     procesar (&c);
 
