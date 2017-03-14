@@ -1,9 +1,9 @@
 /*
 CONVERSIÓN DE EXPRESIONES INFIJAS A POSTFIJAS Y EVALUACIONES:
-Dada una expresion infija, este programa validara
-si esta escrita correctamente, la convertira en su
-equivalente postfijo y la evaluara con valores
-especificos de sus variables.
+Dada una expresion infija, este programa validará
+si está escrita correctamente, la convertirá en su
+equivalente postfijo y la evaluará con valores
+específicos de sus variables.
 
 VERSION: 1.5
 
