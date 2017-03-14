@@ -49,7 +49,7 @@ int Size(pila *p){
 Descripción: Consultar si la pila está vacía
 Recibe: pila *p (apuntador a pila)
 Devuelve: boolean (TRUE si está vacía, FALSE en caso contrario)
-Observaciones: es necesaria una referencia válida a la pila y que esté inicializada<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+Observaciones: es necesaria una referencia válida a la pila y que esté inicializada
 */
 boolean IsEmpty(pila *p){
 	return Size(p) == 0;
