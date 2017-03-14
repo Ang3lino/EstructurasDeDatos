@@ -1,7 +1,19 @@
 /*
-CONVERSIÓN DE EXPRESIONES INFIJAS A POSTFIJAS Y EVALUACIONES
+CONVERSIÓN DE EXPRESIONES INFIJAS A POSTFIJAS Y EVALUACIONES:
+Dada una expresion infija, este programa validara
+si esta escrita correctamente, la convertira en su
+equivalente postfijo y la evaluara con valores
+especificos de sus variables.
+
+VERSION: 1.5
+
+AUTORES:
+1. Lopez Manriquez Angel
+2. Ontiveros Salazar Alan Enrique
+3. Varela Aguilar Luis Pavel
+
 Compilación usando pila dinámica: gcc InfijaAPostFija.c PilaDin.c -o InfijaAPostFija.exe
-Compilación usando pila dinámica: gcc InfijaAPostFija.c PilaEst.c -o InfijaAPostFija.exe
+Compilación usando pila estática: gcc InfijaAPostFija.c PilaEst.c -o InfijaAPostFija.exe
 */
 
 //LIBRERIAS
