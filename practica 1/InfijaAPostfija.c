@@ -7,6 +7,8 @@ específicos de sus variables.
 
 VERSION: 1.5
 
+Fecha: 1 de marzo de 2017
+
 AUTORES:
 1. Lopez Manriquez Angel
 2. Ontiveros Salazar Alan Enrique
