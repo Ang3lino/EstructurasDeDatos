@@ -140,7 +140,7 @@ void ConvierteInfijaAPostFija(char * expresion_infija, char * expresion_postfija
 	Initialize(&p);
 	for(i = 0; i < strlen(expresion_infija); i++){
 		actual = expresion_infija[i];
-		if('A' <= actual && actual <= 'Z'){
+		if(EsCaracter (actual)){
 			expresion_postfija[j] = actual;
 			j++;
 			variables_introducidas[hash(actual)] = TRUE;
