@@ -33,8 +33,11 @@ typedef
 struct elemento
 {
 	//Variables de la estructura "elemento" (El usuario puede modificar)
+	//Simulación 2
 	char nombre[45], actividad[200], id[45];
 	int tiempo, contador;
+	//Simulación 3
+	int ID, tipo;
 } elemento;
 
 //Definir un nodo que será utilizado para almacenar una posición de la cola (Nodo), lo que incluira a un elemento y a un apuntador al siguiente nodo
