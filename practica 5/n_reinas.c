@@ -47,11 +47,7 @@ int revisar(int ** tablero, int n){
 void agregar_solucion(int ** tablero, int n, int **** soluciones, int n_soluciones){
 	int i, j;
 	*soluciones = realloc(*soluciones, sizeof(int**) * (n_soluciones + 1));
-	for(i = 0; i < n; i++){
-		for(j = 0; j < n; j++){
-			inicializar_tablero(&(*soluciones)[n_soluciones], n, tablero);
-		}
-	}
+	inicializar_tablero(&(*soluciones)[n_soluciones], n, tablero);
 }
 
 void resolver(int ** tablero, int n, int col, int **** soluciones, int * n_soluciones){
