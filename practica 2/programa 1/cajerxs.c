@@ -21,7 +21,6 @@ int main(void)
 	
 	srand(time(NULL));
 
-	//scanf("%d %d", %);
 	
 	cola cajera[5];
 
