@@ -16,15 +16,18 @@ int main(void)
 	unsigned char t_atencion;
 	
 	printf("valor tbase \n");
-    scanf("%u",&t_base);
+    //scanf("%hhu",&t_base);
+    gets(t_base);
     printf("t_base es %u \n",t_base);
     
     printf("valor tbase \n");
-    scanf("%u",&t_cliente);
+    //scanf("%hhu",&t_cliente);
+    gets(t_cliente);
     printf("t_clientees %u \n",t_cliente);
     
 	printf("valor atencion \n");
-    scanf("%u",&t_atencion);
+    //scanf("%hhu",&t_atencion);
+    gets(t_atencion);
     printf("t_atencion es %u \n",t_atencion);
 	
 	
