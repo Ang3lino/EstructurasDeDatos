@@ -5,15 +5,29 @@
 #include "TADColaDin.h" 	
 #include "TADColaDin.c"
 
-#define t_base	10		
+/*#define t_base	10		
 #define t_cliente	1		
-#define t_atencion	3	
+#define t_atencion	3*/	
 
 int main(void)
 {
-	/*int t_base =10;
-	int t_cliente =1;
-	int t_atencion =3;*/
+	unsigned char t_base;
+	unsigned char t_cliente;
+	unsigned char t_atencion;
+	
+	printf("valor tbase \n");
+    scanf("%u",&t_base);
+    printf("t_base es %u \n",t_base);
+    
+    printf("valor tbase \n");
+    scanf("%u",&t_cliente);
+    printf("t_clientees %u \n",t_cliente);
+    
+	printf("valor atencion \n");
+    scanf("%u",&t_atencion);
+    printf("t_atencion es %u \n",t_atencion);
+	
+	
 	unsigned int tiempo = 0;
 	unsigned int cliente = 0;
 	int fila;
