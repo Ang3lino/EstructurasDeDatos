@@ -1,6 +1,6 @@
 /*   Programa que emula la gestion de programas de un sistema operativo.  */
 
-#include <windows.h>
+//#include <windows.h>
 #include <string.h>
 #include <stdio.h>
 #include "ColaDin.h"
@@ -115,7 +115,7 @@ void
 procesar (cola *c){
     programa p;
     cola acabados;
-    int seg = 1e3, tiempo_espera = 0;
+    int seg = 1e4, tiempo_espera = 0;
 
     Initialize (&acabados);
 
@@ -138,8 +138,8 @@ procesar (cola *c){
             Queue (&acabados, p);
         }
 
-        Sleep (1 * seg);
-        system ("cls");
+        EsperarMiliSeg (1 * seg);
+        BorrarPantalla ();
     }
 
     mostrarFinalizados (&acabados);
@@ -190,8 +190,7 @@ pedirDatos (cola *c){
         if (aux[0] == 'n' || aux[0] == 'N')
             return;
     }
-
-    system ("cls");
+    BorrarPantalla ();
 }
 
 /*  Manda a llamar a la funcion pedirDatos (), forma los programas en la cola c.
@@ -201,8 +200,8 @@ int
 main (void){
     cola c;
     Initialize (&c);
-    //prueba (&c);
-    pedirDatos (&c);
+    prueba (&c);
+    //pedirDatos (&c);
 
     if (Empty (&c)){
         puts ("No hay nada que mostrar.");
