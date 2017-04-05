@@ -1,9 +1,12 @@
 #include <stdio.h>
-#define lli long long int
+#define lli unsigned long long int
 
 lli 
-fibo (int n){
-	int i = 0, j = 0, x = 0, y = 1, z = 0;
+fibo (lli n){
+	lli i = 1, x = 0, y = 1, z;
+	
+	if(n == 0 || n == 1)
+		return n;
 
 	while (i < n){
 		z = x + y;
@@ -17,12 +20,12 @@ fibo (int n){
 
 int 
 main (void){
-	int n = 0;
+	lli n = 0;
 
 	printf ("Fibonacci (n) \n");
 	printf ("n: ");
-	scanf ("%d", &n);
+	scanf ("%llu", &n);
 
-	printf ("El termino n-esimo es: %lld", fibo (n));
+	printf ("El termino n-esimo es: %llu", fibo (n));
 	return 0;
 }
