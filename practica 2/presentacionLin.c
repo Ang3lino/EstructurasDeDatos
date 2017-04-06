@@ -22,7 +22,7 @@ void MoverCursor( int x, int y )
 //Función para esperar un tiempo en milisegundos, simulación de la función delay() que se tenia en borland 3.0 en la libreria conio.h
 void EsperarMiliSeg(int t)
 {
-	usleep(t*100);
+	usleep(t*1000);
 	return;
 }
 
