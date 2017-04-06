@@ -1,22 +1,24 @@
 /*
-DESCRIPCIÓN:
-Programa que simula la llegada de personas a un banco.
-El banco consta de tres colas para distintos tipos de personas:
--cola 0: preferentes
--cola 1: clientes
--cola 2: usuarios
-Contamos con n cajeros disponibles, y los tiempos de llegada y de atencion son fijos durante la simulación.
-El orden de preferencia es: preferentes > clientes > usuarios.
-Sin embargo, no se debe permitir que pasen más de 5 preferentes o clientes sin que un usuario en espera sea atendido.
+	DESCRIPCIÓN:
+	Programa que simula la llegada de personas a un banco.
+	El banco consta de tres colas para distintos tipos de personas:
+	-cola 0: preferentes
+	-cola 1: clientes
+	-cola 2: usuarios
+	Contamos con n cajeros disponibles, y los tiempos de llegada y de atencion son fijos 
+	durante la simulación.
+	El orden de preferencia es: preferentes > clientes > usuarios.
+	Sin embargo, no se debe permitir que pasen más de 5 preferentes o clientes sin que un 
+	usuario en espera sea atendido.
 
-VERSION: 1.0
+	VERSION: 1.0
 
-FECHA: 24/03/2017
+	FECHA: 24/03/2017
 
-AUTORES:
-Ontiveros Salazar Alan Enrique
+	AUTORES:
+	Ontiveros Salazar Alan Enrique
 
-Compilación: gcc programa3.c Cola(Din|Est|EstCirc).h presentacion(Win|Lin).c -o programa3.exe
+	Compilación: gcc programa3.c Cola(Din|Est|EstCirc).h presentacion(Win|Lin).c -o programa3.exe
 */
 
 //LIBRERIAS
@@ -27,8 +29,8 @@ Compilación: gcc programa3.c Cola(Din|Est|EstCirc).h presentacion(Win|Lin).c -o
 #include "presentacion.h"
 
 /*
-Definimos a un cajero, podremos saber si está ocupado o libre;
-y la persona atendida actualmente en caso de que esté ocupado
+	Definimos a un cajero, podremos saber si está ocupado o libre;
+	y la persona atendida actualmente en caso de que esté ocupado
 */
 typedef struct{
 	boolean ocupado;
@@ -36,15 +38,16 @@ typedef struct{
 } cajero;
 
 /*
-Definimos a la simulación:
--n_cajeros: cuántos cajeros hay disponibles para atender a las personas
--tiempo_atencion: cada cuándo se desocupan todos los cajeros
--tiempo_clientes: cada cuándo llegan los clientes
--tiempo_usuarios: cada cuándo llegan los usuarios
--tiempo_preferentes: cada cuánto llegan los preferentes
--clientes_y_preferentes: cuántos clientes y preferentes han pasado desde el último usuario
--colas[3]: las tres colas de nuestra simulación, 0:preferentes, 1:clientes, 2:usuarios
--cajeros[9]: los cajeros de nuestra simulacion
+	Definimos a la simulación:
+	-n_cajeros: cuántos cajeros hay disponibles para atender a las personas
+	-tiempo_atencion: cada cuándo se desocupan todos los cajeros
+	-tiempo_clientes: cada cuándo llegan los clientes
+	-tiempo_usuarios: cada cuándo llegan los usuarios
+	-tiempo_preferentes: cada cuánto llegan los preferentes
+	-clientes_y_preferentes: cuántos clientes y preferentes han pasado desde el último 
+	 usuario
+	-colas[3]: las tres colas de nuestra simulación, 0:preferentes, 1:clientes, 2:usuarios
+	-cajeros[9]: los cajeros de nuestra simulacion
 */
 typedef struct 
 {
@@ -60,10 +63,10 @@ typedef struct
 
 
 /*
-Descripción: dada una simulación, pone en FALSE la propiedad de todos los cajeros.
-Recibe: simulacion * S
-Devuelve:
-Observaciones: n_cajeros < 10
+	Descripción: dada una simulación, pone en FALSE la propiedad de todos los cajeros.
+	Recibe: simulacion * S
+	Devuelve:
+	Observaciones: n_cajeros < 10
 */
 void DesocuparCajeros(simulacion * S){
 	int i;
@@ -74,12 +77,12 @@ void DesocuparCajeros(simulacion * S){
 }
 
 /*
-Descripción: dada una simulación, verifica qué cajero está disponible.
-Si hay varios, devuelve el primero que encuentra. Si no hay ninguno, devuelve -1
-Recibe: simulación * S
-Devuelve: int, la posición del cajero encontrado
-Observaciones: n_cajeros < 10, la propiedad de 'ocupado' en cada cajero
-debe estar inicializada a TRUE o a FALSE
+	Descripción: dada una simulación, verifica qué cajero está disponible.
+	Si hay varios, devuelve el primero que encuentra. Si no hay ninguno, devuelve -1
+	Recibe: simulación * S
+	Devuelve: int, la posición del cajero encontrado
+	Observaciones: n_cajeros < 10, la propiedad de 'ocupado' en cada cajero
+	debe estar inicializada a TRUE o a FALSE
 */
 int RevisarCajeroLibre(simulacion * S){
 	int i;
@@ -92,27 +95,27 @@ int RevisarCajeroLibre(simulacion * S){
 }
 
 /*
-Descripción: dada una persona y su tipo de acuerdo a la jerarquía de atención del banco,
-la encola en la cola de acuerdo a su tipo en la simulación.
-Recibe: int n_persona, int tipo, simulacion * S
-Devuelve:
-Observaciones: las tres colas de la simulación deben estar inicializadas,
-0 <= tipo <= 2
+	Descripción: dada una persona y su tipo de acuerdo a la jerarquía de atención del 
+	banco, la encola en la cola de acuerdo a su tipo en la simulación.
+	Recibe: int n_persona, int tipo, simulacion * S
+	Devuelve:
+	Observaciones: las tres colas de la simulación deben estar inicializadas,
+	0 <= tipo <= 2
 */
 void FormarPersona(int n_persona, int tipo, simulacion * S){
 	elemento persona;
 	persona.ID = n_persona;
 	persona.tipo = tipo;
-	Queue(persona, &S->colas[tipo]);
+	Queue(&S->colas[tipo], persona);
 	return;
 }
 
 /*
-Descripción: dada una persona, su tipo y una posición de cajero válida,
-la pone como la persona atendida en ese cajero y lo pone como ocupado.
-Recibe: int n_persona, int tipo, int donde, simulacion * S
-Devuelve:
-Observaciones: 0 <= tipo <= 2
+	Descripción: dada una persona, su tipo y una posición de cajero válida,
+	la pone como la persona atendida en ese cajero y lo pone como ocupado.
+	Recibe: int n_persona, int tipo, int donde, simulacion * S
+	Devuelve:
+	Observaciones: 0 <= tipo <= 2
 */
 void PasarPersona(int n_persona, int tipo, int donde, simulacion * S){
 	elemento persona;
@@ -125,13 +128,13 @@ void PasarPersona(int n_persona, int tipo, int donde, simulacion * S){
 }
 
 /*
-Descripción: dado un tipo de persona y la simulación, determina si esa persona puede pasar a algún cajero,
-respetando las políticas del banco. Si sí puede pasar, devuelve la posición del cajero candidato, si no
-devuelve -1.
-Recibe: int tipo, simulacion * S
-Devuelve: int, la posición del cajero al que la persona puede pasar.
-Observaciones: las tres colas de la simulación deben estar inicializadas,
-0 <= tipo <= 2
+	Descripción: dado un tipo de persona y la simulación, determina si esa persona puede pasar a algún cajero,
+	respetando las políticas del banco. Si sí puede pasar, devuelve la posición del cajero candidato, si no
+	devuelve -1.
+	Recibe: int tipo, simulacion * S
+	Devuelve: int, la posición del cajero al que la persona puede pasar.
+	Observaciones: las tres colas de la simulación deben estar inicializadas,
+	0 <= tipo <= 2
 */
 int PersonaPuedePasar(int tipo, simulacion * S){
 	int disponible = RevisarCajeroLibre(S);
@@ -144,13 +147,13 @@ int PersonaPuedePasar(int tipo, simulacion * S){
 }
 
 /*
-Descripción: dada una persona, su tipo y la simulación, determina
-si la persona podría pasar directamente a algún cajero disponible
-o se tendría que formar a su cola determinada.
-Recibe: int n_persona, int tipo, simulacion * S
-Devuelve:
-Observaciones: las tres colas de la simulación deben estar inicializadas,
-0 <= tipo <= 2
+	Descripción: dada una persona, su tipo y la simulación, determina
+	si la persona podría pasar directamente a algún cajero disponible
+	o se tendría que formar a su cola determinada.
+	Recibe: int n_persona, int tipo, simulacion * S
+	Devuelve:
+	Observaciones: las tres colas de la simulación deben estar inicializadas,
+	0 <= tipo <= 2
 */
 void ProcesarLlegadaPersona(int n_persona, int tipo, simulacion * S){
 	int pos = PersonaPuedePasar(tipo, S);
@@ -163,13 +166,13 @@ void ProcesarLlegadaPersona(int n_persona, int tipo, simulacion * S){
 }
 
 /*
-Descripción: esta función se ejecuta cada que es tiempo de atención,
-y determina si las personas esperando al frente de cala cola pueden pasar a algún cajero.
-Si sí pueden, las pasa y las desencola.
-Recibe: simulacion * S
-Devuelve:
-Observaciones: las tres colas de la simulación deben estar inicializadas,
-0 <= tipo <= 2
+	Descripción: esta función se ejecuta cada que es tiempo de atención,
+	y determina si las personas esperando al frente de cala cola pueden pasar a algún cajero.
+	Si sí pueden, las pasa y las desencola.
+	Recibe: simulacion * S
+	Devuelve:
+	Observaciones: las tres colas de la simulación deben estar inicializadas,
+	0 <= tipo <= 2
 */
 void ProcesarColas(simulacion * S){
 	int i = 0, pos;
@@ -196,14 +199,26 @@ int main(){
 	int tiempo_actual = 0;
 	int tiempo_base = 10;
 
-	//Contador auxiliar
-	int i;
+	//Contadores auxiliar
+	int i, j;
+
+	//Elemento auxiliar
+	elemento e;
 
 	//Contador para identificar consecutivamente a cada persona que va llegando
 	int n_persona = 0;
 
 	//Leemos la entrada de la simulación
-	scanf("%d %d %d %d %d", &S.n_cajeros, &S.tiempo_atencion, &S.tiempo_clientes, &S.tiempo_usuarios, &S.tiempo_preferentes);
+	printf("Introduce el numero de cajeros disponibles: ");
+	scanf("%d", &S.n_cajeros);
+	printf("Introduce el tiempo de atencion: ");
+	scanf("%d", &S.tiempo_atencion);
+	printf("Introduce el tiempo de llegada de los clientes: ");
+	scanf("%d", &S.tiempo_clientes);
+	printf("Introduce el tiempo de llegada de los usuarios: ");
+	scanf("%d", &S.tiempo_usuarios);
+	printf("Introduce el tiempo de llegada de los preferentes: ");
+	scanf("%d", &S.tiempo_preferentes);
 	
 	//Inicializamos las tres colas
 	for(i = 0; i < 3; i++) Initialize(&S.colas[i]);
@@ -241,14 +256,16 @@ int main(){
 		}
 
 		//Mostramos la información de la simulación
-		//BorrarPantalla();
+		BorrarPantalla();
 		for(i = 0; i < 3; i++){
 			printf("Contenido de la cola de ");
 			if(i == 0) printf("preferentes (%d): ", Size(&S.colas[i]));
 			else if(i == 1) printf("clientes (%d): ", Size(&S.colas[i]));
 			else if(i == 2) printf("usuarios (%d): ", Size(&S.colas[i]));
-			int j;
-			for(j = 1; j <= Size(&S.colas[i]); j++) printf("(%d, %d) ", Element(j, &S.colas[i]).ID, Element(j, &S.colas[i]).tipo);
+			for(j = 1; j <= Size(&S.colas[i]); j++){
+				e = Element(&S.colas[i], j);
+				printf("(%d, %d) ", e.ID, e.tipo);
+			}
 			printf("\n");
 		}
 		printf("\n");
