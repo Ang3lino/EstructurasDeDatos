@@ -7,7 +7,7 @@
 
 typedef struct nodo{
 	char nombre[50];
-	char definicion[100];
+	char definicion[250];
 	struct nodo *siguiente;
 	struct nodo *anterior;
 } Nodo;

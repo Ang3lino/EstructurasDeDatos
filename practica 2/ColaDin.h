@@ -1,4 +1,4 @@
-#ifndef COLADIN_H
+﻿#ifndef COLADIN_H
 #define COLADIN_H
 
 /*
@@ -61,13 +61,14 @@ struct cola
 } cola;
 
 //DECLARACIÓN DE FUNCIONES
-void Initialize(cola *c);			//Inicializar cola (Initialize): Recibe una cola y la inicializa para su trabajo normal.
+void Initialize(cola *c);		//Inicializar cola (Initialize): Recibe una cola y la inicializa para su trabajo normal.
 void Queue(cola *c, elemento e);	//Encolar (Queue): Recibe una cola y agrega un elemento al final de ella.
-elemento Dequeue(cola *c);			//Desencolar (Dequeue): Recibe una cola y remueve el elemento del frente retornándolo.
+elemento Dequeue(cola *c);		//Desencolar (Dequeue): Recibe una cola y remueve el elemento del frente retornándolo.
 int Empty(cola *c);			//Es vacía (Empty): Recibe la cola y devuelve verdadero si esta esta vacía.
-elemento Front(cola *c);			//Frente (Front): Recibe una cola y retorna el elemento del frente.
-elemento Final(cola *c);			//Final (Final): Recibe una cola y retorna el elemento del final.
-int Size(cola *c);					//Tamaño (Size): Retorna el tamaño de la cola
-void Destroy(cola *c);				//Eliminar cola (Destroy): Recibe una cola y la libera completamente.
+elemento Front(cola *c);		//Frente (Front): Recibe una cola y retorna el elemento del frente.
+elemento Final(cola *c);		//Final (Final): Recibe una cola y retorna el elemento del final.
+int Size(cola *c);			//Tamaño (Size): Retorna el tamaño de la cola
+void Destroy(cola *c);			//Eliminar cola (Destroy): Recibe una cola y la libera completamente.
+elemento Element(cola *c, int n);	//Elemento (Element): Recibe una cola y una posicion, y devuelve el n-esimo termino en la cola.
 
 #endif

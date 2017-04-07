@@ -1,4 +1,4 @@
-/*
+﻿/*
 	DESCRIPCIÓN:
 	Programa que simula la llegada de personas a un banco.
 	El banco consta de tres colas para distintos tipos de personas:
@@ -18,7 +18,7 @@
 	AUTORES:
 	Ontiveros Salazar Alan Enrique
 
-	Compilación: gcc programa3.c Cola(Din|Est|EstCirc).h presentacion(Win|Lin).c -o programa3.exe
+	Compilación: gcc programa3.c Cola(Din|Est|EstCirc).c presentacion(Win|Lin).c -o programa3.exe
 */
 
 //LIBRERIAS
@@ -123,8 +123,10 @@ void PasarPersona(int n_persona, int tipo, int donde, simulacion * S){
 	persona.tipo = tipo;
 	S->cajeros[donde].persona = persona;
 	S->cajeros[donde].ocupado = TRUE;
-	if(tipo == 2) S->clientes_y_preferentes = 0;
-	else S->clientes_y_preferentes++;
+	if(tipo == 2)
+		S->clientes_y_preferentes = 0;
+	else
+		S->clientes_y_preferentes++;
 }
 
 /*
@@ -140,7 +142,8 @@ int PersonaPuedePasar(int tipo, simulacion * S){
 	int disponible = RevisarCajeroLibre(S);
 	if(disponible == -1) return -1;
 	if(S->clientes_y_preferentes == 5){
-		if((tipo == 0 || tipo == 1) && !Empty(&S->colas[2])) return -1;
+		if((tipo == 0 || tipo == 1) && !Empty(&S->colas[2]))
+			return -1;
 		return disponible;
 	}
 	return disponible;
@@ -221,7 +224,8 @@ int main(){
 	scanf("%d", &S.tiempo_preferentes);
 	
 	//Inicializamos las tres colas
-	for(i = 0; i < 3; i++) Initialize(&S.colas[i]);
+	for(i = 0; i < 3; i++)
+		Initialize(&S.colas[i]);
 
 	//Al principio, todos los cajeros están desocupados
 	DesocuparCajeros(&S);
@@ -258,21 +262,43 @@ int main(){
 		//Mostramos la información de la simulación
 		BorrarPantalla();
 		for(i = 0; i < 3; i++){
-			printf("Contenido de la cola de ");
-			if(i == 0) printf("preferentes (%d): ", Size(&S.colas[i]));
-			else if(i == 1) printf("clientes (%d): ", Size(&S.colas[i]));
-			else if(i == 2) printf("usuarios (%d): ", Size(&S.colas[i]));
+			printf("Cola de ");
+			if(i == 0)
+				printf("preferentes (%d): ", Size(&S.colas[i]));
+			else if(i == 1)
+				printf("clientes    (%d): ", Size(&S.colas[i]));
+			else if(i == 2)
+				printf("usuarios    (%d): ", Size(&S.colas[i]));
 			for(j = 1; j <= Size(&S.colas[i]); j++){
 				e = Element(&S.colas[i], j);
-				printf("(%d, %d) ", e.ID, e.tipo);
+				printf("%d", e.ID);
+				if(j < Size(&S.colas[i]))
+					printf(" <-- ");
 			}
 			printf("\n");
 		}
 		printf("\n");
 		for(i = 0; i < S.n_cajeros; i++){
+			e = S.cajeros[i].persona;
 			printf("Cajero %d: ", i + 1);
-			if(S.cajeros[i].ocupado) printf("ocupado, persona: (ID=%d, tipo=%d)", S.cajeros[i].persona.ID, S.cajeros[i].persona.tipo);
-			else printf("desocupado");
+			if(S.cajeros[i].ocupado){
+				printf("ocupado: (ID: %d, tipo: ", e.ID);
+				switch(e.tipo){
+					case 0:{
+						printf("preferente)");
+						break;
+					}
+					case 1:{
+						printf("cliente)");
+						break;
+					}
+					case 2:{
+						printf("usuario)");
+						break;
+					}
+				}
+			}else
+				printf("desocupado");
 			printf("\n");
 		}
 		printf("\nTiempo actual: %d\n\n\n", tiempo_actual);

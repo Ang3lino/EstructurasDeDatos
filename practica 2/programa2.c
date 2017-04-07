@@ -115,7 +115,7 @@ void
 procesar (cola *c){
     programa p;
     cola acabados;
-    int seg = 1e4, tiempo_espera = 0;
+    int seg = 1e3, tiempo_espera = 0;
 
     Initialize (&acabados);
 
@@ -200,8 +200,8 @@ int
 main (void){
     cola c;
     Initialize (&c);
-    prueba (&c);
-    //pedirDatos (&c);
+    //prueba (&c);
+    pedirDatos (&c);
 
     if (Empty (&c)){
         puts ("No hay nada que mostrar.");

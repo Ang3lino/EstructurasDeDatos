@@ -73,7 +73,7 @@ elemento Final(cola *c){ return c->final->e; }
 int Size(cola *c){ return c->num_elem; }
 
 
-elemento Element(int n, cola * c){
+elemento Element(cola *c, int n){
 	int pos = 1;
 	nodo * aux = c->frente;
 	elemento e;

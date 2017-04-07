@@ -55,7 +55,7 @@ cargar (Lista *t){
 
 		while ((c = fgetc (fp)) != EOF){
 			nombre = (char *) calloc (50, sizeof (char));
-			def = (char *) calloc (100, sizeof (char));
+			def = (char *) calloc (250, sizeof (char));
 
 			i = 0;
 			nombre[i++] = c;
@@ -66,7 +66,7 @@ cargar (Lista *t){
 			c = fgetc (fp);
 
 			i = 0;
-			while ((c = fgetc (fp)) != '\n' && i < 100)
+			while ((c = fgetc (fp)) != '\n' && i < 250)
 				def[i++] = c;
 
 			insertarPalabra (t, nombre, def);
@@ -174,15 +174,15 @@ imprimirConsonante (Lista *t){
 void
 agregarPalabra (Lista *l){
 	char *nombre = (char *) calloc (50, sizeof (char));
-	char *definicion = (char *) calloc (100, sizeof (char));
-	char *parrafo = (char *) calloc (150, sizeof (char));
+	char *definicion = (char *) calloc (250, sizeof (char));
+	char *parrafo = (char *) calloc (300, sizeof (char));
 	FILE *fp = fopen ("dicc.txt", "a+");
 
 	printf ("Palabra nueva: ");
 	strscan (nombre, 50);
 
 	printf ("Definicion: ");
-	strscan (definicion, 100);
+	strscan (definicion, 250);
 
 	sprintf (parrafo,"%s: %s", nombre, definicion);
 	fprintf (fp, "%s \n", parrafo);
@@ -243,7 +243,7 @@ deleteWord (Lista *t){
 
 void
 changeDefinition (Lista *t){
-	char nuevaDef[100], pBuscada[50];
+	char nuevaDef[250], pBuscada[50];
 	int i = 0;
 
 	printf ("\nIngrese la palabra a cambiar: ");
@@ -253,7 +253,7 @@ changeDefinition (Lista *t){
 		FILE *fp = fopen ("dicc.txt", "w");
 		Nodo *ptr = NULL;
 		printf ("Nueva definicion: ");
-		strscan (nuevaDef, 100);
+		strscan (nuevaDef, 250);
 
 		for (i = 0; i < 26; i++){
 			ptr = t[i].cabeza;
