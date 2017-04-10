@@ -3,10 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-typedef struct elemento{
-    int caracter, frecuencia, direccion;
-} elemento;
+#include <math.h>
+#include "arbolBin.h"
 
 void 
 insertionSort (elemento *arreglo, int longitud){
@@ -22,21 +20,6 @@ insertionSort (elemento *arreglo, int longitud){
         }
         arreglo[i + 1] = aux;
     }    
-}
-
-void 
-bubbleSort (elemento *s, int lim){
-    int i = 0, j = 0;
-    elemento aux;
-
-    for (i = 0; i < lim - 1; i++)
-        for (j = 0; j < lim - 1; j++)
-            if (s[j].frecuencia > s[j + 1].frecuencia){
-                aux = s[j];
-                s[j] = s[j + 1];
-                s[j + 1] = aux;                
-            } 
-
 }
 
 void 
@@ -57,15 +40,17 @@ int
 countFrequency (char palabra[20], elemento *cadena){
     char aux = 1;
     int longitud = strlen (palabra);
-    int i = 0, j = 0, k = 0, buul = 1;
+    int i = 0, j = 0, k = 0, letraRepetida = 1;
 
     for (i = 0; i < longitud; i++){
-        buul = 1;
+        letraRepetida = 1;
         aux = palabra[i];
         for (j = 0; j < i; j++)
-            if (aux == palabra[j])
-                buul = 0;
-        if (buul){
+            if (aux == palabra[j]){
+                letraRepetida = 0;
+                break;
+            }
+        if (letraRepetida){
             cadena[k].caracter = palabra[i];
             cadena[k].frecuencia++;
             for (j = i + 1; j < longitud; j++)
@@ -78,21 +63,51 @@ countFrequency (char palabra[20], elemento *cadena){
     return k;
 }
 
+void 
+huffmanHelper (arbol *arboles, int lim) {
+
+
+}
+
+void 
+huffman (elemento *cadena, int lim) {
+    int nivel = ceil (lim / 2);
+    int i = 0, j = 0, k = 0; 
+    arbol *arboles = (arbol *) calloc (sizeof (arbol), nivel);
+
+    for (i = 0; i < nivel; i++)
+        arboles[i] = createTree ();
+
+    for (i = 0; i < nivel; i++){
+        insertLeft (&(arboles[i]), cadena[i]);
+        insertRight (&arboles[i], cadena[i + 1]);
+    } 
+
+}
+
+void 
+test (arbol *tree, elemento *array) {
+    insertLeft (&tree, array[0]);
+    insertRight (&tree, array[1]);
+}
+
 int 
-main (void){
+main (int argc, char *argcv[]) {
     char palabra[99];
     elemento *cadena = (elemento *) calloc (sizeof (elemento), 99);
     int lim = 0;
+    arbol *tree = createTree ();
 
     strcpy (palabra, "geografia");
-
     lim = countFrequency (palabra, cadena);
-    printData (cadena, lim);
-    //bubbleSort (cadena, 7);
+//    printData (cadena, lim);
     insertionSort (cadena, lim);
-    printData (cadena, lim);
+//    printData (cadena, lim);
+       
+    huffman (cadena, lim);
 
-    return 0;
+    free (cadena);
+    return EXIT_SUCCESS;
 }
 
 
