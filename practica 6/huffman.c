@@ -63,25 +63,36 @@ countFrequency (char palabra[20], elemento *cadena){
     return k;
 }
 
-void 
-huffmanHelper (arbol *arboles, int lim) {
-
+arbol *huffmanHelper (arbol *arboles, int nivel) {
+    if (nivel == 2)
+        return;
 
 }
 
-void 
-huffman (elemento *cadena, int lim) {
+arbol *huffman (elemento *cadena, int lim) {
     int nivel = ceil (lim / 2);
-    int i = 0, j = 0, k = 0; 
+    int i = 0, j = 0, k = 0, f1 = 0, f2 = 0; 
     arbol *arboles = (arbol *) calloc (sizeof (arbol), nivel);
+    arbol *a = (arbol *) calloc (sizeof (arbol), 1);
 
-    for (i = 0; i < nivel; i++)
-        arboles[i] = createTree ();
+    for (i = 0, j = 0; i < nivel; i++){
+        insertLeft (&a, cadena[j]);
+        f1 = cadena[j++].frecuencia;
+        arboles[i] = *a;  
+        arboles[i].e.frecuencia = f1 + f2;      
+        if (!cadena[j].frecuencia) 
+            break;
+        insertRight (&a, cadena[j]);
+        f2 = cadena[j++].frecuencia;
+        arboles[i] = *a;  
+        arboles[i].e.frecuencia = f1 + f2;
+    }
 
     for (i = 0; i < nivel; i++){
-        insertLeft (&(arboles[i]), cadena[i]);
-        insertRight (&arboles[i], cadena[i + 1]);
-    } 
+        printf ("%c %c \n", arboles[i].izq.e.caracter, arboles[i].der.e.caracter);
+    }
+
+    a = huffmanHelper (arboles, nivel);
 
 }
 
@@ -100,9 +111,9 @@ main (int argc, char *argcv[]) {
 
     strcpy (palabra, "geografia");
     lim = countFrequency (palabra, cadena);
-//    printData (cadena, lim);
+    printData (cadena, lim);
     insertionSort (cadena, lim);
-//    printData (cadena, lim);
+    printData (cadena, lim);
        
     huffman (cadena, lim);
 

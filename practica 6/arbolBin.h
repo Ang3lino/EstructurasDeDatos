@@ -3,7 +3,8 @@
 #define ARBOLBIN_H
 
 typedef struct elemento{
-    int caracter, frecuencia, direccion;
+    char caracter;
+    int  frecuencia, direccion;
 } elemento;
 
 typedef struct nodo{
