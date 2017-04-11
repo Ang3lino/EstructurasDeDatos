@@ -65,7 +65,11 @@ countFrequency (char palabra[20], elemento *cadena){
 
 int piso (int num, int den){ return num / den; }
 
-int techo (int numerador, int denominador){ return piso (numerador, denominador) + 1; }
+int techo (int numerador, int denominador){ 
+    if (numerador % denominador == 0)
+        return numerador / denominador;   
+    return piso (numerador, denominador) + 1;
+}
 
 arbol *huffmanHelper (arbol *arboles, int nivel) {
     arbol *a = createTree ();
