@@ -42,12 +42,13 @@ insertElementLeft (arbol **subraiz, elemento e) {
     (*subraiz)->izq = nuevo;
 }
 
-/*  esto no funciona  */
 void 
 preorder (arbol *tree) {
-    if (!tree)
+    if (!tree){
         printf (" - ");
-    printf ("( %d ", tree->e.caracter);
+        return;
+    }
+    printf ("( %c", tree->e.caracter);
     preorder (tree->izq);
     preorder (tree->der);
     printf (" )");
