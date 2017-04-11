@@ -30,8 +30,8 @@ printData (elemento *x, int lim){
 
     for (i = 0; i < lim; i++){
         printf ("letra %c ", x[i].caracter);
-        printf ("frecuencia %d", x[i].frecuencia);
-        printf ("dir %d", x[i].direccion);
+        printf ("frecuencia %d ", x[i].frecuencia);
+        printf ("dir %d ", x[i].direccion);
         printf ("\n");
     }
 }
@@ -71,8 +71,7 @@ arbol *huffmanHelper (arbol *arboles, int nivel) {
     arbol *a = createTree ();
     nivel = techo (nivel, 2);
     int i = 0, j = 0, f1 = 0, f2 = 0;
-    arbol *padres = (arbol *) calloc (sizeof (arbol), nivel);
-
+     
     if (nivel == 1){
         insertLeft (&a, &arboles[j++]);     
         if (arboles[j].e.frecuencia)
@@ -80,6 +79,7 @@ arbol *huffmanHelper (arbol *arboles, int nivel) {
         return a;
     }
 
+    arbol *padres = (arbol *) calloc (sizeof (arbol), nivel);
     for (i = 0; i < nivel; i++){
         f1 = 0; f2 = 0; 
         insertLeft (&a, &arboles[j]);
