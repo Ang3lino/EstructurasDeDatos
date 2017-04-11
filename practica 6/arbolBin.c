@@ -48,6 +48,7 @@ preorder (arbol *tree) {
         printf (" - ");
         return;
     }
+    
     printf ("( %c", tree->e.caracter);
     preorder (tree->izq);
     preorder (tree->der);

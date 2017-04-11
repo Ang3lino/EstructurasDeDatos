@@ -65,7 +65,8 @@ countFrequency (char palabra[20], elemento *cadena){
 
 int piso (int num, int den){ return num / den; }
 
-int techo (int numerador, int denominador){ 
+int 
+techo (int numerador, int denominador){ 
     if (numerador % denominador == 0)
         return numerador / denominador;   
     return piso (numerador, denominador) + 1;
@@ -151,6 +152,7 @@ main (int argc, char *argcv[]) {
 
     //test (a, cadena);   
     a = huffman (cadena, lim);
+    preorder (a);
 
     free (cadena);
     return EXIT_SUCCESS;
