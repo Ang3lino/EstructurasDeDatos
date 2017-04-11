@@ -40,17 +40,17 @@ int
 countFrequency (char palabra[20], elemento *cadena){
     char aux = 1;
     int longitud = strlen (palabra);
-    int i = 0, j = 0, k = 0, letraRepetida = 1;
+    int i = 0, j = 0, k = 0, noLetraRepetida = 1;
 
     for (i = 0; i < longitud; i++){
-        letraRepetida = 1;
+        noLetraRepetida = 1;
         aux = palabra[i];
         for (j = 0; j < i; j++)
             if (aux == palabra[j]){
-                letraRepetida = 0;
+                noLetraRepetida = 0;
                 break;
             }
-        if (letraRepetida){
+        if (noLetraRepetida){
             cadena[k].caracter = palabra[i];
             cadena[k].frecuencia++;
             for (j = i + 1; j < longitud; j++)
@@ -63,21 +63,38 @@ countFrequency (char palabra[20], elemento *cadena){
     return k;
 }
 
-int techo (int numerador, int denominador){ return numerador / denominador + 1; }
+int piso (int num, int den){ return num / den; }
 
-static arbol *huffmanHelper (arbol *arboles, int nivel) {
+int techo (int numerador, int denominador){ return piso (numerador, denominador) + 1; }
+
+arbol *huffmanHelper (arbol *arboles, int nivel) {
     arbol *a = createTree ();
     nivel = techo (nivel, 2);
     int i = 0, j = 0, f1 = 0, f2 = 0;
-    
-    //arboles[i].izq->e.caracter
+    arbol *padres = (arbol *) calloc (sizeof (arbol), nivel);
+
     if (nivel == 1){
         insertLeft (&a, &arboles[j++]);     
-        if (cadena[j].frecuencia)
-            insertElementRight (&a, &arboles[j++]);
+        if (arboles[j].e.frecuencia)
+            insertRight (&a, &arboles[j++]);
         return a;
     }
 
+    for (i = 0; i < nivel; i++){
+        f1 = 0; f2 = 0; 
+        insertLeft (&a, &arboles[j]);
+        f1 = arboles[j++].e.frecuencia;
+        a->e.frecuencia = f1 + f2;
+        padres[i] = *a;
+        if (!arboles[j].e.frecuencia)
+            break;
+        insertRight (&a, &arboles[j]);
+        f2 = arboles[j++].e.frecuencia;
+        a->e.frecuencia = f1 + f2;
+        padres[i] = *a;
+    }
+
+    return huffmanHelper (padres, nivel);
 }
 
 arbol *huffman (elemento *cadena, int lim) {
@@ -87,6 +104,7 @@ arbol *huffman (elemento *cadena, int lim) {
     arbol *a = (arbol *) calloc (sizeof (arbol), 1);
 
     for (i = 0, j = 0; i < nivel; i++){
+        f1 = 0; f2 = 0;
         insertElementLeft (&a, cadena[j]);
         f1 = cadena[j++].frecuencia;
         arboles[i] = *a;  
@@ -133,6 +151,4 @@ main (int argc, char *argcv[]) {
     free (cadena);
     return EXIT_SUCCESS;
 }
-
-
 
