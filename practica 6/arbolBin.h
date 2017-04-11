@@ -16,8 +16,10 @@ typedef nodo arbol;
 
 arbol *createTree (void);
 nodo *createNode (elemento);
-void insertRight (arbol **, elemento);
-void insertLeft (arbol **, elemento);
+void insertRight (arbol **, arbol *);
+void insertLeft (arbol **, arbol *);
+void insertElementRight (arbol **, elemento);
+void insertElementLeft (arbol **, elemento);
 void preorder (arbol *);
 
 

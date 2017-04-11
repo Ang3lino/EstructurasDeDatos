@@ -17,20 +17,32 @@ arbol *createTree (void) {
 }
 
 void 
-insertRight (arbol **subraiz, elemento e) {
+insertLeft (arbol **subraiz, arbol *rama){
+    (*subraiz)->izq = rama;
+
+}
+
+void 
+insertRight (arbol **subraiz, arbol *rama){
+    (*subraiz)->der = rama;
+    
+}
+
+void 
+insertElementRight (arbol **subraiz, elemento e) {
     nodo *nuevo = createNode (e);
     nuevo->e.direccion = 1;
     (*subraiz)->der = nuevo;
 }
 
 void 
-insertLeft (arbol **subraiz, elemento e) {
+insertElementLeft (arbol **subraiz, elemento e) {
     nodo *nuevo = createNode (e);
     nuevo->e.direccion = 0;
     (*subraiz)->izq = nuevo;
 }
 
-/*  This function doesn't work ...  */
+/*  esto no funciona  */
 void 
 preorder (arbol *tree) {
     if (!tree)
