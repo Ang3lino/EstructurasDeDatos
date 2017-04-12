@@ -1,4 +1,4 @@
-/*
+﻿/*
 PROBLEMA DE LAS N REINAS
 Sea n un etnero tal que 3 < n < 10. Este programa halla todas las posibles
 configuraciones de tableros de n*n, tal que existen n reinas colocadas
@@ -7,7 +7,7 @@ si y solo si están en la misma fila, columna o diagonal del tablero.
 La solución propuesta usa el concepto de "backtracking", es decir,
 prueba con todas las configuraciones posibles para hallar las correctas.
 
-VERSION: 1.0
+VERSION: 1.5
 
 AUTOR:
 Ontiveros Salazar Alan Enrique
@@ -71,14 +71,14 @@ int sePuedeColocarReina(int ** tablero, int n, int x, int y){
 	}
 
 	//Revisamos hacia arriba a la izquierda
-	for(i = x, j = y; i >= 0 && j >= 0; i--, j--){
+	for(i = x - 1, j = y - 1; i >= 0 && j >= 0; i--, j--){
 		if(tablero[i][j] == 1){
 			return 0;
 		}
 	}
 
 	//Revisamos hacia abajo a la izquierda
-	for(i = x, j = y; i < n && j >= 0 ; i++, j--){
+	for(i = x + 1, j = y - 1; i < n && j >= 0 ; i++, j--){
 		if(tablero[i][j] == 1){
 			return 0;
 		}
@@ -108,15 +108,38 @@ void agregar_solucion(int ** tablero, int n, int **** soluciones, int n_solucion
 }
 
 /*
+Descripción: dado un tablero, sus dimensiones y un número de espacios,
+lo muestra en pantalla. El número de espacios sirve como identación.
+Recibe: matriz tablero, entero n (dimensiones), entero espacios.
+Observaciones: tablero debe ser distinto de NULL, tener cuidado con los apuntadores,
+espacios >= 0. El tablero tiene únicamente como entradas al 0 o al 1; si
+es 0 se asume que no hay reina e imprimimos un punto, si es 1 se asume que
+hay reina e imprimimos un cuadro (254 ascii).
+*/
+void imprimir_tablero(int ** tablero, int n, int espacios){
+	int i, j;
+	for(i = 0; i < n; i++){
+		for(j = 0; j < espacios; j++) printf(" ");
+		for(j = 0; j < n; j++){
+			if(tablero[i][j] == 1) printf("%c", 254);
+			else printf(".");
+		}
+		printf("\n");
+	}
+}
+
+/*
 Descripción: dado un tablero, sus dimensiones, una columna, el arreglo de soluciones y
-el número de soluciones, esta función se encargará de buscar todas las configuraciones
+el número de soluciones; esta función se encargará de buscar todas las configuraciones
 posibles para colocar a las n reinas en el tablero, usando el método de backtracking,
 es decir, buscando mediante fuerza bruta todas las soluciones
 Recibe: matriz tablero, entero n (dimensiones), entero col (columna actual),
-apuntador a arreglo de soluciones (tableros), apuntador a entero de n_soluciones
-Observaciones: el tablero debe estar inicializado en ceros
+apuntador a arreglo de soluciones (tableros), apuntador a entero de n_soluciones,
+char imprimir
+Observaciones: el tablero debe estar inicializado en ceros. Si el char imprimir es 'S',
+se irá mostrando el procedimiento del backtracking, si es 'N', no se mostrará.
 */
-void resolver(int ** tablero, int n, int col, int **** soluciones, int * n_soluciones){
+void resolver(int ** tablero, int n, int col, int **** soluciones, int * n_soluciones, char imprimir){
 	int i;
 	if(col == n){
 		//Si ya llegamos a una columna más allá de la última, quiere decir que este tablero
@@ -124,16 +147,25 @@ void resolver(int ** tablero, int n, int col, int **** soluciones, int * n_soluc
 		//Procedemos a añadirlo a las soluciones.
 		agregar_solucion(tablero, n, soluciones, *n_soluciones);
 		(*n_soluciones)++;
+		if(imprimir == 'S'){
+			for(i = 0; i < col - 1; i++) printf(" ");
+			printf("Encontramos una solucion.\n\n");
+		}
 	}else{
 		for(i = 0; i < n; i++){
-			if(sePuedeColocarReina(tablero, n, i, col)){
-				//Marcamos
-				tablero[i][col] = 1;
-				//Llamamos recursivamente, avanzando a la siguiente columna
-				resolver(tablero, n, col + 1, soluciones, n_soluciones);
-				//Desmarcamos, hacemos el "backtracking"
-				tablero[i][col] = 0;
+			//Marcamos
+			tablero[i][col] = 1;
+			//Imprimimos el tablero
+			if(imprimir == 'S'){
+				imprimir_tablero(tablero, n, col);
+				printf("\n");
 			}
+			if(sePuedeColocarReina(tablero, n, i, col)){
+				//Llamamos recursivamente, avanzando a la siguiente columna
+				resolver(tablero, n, col + 1, soluciones, n_soluciones, imprimir);
+			}
+			//Desmarcamos, hacemos el "backtracking"
+			tablero[i][col] = 0;
 		}
 	}
 }
@@ -145,6 +177,7 @@ int main(){
 	int n_soluciones = 0;
 	int ** tablero = NULL;
 	int n;
+	char imprimir;
 
 	//Contadores auxiliares
 	int i, j, k;
@@ -153,24 +186,23 @@ int main(){
 	printf("Introduce la dimension n del tablero: ");
 	scanf("%d", &n);
 
+	//Le damos a escoger al usuario si quiere mostrar procedimiento o solo las soluciones
+	printf("Introduce S para mostrar el procedimiento usado para encontrar las soluciones, o N para mostrar solo las soluciones: ");
+	scanf(" %c", &imprimir);
+
 	//Inicializamos el tablero con ceros
 	inicializar_tablero(&tablero, n, NULL);
 
-	//Hallamos mediante backtracking todas las configuraciones, que guardaremos
-	//en el arreglo de soluciones y contaremos en el entero n_soluciones 
-	resolver(tablero, n, 0, &soluciones, &n_soluciones);
+	//Hallamos mediante backtracking todas las configuraciones comenzando en
+	//la columna 0, que guardaremos en el arreglo de soluciones y contaremos
+	//en el entero n_soluciones 
+	resolver(tablero, n, 0, &soluciones, &n_soluciones, imprimir);
 
 	//Mostramos las configuraciones que resultaron correctas
 	printf("Soluciones encontradas: %d\n\n", n_soluciones);
 	for(i = 0; i < n_soluciones; i++){
 		printf("Tablero %d:\n", i + 1);
-		for(j = 0; j < n; j++){
-			for(k = 0; k < n; k++){
-				if(soluciones[i][j][k] == 1) printf("%c", 254);
-				else printf(".");
-			}
-			printf("\n");
-		}
+		imprimir_tablero(soluciones[i], n, 0);
 		printf("\n");
 	}
 
@@ -178,13 +210,13 @@ int main(){
 	for(i = 0; i < n; i++){
 		free(tablero[i]);
 	}
+	free(tablero);
 	for(i = 0; i < n_soluciones; i++){
 		for(j = 0; j < n; j++){
 			free(soluciones[i][j]);
 		}
 		free(soluciones[i]);
 	}
-	free(tablero);
 	free(soluciones);
 
 	return 0; //FIN DEL PROGRAMA

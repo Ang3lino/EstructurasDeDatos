@@ -136,7 +136,7 @@ void hanoi(int n, int origen, int auxiliar, int destino, torre * torres, int * m
 		//directamente desde origen a destino
 		mover(n, origen, destino, torres, movs, tipo, tiempo);
 	}else{
-		//Movemos los n-1 discos debajo del n-ésimo disco desde origen
+		//Movemos los n-1 discos arriba del n-ésimo disco desde origen
 		//hasta auxiliar, pasando por destino
 		hanoi(n - 1, origen, destino, auxiliar, torres, movs, tipo, tiempo);
 		//Movemos el n-ésimo disco directo desde origen a destino
