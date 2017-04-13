@@ -11,9 +11,9 @@
 	Sin embargo, no se debe permitir que pasen más de 5 preferentes o clientes sin que un 
 	usuario en espera sea atendido.
 
-	VERSION: 1.0
+	VERSION: 1.5
 
-	FECHA: 24/03/2017
+	FECHA: 12/04/2017
 
 	AUTORES:
 	Ontiveros Salazar Alan Enrique
@@ -65,15 +65,17 @@ typedef struct
 /*
 	Descripción: dada una simulación, pone en FALSE la propiedad de todos los cajeros.
 	Recibe: simulacion * S
-	Devuelve:
+	Devuelve: el número de cajeros que pasaron de ocupado a desocupado
 	Observaciones: n_cajeros < 10
 */
-void DesocuparCajeros(simulacion * S){
-	int i;
+int DesocuparCajeros(simulacion * S){
+	int i, cuantos = 0;
 	for(i = 0; i < S->n_cajeros; i++){
+		if(S->cajeros[i].ocupado)
+			cuantos++;
 		S->cajeros[i].ocupado = FALSE;
 	}
-	return;
+	return cuantos;
 }
 
 /*
@@ -173,12 +175,12 @@ void ProcesarLlegadaPersona(int n_persona, int tipo, simulacion * S){
 	y determina si las personas esperando al frente de cala cola pueden pasar a algún cajero.
 	Si sí pueden, las pasa y las desencola.
 	Recibe: simulacion * S
-	Devuelve:
+	Devuelve: el número de personas que lograron pasar a algun cajero
 	Observaciones: las tres colas de la simulación deben estar inicializadas,
 	0 <= tipo <= 2
 */
-void ProcesarColas(simulacion * S){
-	int i = 0, pos;
+int ProcesarColas(simulacion * S){
+	int i = 0, pos, cuantas = 0;
 	elemento persona;
 	for(i = 0; i < 3; i++){
 		if(!Empty(&S->colas[i])){
@@ -187,9 +189,11 @@ void ProcesarColas(simulacion * S){
 			if(pos != -1){
 				PasarPersona(persona.ID, persona.tipo, pos, S);
 				Dequeue(&S->colas[i]);
+				cuantas++;
 			}
 		}
 	}
+	return cuantas;
 }
 
 //Programa principal
@@ -210,6 +214,10 @@ int main(){
 
 	//Contador para identificar consecutivamente a cada persona que va llegando
 	int n_persona = 0;
+
+	//Estas variables sirven para llevar el control de los mensajes de la simulacion
+	int refrescar = 1;
+	char mensajes[5][100];
 
 	//Leemos la entrada de la simulación
 	printf("Introduce el numero de cajeros disponibles: ");
@@ -234,74 +242,90 @@ int main(){
 	while(TRUE){
 		EsperarMiliSeg(tiempo_base);
 		tiempo_actual += tiempo_base;
+		i = 0;
 
 		//Los cajeros han finalizado de atender a las personas que estaban atendiendo
 		if(tiempo_actual % S.tiempo_atencion == 0){
-			DesocuparCajeros(&S);
-			ProcesarColas(&S);
+			if(DesocuparCajeros(&S) > 0)
+				sprintf(mensajes[i++], "Los cajeros terminaron de atender.\n");
+			if(ProcesarColas(&S) > 0)
+				sprintf(mensajes[i++], "Pasaron nuevas personas a los cajeros.\n");
+			refrescar = 1;
 		}
 
 		//Llegó un preferente
 		if(tiempo_actual % S.tiempo_preferentes == 0){
 			n_persona++;
 			ProcesarLlegadaPersona(n_persona, 0, &S);
+			sprintf(mensajes[i++], "Llego un preferente con ID %d.\n", n_persona);
+			refrescar = 1;
 		}
 
 		//Llegó un cliente
 		if(tiempo_actual % S.tiempo_clientes == 0){
 			n_persona++;
 			ProcesarLlegadaPersona(n_persona, 1, &S);
+			sprintf(mensajes[i++], "Llego un cliente con ID %d.\n", n_persona);
+			refrescar = 1;
 		}
 
 		//Llegó un usuario
 		if(tiempo_actual % S.tiempo_usuarios == 0){
 			n_persona++;
 			ProcesarLlegadaPersona(n_persona, 2, &S);
+			sprintf(mensajes[i++], "Llego un usuario con ID %d.\n", n_persona);
+			refrescar = 1;
 		}
 
-		//Mostramos la información de la simulación
-		BorrarPantalla();
-		for(i = 0; i < 3; i++){
-			printf("Cola de ");
-			if(i == 0)
-				printf("preferentes (%d): ", Size(&S.colas[i]));
-			else if(i == 1)
-				printf("clientes    (%d): ", Size(&S.colas[i]));
-			else if(i == 2)
-				printf("usuarios    (%d): ", Size(&S.colas[i]));
-			for(j = 1; j <= Size(&S.colas[i]); j++){
-				e = Element(&S.colas[i], j);
-				printf("%d", e.ID);
-				if(j < Size(&S.colas[i]))
-					printf(" <-- ");
-			}
+		//Mostramos la información de la simulación, solo si hubo algun cambio
+		if(refrescar){
+			BorrarPantalla();
+			printf("Informacion del banco\n\n");
+			for(j = 0; j < i; j++)
+				printf(mensajes[j]);
 			printf("\n");
-		}
-		printf("\n");
-		for(i = 0; i < S.n_cajeros; i++){
-			e = S.cajeros[i].persona;
-			printf("Cajero %d: ", i + 1);
-			if(S.cajeros[i].ocupado){
-				printf("ocupado: (ID: %d, tipo: ", e.ID);
-				switch(e.tipo){
-					case 0:{
-						printf("preferente)");
-						break;
-					}
-					case 1:{
-						printf("cliente)");
-						break;
-					}
-					case 2:{
-						printf("usuario)");
-						break;
-					}
+			for(i = 0; i < 3; i++){
+				printf("Cola de ");
+				if(i == 0)
+					printf("preferentes (%d): ", Size(&S.colas[i]));
+				else if(i == 1)
+					printf("clientes    (%d): ", Size(&S.colas[i]));
+				else if(i == 2)
+					printf("usuarios    (%d): ", Size(&S.colas[i]));
+				for(j = 1; j <= Size(&S.colas[i]); j++){
+					e = Element(&S.colas[i], j);
+					printf("%d", e.ID);
+					if(j < Size(&S.colas[i]))
+						printf(" <-- ");
 				}
-			}else
-				printf("desocupado");
-			printf("\n");
+				printf("\n\n");
+			}
+			for(i = 0; i < S.n_cajeros; i++){
+				e = S.cajeros[i].persona;
+				printf("Cajero %d: ", i + 1);
+				if(S.cajeros[i].ocupado){
+					printf("ocupado: (ID: %d, tipo: ", e.ID);
+					switch(e.tipo){
+						case 0:{
+							printf("preferente)");
+							break;
+						}
+						case 1:{
+							printf("cliente)");
+							break;
+						}
+						case 2:{
+							printf("usuario)");
+							break;
+						}
+					}
+				}else
+					printf("desocupado");
+				printf("\n");
+			}
+			printf("\nTiempo actual: %d\n\n\n", tiempo_actual);
+			refrescar = 0;
 		}
-		printf("\nTiempo actual: %d\n\n\n", tiempo_actual);
 	}
 	return 0; //FIN
 }

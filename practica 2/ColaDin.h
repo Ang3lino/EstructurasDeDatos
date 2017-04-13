@@ -36,7 +36,7 @@ struct elemento
 	//Simulación 2
 	char nombre[45], actividad[200], id[45];
 	int tiempo, contador;
-	//Simulación 3
+	//Simulación 1 y 3
 	int ID, tipo;
 } elemento;
 
