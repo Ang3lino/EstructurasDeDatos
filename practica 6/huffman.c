@@ -78,9 +78,14 @@ arbol *huffmanHelper (arbol *arboles, int nivel) {
     int i = 0, j = 0, f1 = 0, f2 = 0;
      
     if (nivel == 1){
-        insertLeft (&a, &arboles[j++]);     
-        if (arboles[j].e.frecuencia)
-            insertRight (&a, &arboles[j++]);
+        insertLeft (&a, &arboles[j]);
+        f1 = arboles[j++].e.frecuencia;
+        a->e.frecuencia = f1;     
+        if (arboles[j].e.frecuencia){
+            insertRight (&a, &arboles[j]);
+            f2 = arboles[j++].e.frecuencia;
+            a->e.frecuencia = f1 + f2;
+        }
         return a;
     }
 
