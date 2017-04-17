@@ -1,50 +1,37 @@
 #include <stdio.h>
-#include <conio.h>
 #include <windows.h>
 #include <time.h>
 #include <stdlib.h>
 #include "TADColaDin.h" 	
 
-/*
-#define t_base	10		
-#define t_cliente	1		
-#define t_atencion	3*/	
 
 int main(void)
 {
     
-	//unsigned char t_base;
 	int t_base;
-	//unsigned 	char t_cliente;
 	int t_cliente;
-	//unsigned char t_atencion;
-	int t_atencion;
-	
-	printf("valor tbase \n");
-    //scanf("%hhu",&t_base);
-    //gets(t_base);
-    scanf(" %d",&t_base);
-    printf("t_base es %d \n",t_base);
-    
-    printf("valor tcliente \n");
-    //scanf("%hhu",&t_cliente);
-    //gets(t_cliente);
-    scanf(" %d",&t_cliente);
-    printf("t_cliente es %d \n",t_cliente);
-    
-	printf("valor atencion \n");
-    //scanf("%hhu",&t_atencion);
-    //gets(t_atencion);
-    scanf(" %d",&t_atencion);
-    printf("t_atencion es %d \n",t_atencion);
 
-	//unsigned int tiempo = 0;
 	int tiempo = 0;
-	//unsigned int cliente = 0;
 	int cliente = 0;
 	int fila;
 	elemento e;
+	int t_atencion;
 	
+	printf("valor tbase \n");
+    //scanf(" %d",&t_base);
+	t_base = 10;
+    printf("t_base es %d \n",t_base);
+    
+    printf("valor tcliente \n");
+   // scanf(" %d",&t_cliente);
+	t_cliente = 15;
+    printf("t_cliente es %d \n",t_cliente);
+    
+	printf("valor atencion \n");
+    //scanf(" %d",&t_atencion);
+	t_atencion = 10;
+    printf("t_atencion es %d \n",t_atencion);
+
 	srand(time(NULL));
 
 	//scanf("%d %d", %);
