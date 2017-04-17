@@ -4,7 +4,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include "TADColaDin.h" 	
-#include "TADColaDin.c"
+
 /*
 #define t_base	10		
 #define t_cliente	1		
@@ -23,19 +23,19 @@ int main(void)
 	printf("valor tbase \n");
     //scanf("%hhu",&t_base);
     //gets(t_base);
-    scanf("%c",t_base);
+    scanf("%c",&t_base);
     printf("t_base es %u \n",t_base);
     
     printf("valor tcliente \n");
     //scanf("%hhu",&t_cliente);
     //gets(t_cliente);
-    scanf("%c",t_cliente);
+    scanf("%c",&t_cliente);
     printf("t_cliente es %u \n",t_cliente);
     
 	printf("valor atencion \n");
     //scanf("%hhu",&t_atencion);
     //gets(t_atencion);
-    scanf("%c",t_atencion);
+    scanf("%c",&t_atencion);
     printf("t_atencion es %u \n",t_atencion);
 
 	//unsigned int tiempo = 0;
