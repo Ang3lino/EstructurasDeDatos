@@ -14,29 +14,29 @@ int main(void)
 {
     
 	//unsigned char t_base;
-	char t_base;
+	int t_base;
 	//unsigned 	char t_cliente;
-	char t_cliente;
+	int t_cliente;
 	//unsigned char t_atencion;
-	char t_atencion;
+	int t_atencion;
 	
 	printf("valor tbase \n");
     //scanf("%hhu",&t_base);
     //gets(t_base);
-    scanf("%c",&t_base);
-    printf("t_base es %u \n",t_base);
+    scanf(" %d",&t_base);
+    printf("t_base es %d \n",t_base);
     
     printf("valor tcliente \n");
     //scanf("%hhu",&t_cliente);
     //gets(t_cliente);
-    scanf("%c",&t_cliente);
-    printf("t_cliente es %u \n",t_cliente);
+    scanf(" %d",&t_cliente);
+    printf("t_cliente es %d \n",t_cliente);
     
 	printf("valor atencion \n");
     //scanf("%hhu",&t_atencion);
     //gets(t_atencion);
-    scanf("%c",&t_atencion);
-    printf("t_atencion es %u \n",t_atencion);
+    scanf(" %d",&t_atencion);
+    printf("t_atencion es %d \n",t_atencion);
 
 	//unsigned int tiempo = 0;
 	int tiempo = 0;
@@ -131,6 +131,7 @@ int main(void)
 		printf("\n%d clientes en cola 3",Size(&cajera[3]));
 		printf("\n%d clientes en cola 4",Size(&cajera[4]));
 		printf("\n%d clientes en cola 5",Size(&cajera[5]));
+		puts (" ");
 	}
 	return 0;
 }
