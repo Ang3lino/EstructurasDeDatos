@@ -9,6 +9,7 @@
 #include <stdio.h>			
 #include <unistd.h>  		//Libreria no ANSI C
 #include "presentacion.h"
+#include <stdlib.h>
 
 //DEFINICIÓN DE FUNCIONES
 
