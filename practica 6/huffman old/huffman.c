@@ -35,7 +35,7 @@ printData (elemento *x, int lim){
     printf ("\n");
 
     for (i = 0; i < lim; i++){
-        printf ("letra %c ", x[i].caracter);
+        printf ("letra %c ", x[i].caracter); 
         printf ("frecuencia %d ", x[i].frecuencia);
         printf ("dir %d ", x[i].direccion);
         printf ("\n");
