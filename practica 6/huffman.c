@@ -1,26 +1,55 @@
 /* Codificacion del algoritmo de huffman */
 
+#define TAM 1000
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include "arbolBin.h"
 
+/*  TAD COLA ===========================================================================
+    INICIO
+
+    Inclusion de la cola de prioridad, donde se guardaran arboles y se insertaran
+    de acuerdo a la frecuencia del nodo.    */
+
+/* frente -> q1 -> q2 -> ... -> final -> NULL */
+typedef struct cola{
+    int longitud, frente, final;
+    arbol *a;
+} cola;
+
 void 
-insertionSort (elemento *arreglo, int longitud){
-    int i = 0, j = 0;
-    elemento aux;
+initialize (int tam){
+    cola *nuevaC = (cola *) calloc (sizeof (cola), 1);
     
-    for (j = 1; j < longitud ; j++){
-        aux = arreglo[j];
-        i = j - 1;
-        while (i >= 0 && arreglo[i].frecuencia > aux.frecuencia){
-            arreglo[i + 1] = arreglo[i];
-            i--;
-        }
-        arreglo[i + 1] = aux;
-    }    
+    nuevaC->longitud = tam;
+    nuevaC->frente = nuevaC->final = 0;
+
+    return nuevaC;
 }
+
+void 
+queue (cola *c, arbol a){
+    if ()
+
+}
+
+arbol 
+dequeue (cola *c){
+    arbol x = c[c->frente]->a;
+
+    if (c->frente == c->longitud)
+        c->frente = 0;
+    else 
+        c->frente++;
+
+    return x;
+}
+
+
+/*  FIN DEL TAD ==========================================================================*/
 
 void 
 printData (elemento *x, int lim){
@@ -36,8 +65,10 @@ printData (elemento *x, int lim){
     }
 }
 
+/*  Embute cada caracter en un arreglo de elementos con su respectiva frecuencia */
+
 int  
-countFrequency (char palabra[20], elemento *cadena){
+countFrequency (char palabra[], elemento *cadena){
     char aux = 1;
     int longitud = strlen (palabra);
     int i = 0, j = 0, k = 0, noLetraRepetida = 1;
@@ -63,89 +94,24 @@ countFrequency (char palabra[20], elemento *cadena){
     return k;
 }
 
-int piso (int num, int den){ return num / den; }
-
-int 
-techo (int numerador, int denominador){ 
-    if (numerador % denominador == 0)
-        return numerador / denominador;   
-    return piso (numerador, denominador) + 1;
-}
-
-arbol *huffmanHelper (arbol *arboles, int nivel) {
-    arbol *a = createTree ();
-    nivel = techo (nivel, 2);
-    int i = 0, j = 0, f1 = 0, f2 = 0;
-     
-    if (nivel == 1){
-        insertLeft (&a, &arboles[j]);
-        f1 = arboles[j++].e.frecuencia;
-        a->e.frecuencia = f1;     
-        if (arboles[j].e.frecuencia){
-            insertRight (&a, &arboles[j]);
-            f2 = arboles[j++].e.frecuencia;
-            a->e.frecuencia = f1 + f2;
-        }
-        return a;
-    }
-
-    arbol *padres = (arbol *) calloc (sizeof (arbol), nivel);
-    for (i = 0; i < nivel; i++){
-        f1 = 0; f2 = 0; 
-        insertLeft (&a, &arboles[j]);
-        f1 = arboles[j++].e.frecuencia;
-        a->e.frecuencia = f1 + f2;
-        padres[i] = *a;
-        if (!arboles[j].e.frecuencia)
-            break;
-        insertRight (&a, &arboles[j]);
-        f2 = arboles[j++].e.frecuencia;
-        a->e.frecuencia = f1 + f2;
-        padres[i] = *a;
-    }
-
-    return huffmanHelper (padres, nivel);
-}
-
-arbol *huffman (elemento *cadena, int lim) {
-    int nivel = techo (lim, 2);
-    int i = 0, j = 0, f1 = 0, f2 = 0; 
-    arbol *arboles = (arbol *) calloc (sizeof (arbol), nivel);
-    arbol *a = (arbol *) calloc (sizeof (arbol), 1);
-
-    for (i = 0, j = 0; i < nivel; i++){
-        f1 = 0; f2 = 0;
-        insertElementLeft (&a, cadena[j]);
-        f1 = cadena[j++].frecuencia;
-        arboles[i] = *a;  
-        arboles[i].e.frecuencia = f1 + f2;      
-        if (!cadena[j].frecuencia) 
-            break;
-        insertElementRight (&a, cadena[j]);
-        f2 = cadena[j++].frecuencia;
-        arboles[i] = *a;  
-        arboles[i].e.frecuencia = f1 + f2;
-    }
-
-    return huffmanHelper (arboles, nivel);
-}
-
-/* para acceder a los hijos del arbol
-    for (i = 0; i < nivel; i++){
-        printf ("%c %c \n", arboles[i].izq->e.caracter, arboles[i].der->e.caracter);
-    }   */
-
 void 
-test (arbol *tree, elemento *array) {
-    insertElementLeft (&tree, array[0]);
-    insertElementRight (&tree, array[1]);
-    preorder (tree);
+huffman (elemento *c, int n){
+    int i = 0;
+    arbol *arboles = (arbol *) malloc (sizeof (arbol) * n);
+
+    for (i = 1; i <= n - 1; i++){
+        
+        
+
+    }    
+
+
 }
 
 int 
 main (int argc, char *argcv[]) {
-    char palabra[99];
-    elemento *cadena = (elemento *) calloc (sizeof (elemento), 99);
+    char palabra[TAM];
+    elemento *cadena = (elemento *) calloc (sizeof (elemento), TAM);
     int lim = 0;
     arbol *a = createTree ();
 
@@ -155,10 +121,9 @@ main (int argc, char *argcv[]) {
     insertionSort (cadena, lim);
     printData (cadena, lim);
 
-    //test (a, cadena);   
-    a = huffman (cadena, lim);
-    preorder (a);
+    huffman (cadena, lim);
 
+  
     free (cadena);
     return EXIT_SUCCESS;
 }
