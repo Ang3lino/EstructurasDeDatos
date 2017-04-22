@@ -1,5 +1,4 @@
 #include <stdio.h>
-#define lli unsigned long long int
 
 lli 
 fibo (lli n){
