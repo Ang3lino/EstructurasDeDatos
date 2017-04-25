@@ -5,7 +5,7 @@
 
 /* Algunas implementaciones que dan valor agregado a la califiacion son:
 
-	-El usuario puede exportar en determinado momento la lista de palabras de un archivo.
+	-El usuario puede exportar en determinado momento la lista de palabras de un archivo.	OK
 	-Se puede buscar todas las palabras que empiecen con:
 		-Una letra.		OK	funcion: imprimirConsonante ()
 		-Una frase.		AUN NO
@@ -346,6 +346,29 @@ changeDefinition (Lista *t){
 		printf ("La palabra \"%s\" no se encuentra", pBuscada);
 }
 
+void 
+exportList (Lista *t){
+	int i, j;
+	Nodo *ptr = NULL;
+	char nombre[20];
+
+	printf ("Nombre del archivo (.txt): ");
+	strscan (nombre, 9);
+	sprintf (nombre, "%s.txt", nombre);
+
+	FILE *fp = fopen (nombre, "w");
+
+	for (i = 0; i < 26; i++){
+		ptr = t[i].cabeza;
+		while (ptr){
+			fprintf (fp, "%s: %s \n", ptr->nombre, ptr->definicion);
+			ptr = ptr->siguiente;
+		}
+	}
+	
+	fclose (fp);
+}
+
 /*	Funcion que muestra las opciones disponibles para el programa. 	*/
 void
 menu (Lista *dicc){
@@ -360,7 +383,9 @@ menu (Lista *dicc){
 		puts ("5.- Salir");
 		puts ("6.- Imprimir palabras disponibles ");
 		puts ("7.- Imprimir palabras disponibles con base a su primer letra");
-		puts ("8.- Mostrar la definicion dada una palabra");
+		puts ("8.- Mostrar la definicion de una palabra ");
+		puts ("9.- Exportar lista a un archivo de texto ");
+
 
 		printf ("\nOpcion: ");
 		fgets (opcion, 3, stdin);
@@ -374,11 +399,11 @@ menu (Lista *dicc){
 			case '6': printAvailable(dicc); break;
 			case '7': imprimirConsonante (dicc); break;
 			case '8': printSpecific (dicc); break;
+			case '9': exportList (dicc); break;
 			default: puts ("Opcion no valida"); break;
 		}
 	}
 }
-
 /*	Raiz del programa	*/
 int
 main (void){
