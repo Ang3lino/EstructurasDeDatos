@@ -369,6 +369,15 @@ exportList (Lista *t){
 	fclose (fp);
 }
 
+void 
+exportDefinition (Lista *t){
+
+
+
+	
+}
+
+
 /*	Funcion que muestra las opciones disponibles para el programa. 	*/
 void
 menu (Lista *dicc){
@@ -385,6 +394,7 @@ menu (Lista *dicc){
 		puts ("7.- Imprimir palabras disponibles con base a su primer letra");
 		puts ("8.- Mostrar la definicion de una palabra ");
 		puts ("9.- Exportar lista a un archivo de texto ");
+		puts ("10.- Exportar una palabra con su definicion a un archivo ")
 
 
 		printf ("\nOpcion: ");
@@ -404,6 +414,9 @@ menu (Lista *dicc){
 		}
 	}
 }
+
+
+
 /*	Raiz del programa	*/
 int
 main (void){
