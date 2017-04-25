@@ -3,15 +3,14 @@
    Autor (es):  Angel Lopez Manriquez 
    compilacion: gcc main.c lisdob.c	*/
 
-/* Algunas implementaciones que dan valor agregado a la califiacion son:
+/* 	Algunas implementaciones que dan valor agregado a la califiacion son:
+		-El usuario puede exportar en determinado momento la lista de palabras de un archivo.	OK	funcion exportList
+    Se puede buscar todas las palabras que empiecen con:
+		-Una letra.		OK	funcion: imprimirConsonante 
+		-Una frase.		OK	funcion: searchSentece
+		-Que contengan una subcadena.	OK	funcion: searchSubstring
+		-Exportar una definicion de un archivo.	OK funcion: exportDefinition
 
-	-El usuario puede exportar en determinado momento la lista de palabras de un archivo.	OK
-	-Se puede buscar todas las palabras que empiecen con:
-		-Una letra.		OK	funcion: imprimirConsonante ()
-		-Una frase.		AUN NO
-		-Que contengan una subcadena.	AUN NO
-	-Exportar una definicion de un archivo.	OK 
-	
 	Puesto que vamos a trabajar con archivos, es importante que el archivo tenga el formato
 	
 	Palabra1: definicion1 \n
@@ -31,6 +30,9 @@
 
 #define TRUE 1
 #define FALSE 0
+#define TAMNOM 50
+#define TAMDEF 250
+#define TAMPAL 26
 
 typedef char boolean;
 
@@ -65,6 +67,26 @@ strscan (char *s, int lim){
 	}
 
 	*(s + i) = '\0';
+}
+
+/*	Funcion que muestra las colisiones en la tabla hash.	*/
+void 
+showCollisions (Lista *t){
+	int i, j;
+	char k = 'A';
+	Nodo *ptr;
+
+	for (i = 0; i < TAMPAL; i++){
+		ptr = t[i].cabeza;
+		j = 0;
+		while (ptr){
+			j++;
+			ptr = ptr->siguiente;
+		}
+		printf ("\nSe encontraron %d colisiones en %c.", j, k);
+		k++;
+	}
+	printf ("\n");
 }
 
 /*	Inserta la palabra, pasando la tabla i-esima, ayudandonos de la funcion hash
@@ -120,6 +142,7 @@ cargar (Lista *t){
 		free (def);
 	}
 
+	showCollisions (t);
 	fclose (fp);
 }
 
@@ -201,7 +224,6 @@ printSpecific (Lista *t){
 /*	Funcion que imprime todas las palabras disponibles con la consonante propuesta.	*/
 void
 imprimirConsonante (Lista *t){
-
 	char ans[3];
 	int i = 0;
 
@@ -353,7 +375,7 @@ exportList (Lista *t){
 	Nodo *ptr = NULL;
 	char nombre[20];
 
-	printf ("Nombre del archivo (.txt): ");
+	printf ("\nNombre del archivo (.txt): ");
 	strscan (nombre, 9);
 	sprintf (nombre, "%s.txt", nombre);
 
@@ -401,11 +423,58 @@ exportDefinition (Lista *t){
 		printf ("la palabra %s no se encuentra en el diccionario. ", nombre);
 }
 
+/*	Funcion que busca todas las palabras disponibles, con su respectiva definicion
+    que contengan una subcadena dada (si existe).	*/
 void 
 searchSubstring (Lista *t){
+	char substr[TAMNOM];
+	int i, n, N, hayUna = 0;
+	Nodo *ptr = NULL;
 
+	printf ("\nEscriba la subcadena: ");
+	strscan (substr, TAMNOM);
+	n = strlen (substr);
 
+	/*	Con un bucle recorremos las 26 listas que como maximo puede tener la tabla.	*/
+	for (i = 0; i < 26; i++){
+		ptr = t[i].cabeza;
+		while (ptr){
+			N = strlen (ptr->nombre);
+			if (n <= N)
+				/*	La funcion char *strstr (char *A, char *B) retorna true si la subcadena B esta en A	*/ 
+				if (strstr (ptr->nombre, substr)){
+					printf ("%s: %s \n", ptr->nombre, ptr->definicion);
+					hayUna = 1;
+				}
+			ptr = ptr->siguiente;
+		}
+	}	
+	if (!hayUna)
+		printf ("No se encuentra ninguna palabra con la subcadena %s. ", substr);			
+}
 
+/*	Funcion que, pregunta alguna frase y muestra las palabras disponibles en el diccionario 
+	tales que su definicion contengan a la frase.	*/ 
+void 
+searchSentence (Lista *t){
+	char frase[TAMNOM];
+	Nodo *ptr;
+	int i, j, noHay = 1;
+
+	printf ("\nFrase: ");
+	strscan (frase, TAMNOM);
+	for (i = 0; i < 26; i++){
+		ptr = t[i].cabeza;
+		while (ptr){
+			if (strstr (ptr->definicion, frase)){
+				printf ("%s: %s \n", ptr->nombre, ptr->definicion);
+				noHay = 0;
+			}	
+			ptr = ptr->siguiente;
+		}
+	}
+	if (noHay)
+		printf ("La frase \" %s \" no se encuentra en el diccionario.", frase);
 }
 
 /*	Funcion que muestra las opciones disponibles para el programa. 	*/
@@ -427,6 +496,7 @@ menu (Lista *dicc){
 		puts ("9.- Exportar lista a un archivo de texto ");
 		puts ("10.- Exportar una palabra con su definicion a un archivo ");
 		puts ("11.- Buscar por subcadena ");
+		puts ("12.- Buscar por una frase");
 
 		printf ("\nOpcion: ");
 		fgets (aux, 9, stdin);
@@ -443,21 +513,20 @@ menu (Lista *dicc){
 			case 8: printSpecific (dicc); break;
 			case 9: exportList (dicc); break;
 			case 10: exportDefinition (dicc); break;
-			case 11: puts ("Proximamente :v"); break;
+			case 11: searchSubstring (dicc); break;
+			case 12: searchSentence (dicc); break;
 			default: puts ("Opcion no valida"); break;
 		}
 	}
 }
 
 /*	Raiz del programa	*/
-int
-main (void){
+int main (int argc, char *argv[]){
 	Lista *dicc = (Lista *) calloc (sizeof (Lista), 26);
 
 	menu (dicc);
 
 	formatearLista (dicc);
-	return 0;
+	return EXIT_SUCCESS;
 }
-
 
