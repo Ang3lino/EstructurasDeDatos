@@ -10,6 +10,8 @@ se cerrará el supermercado.
 
 VERSIÓN: 1.0
 
+AUTORES: Equipo Quick-Coding
+
 FECHA: 12/04/2016
 
 Compilación: gcc programa1.c Cola(Din|Est|EstCirc).c presentacion(Win|Lin).c -o programa1.exe

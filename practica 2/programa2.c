@@ -1,4 +1,15 @@
-/*   Programa que emula la gestion de programas de un sistema operativo.  */
+/*
+DESCRIPCIÓN:
+Programa que emula la gestion de programas de un sistema operativo.
+
+VERSIÓN: 2.0
+
+FECHA: 14/03/2017
+
+AUTORES: Equipo Quick-Coding
+
+COMPILACIÓN: gcc programa2.c Cola(Din|Est|EstCirc).c presentacion(Win|Lin).c -o programa2.exe
+*/
 
 //#include <windows.h>
 #include <string.h>

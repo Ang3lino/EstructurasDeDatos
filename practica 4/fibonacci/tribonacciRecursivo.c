@@ -1,4 +1,4 @@
-/*
+﻿/*
 PROGRAMA QUE CALCULA EL N-ÉSIMO TÉRMINO DE LA SUCESIÓN DE TRIBONACCI
 Sea n un entero positivo. Definimos a la sucesión de tribonacci como:
  t(n) = 
@@ -9,8 +9,7 @@ Sea n un entero positivo. Definimos a la sucesión de tribonacci como:
 Mediante la definición anterior, implementaremos el cálculo de t(n)
 usando recursividad.
 
-AUTORES:
- Lopez Manriquez Angel
+AUTORES: Equipo Quick-Coding
 
 FECHA: 12/04/2016
 

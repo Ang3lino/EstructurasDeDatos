@@ -1,4 +1,4 @@
-/*
+﻿/*
 PROGRAMA QUE CALCULA EL N-ÉSIMO TÉRMINO DE LA SUCESIÓN DE FIBONACCI
 Sea n un entero positivo. Definimos a la sucesión de fibonacci como:
  f(n) = 
@@ -8,8 +8,7 @@ Sea n un entero positivo. Definimos a la sucesión de fibonacci como:
 Mediante la definición anterior, implementaremos el cálculo de f(n)
 usando recursividad.
 
-AUTORES:
- Lopez Manriquez Angel
+AUTORES: Equipo Quick-Coding
 
 FECHA: 12/04/2016
 

@@ -15,8 +15,7 @@
 
 	FECHA: 12/04/2017
 
-	AUTORES:
-	Ontiveros Salazar Alan Enrique
+	AUTORES: Equipo Quick-Coding
 
 	Compilación: gcc programa3.c Cola(Din|Est|EstCirc).c presentacion(Win|Lin).c -o programa3.exe
 */

@@ -1,4 +1,4 @@
-/*
+﻿/*
 CONVERSIÓN DE EXPRESIONES INFIJAS A POSTFIJAS Y EVALUACIONES:
 Dada una expresion infija, este programa validará
 si está escrita correctamente, la convertirá en su
@@ -9,10 +9,7 @@ VERSION: 1.5
 
 Fecha: 1 de marzo de 2017
 
-AUTORES:
-1. Lopez Manriquez Angel
-2. Ontiveros Salazar Alan Enrique
-3. Varela Aguilar Luis Pavel
+AUTORES: Equipo Quick-Coding
 
 Compilación usando pila dinámica: gcc InfijaAPostFija.c PilaDin.c -o InfijaAPostFija.exe
 Compilación usando pila estática: gcc InfijaAPostFija.c PilaEst.c -o InfijaAPostFija.exe

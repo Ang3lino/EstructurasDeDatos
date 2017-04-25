@@ -9,8 +9,7 @@ prueba con todas las configuraciones posibles para hallar las correctas.
 
 VERSION: 1.5
 
-AUTOR:
-Ontiveros Salazar Alan Enrique
+AUTORES: Equipo Quick-Coding
 
 Compilación: gcc n_reinas.c -o n_reinas.exe
 */

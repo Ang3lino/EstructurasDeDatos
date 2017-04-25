@@ -12,8 +12,7 @@ VERSION: 1.0
 
 FECHA: 6/04/2017
 
-AUTORES:
-Ontiveros Salazar Alan Enrique
+AUTORES: Equipo Quick-Coding
 
 INSTRUCCIONES DE COMPLIACION:
 gcc hanoi.c presentacion[Lin|Win].c -o hanoi.exe
