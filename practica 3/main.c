@@ -10,7 +10,7 @@
 		-Una letra.		OK	funcion: imprimirConsonante ()
 		-Una frase.		AUN NO
 		-Que contengan una subcadena.	AUN NO
-	-Exportar una definicion de un archivo.	AUN NO		
+	-Exportar una definicion de un archivo.	OK 
 	
 	Puesto que vamos a trabajar con archivos, es importante que el archivo tenga el formato
 	
@@ -29,8 +29,8 @@
 #include <ctype.h>
 #include "lisdob.h"
 
-#define TRUE 1;
-#define FALSE 0;
+#define TRUE 1
+#define FALSE 0
 
 typedef char boolean;
 
@@ -255,7 +255,8 @@ agregarPalabra (Lista *l){
 }
 
 /*	Funcion que recibe la lista * y un string s, en la funcion solo nos importa la primera letra 
-	del string.	*/
+	del string. Como extra cambia el caracter s[0] a mayuscula, en case de que sea alfanumerico
+	este caracter, obviamente.	*/
 boolean
 existWord (Lista *t, char s[]){
 	int indice = 0;
@@ -369,19 +370,49 @@ exportList (Lista *t){
 	fclose (fp);
 }
 
+/*	Funcion que exporta una palabra con su definicion a un archivo de texto.
+ *	Problema: Se guarda basura al final del archivo creado.		*/
 void 
 exportDefinition (Lista *t){
+	char nombre[50];
 
+	printf ("\nNombre de la palabra a exportar: ");
+	strscan (nombre, 50);
 
+	if (existWord (t, nombre)){
+		char nombreArchivo[20];
+		Nodo *ptr = t[hash (nombre)].cabeza;
 
-	
+		printf ("Nombre del archivo (.txt): ");
+		strscan (nombreArchivo, 20);
+		sprintf (nombreArchivo, "%s.txt", nombreArchivo);
+		FILE *fp = fopen (nombreArchivo, "w");
+		while (ptr){
+			if (!strncmp (nombre, ptr->nombre, 50)){
+				fprintf (fp, "%s: %s", ptr->nombre, ptr->definicion);
+				puts ("Palabra exportada exitosamente :D. ");
+				break;
+			}
+			ptr = ptr->siguiente;
+		}
+		free (ptr);
+		fclose (fp);
+	} else 
+		printf ("la palabra %s no se encuentra en el diccionario. ", nombre);
 }
 
+void 
+searchSubstring (Lista *t){
+
+
+
+}
 
 /*	Funcion que muestra las opciones disponibles para el programa. 	*/
 void
 menu (Lista *dicc){
-	char opcion[3];
+	char aux[9];
+	int opcion;
 
 	while (1){
 		puts ("\nDiccionario Hash");
@@ -394,28 +425,29 @@ menu (Lista *dicc){
 		puts ("7.- Imprimir palabras disponibles con base a su primer letra");
 		puts ("8.- Mostrar la definicion de una palabra ");
 		puts ("9.- Exportar lista a un archivo de texto ");
-		puts ("10.- Exportar una palabra con su definicion a un archivo ")
-
+		puts ("10.- Exportar una palabra con su definicion a un archivo ");
+		puts ("11.- Buscar por subcadena ");
 
 		printf ("\nOpcion: ");
-		fgets (opcion, 3, stdin);
+		fgets (aux, 9, stdin);
+		sscanf (aux, "%d", &opcion);
 
-		switch (opcion[0]){
-			case '1': cargar (dicc); break;
-			case '2': agregarPalabra (dicc); break;
-			case '3': changeDefinition (dicc); break;
-			case '4': deleteWord (dicc); break;
-			case '5': puts ("Hasta luego \n"); return; break;
-			case '6': printAvailable(dicc); break;
-			case '7': imprimirConsonante (dicc); break;
-			case '8': printSpecific (dicc); break;
-			case '9': exportList (dicc); break;
+		switch (opcion){
+			case 1: cargar (dicc); break;
+			case 2: agregarPalabra (dicc); break;
+			case 3: changeDefinition (dicc); break;
+			case 4: deleteWord (dicc); break;
+			case 5: puts ("Hasta luego \n"); return; break;
+			case 6: printAvailable(dicc); break;
+			case 7: imprimirConsonante (dicc); break;
+			case 8: printSpecific (dicc); break;
+			case 9: exportList (dicc); break;
+			case 10: exportDefinition (dicc); break;
+			case 11: puts ("Proximamente :v"); break;
 			default: puts ("Opcion no valida"); break;
 		}
 	}
 }
-
-
 
 /*	Raiz del programa	*/
 int
@@ -427,3 +459,5 @@ main (void){
 	formatearLista (dicc);
 	return 0;
 }
+
+
