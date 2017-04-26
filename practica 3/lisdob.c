@@ -1,12 +1,11 @@
 /*	Implementacion de las listas dinamicas doblemente enlazadas,
-	inspirado en Makigas, por Angel Lopez Manriquez.
+	basado en los videos de Makigas, por Angel Lopez Manriquez.
 	*/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "lisdob.h"
-
 
 Nodo *
 crearNodo (char nombre[], char definicion[]){
@@ -15,8 +14,8 @@ crearNodo (char nombre[], char definicion[]){
 		perror ("No hay espacion suficiente \n");
 		exit (1);
 	}
-	strncpy (nuevo->nombre, nombre, 50);
-	strncpy (nuevo->definicion, definicion, 250);
+	strncpy (nuevo->nombre, nombre, TAMNOM);
+	strncpy (nuevo->definicion, definicion, TAMDEF);
 	nuevo->siguiente = nuevo->anterior = NULL;
 
 	return nuevo;
@@ -87,11 +86,7 @@ eliminarPrincipio (Lista *l){
 
 void
 formatearLista (Lista *l){
-
-	if (l->cabeza){
-		while (l->cabeza)
-			eliminarPrincipio (l);
-
-	}
+	while (l->cabeza)	
+		eliminarPrincipio (l);
 	free (l);
 }

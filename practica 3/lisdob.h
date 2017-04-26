@@ -5,9 +5,13 @@
 #ifndef _LISDOB_H_
 #define _LISDOB_H_
 
+#define TAMNOM 50
+#define TAMDEF 1000
+#define TAMPAL 26
+
 typedef struct nodo{
-	char nombre[50];
-	char definicion[250];
+	char nombre[TAMNOM];
+	char definicion[TAMDEF];
 	struct nodo *siguiente;
 	struct nodo *anterior;
 } Nodo;
