@@ -16,7 +16,7 @@ crearNodo (char nombre[], char definicion[]){
 		exit (1);
 	}
 	strncpy (nuevo->nombre, nombre, 50);
-	strncpy (nuevo->definicion, definicion, 100);
+	strncpy (nuevo->definicion, definicion, 250);
 	nuevo->siguiente = nuevo->anterior = NULL;
 
 	return nuevo;
