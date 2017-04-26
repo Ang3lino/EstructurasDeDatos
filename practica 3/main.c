@@ -6,7 +6,7 @@
 /* 	Algunas implementaciones que dan valor agregado a la califiacion son:
 		-El usuario puede exportar en determinado momento la lista de palabras de un archivo.	OK	funcion exportList
     Se puede buscar todas las palabras que empiecen con:
-		-Una letra.		OK	funcion: imprimirConsonante 
+		-Una letra.		OK	funcion: searchLetter 
 		-Una frase.		OK	funcion: searchSentece
 		-Que contengan una subcadena.	OK	funcion: searchSubstring
 		-Exportar una definicion de un archivo.	OK funcion: exportDefinition
@@ -20,7 +20,7 @@
 	.
 	PalabraN: defincionN \n
 	
-	para que la funcion cargar () funcione apropiadamente.	*/
+	para que la funcion loadFile () funcione apropiadamente.	*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -66,10 +66,12 @@ strscan (char *s, int lim){
 	*(s + i) = '\0';
 }
 
-/*	Funcion que muestra las colisiones en la tabla hash.	*/
+/*	Funcion que muestra las colisiones en la tabla hash.	
+	la variable l sirve para dar un salto de linea cada 2 veces que se muestren las
+	colisiones de una palabra.	*/
 void 
 showCollisions (Lista *t){
-	int i, j;
+	int i, j, l = 0;
 	char k = 'A';
 	Nodo *ptr;
 
@@ -80,15 +82,22 @@ showCollisions (Lista *t){
 			j++;
 			ptr = ptr->siguiente;
 		}
-		printf ("\nSe encontraron %d colisiones en %c.", j, k);
+		printf ("Se encontraron %d colisiones en %c.", j, k);
 		k++;
+		l++;
+		if (l % 2 == 0){
+			printf ("\n");
+			l = 0;
+		} else
+			printf ("\t");
 	}
+
 	printf ("\n");
 }
 
 /*	Funcion que carga el archivo y va llenando la tabla hash con base al mismo.	*/
 void
-cargar (Lista *t){
+loadFile (Lista *t){
 	FILE *fp = fopen ("dicc.txt", "r");
 	int c = 'n'; /* A pesar de que voy a guardar caracteres en la var c, uso un int para el
 					valor EOF (EOF = -1 conforme a la tabla ASCII). Deberia de funcionar
@@ -149,20 +158,29 @@ printAvailable (Lista *l){
 		}
 
 	if (b){
-		int i = 0, j = 0;
+		int i = 0, j = 0, tab = 0;
+		char c = 'A';
 		Nodo *ptr = NULL;
 
 		for (i = 0; i < TAMPAL; i++){
 			ptr = l[i].cabeza;
 
+			printf ("\t ========== %c ========== \n\n", c);
 			/*	Imprimimos la palabra, si existe almenos una palabra 
 				con un caracter en la fila i, se entra al bucle, si no
 				no entra, asi nos aseguramos de evadir el error SIGSEGV.	*/ 
+			tab = 0;
 			while (ptr){
-				printf ("%s ", ptr->nombre);
+				printf ("%s \t", ptr->nombre);
 				ptr = ptr->siguiente;
+				tab++;
+				if (tab % 4 == 0){
+					printf ("\n");
+					tab = 0;
+				}
 			}
-			printf ("\n");
+			printf ("\n \n");
+			c++;
 		}
 	}
 	else{
@@ -212,7 +230,7 @@ printSpecific (Lista *t){
 
 /*	Funcion que imprime todas las palabras disponibles con la consonante propuesta.	*/
 void
-imprimirConsonante (Lista *t){
+searchLetter (Lista *t){
 	char ans[3];
 	int i = 0;
 
@@ -241,7 +259,7 @@ imprimirConsonante (Lista *t){
 
 /*	Agregamos una palabra, tanto a el archivo como a la lista.	*/
 void
-agregarPalabra (Lista *l){
+addWord (Lista *l){
 	char *nombre = (char *) calloc (TAMNOM, sizeof (char));
 	char *definicion = (char *) calloc (TAMDEF, sizeof (char));
 	char *parrafo = (char *) calloc (300, sizeof (char));
@@ -302,7 +320,7 @@ deleteWord (Lista *t){
 	
 	/*	Comprobamos que exista la palabra y, si existe, procedemos borramos y 
 		escribimos el archivo, saltandonos la palabra no deseada.	*/
-	cargar (t);
+	loadFile (t);
 	if (existWord (t, pbuscada)){
 		FILE *fp = fopen ("dicc.txt", "w");
 		Nodo *ptr = NULL;
@@ -473,44 +491,53 @@ menu (Lista *dicc){
 	int opcion;
 
 	while (1){
-		puts ("\nDiccionario Hash");
-		puts ("1.-  Cargar archivo y sus definiciones ");
+		puts ("\nDiccionario Hash \v");
+		puts ("1.-  cargar archivo y sus definiciones ");
 		puts ("2.-  Agregar una palabra y su definicion");
 		puts ("3.-  Modificar una palabra");
 		puts ("4.-  Eliminar una palabra");
 		puts ("5.-  Salir");
-		puts ("6.-  Imprimir palabras disponibles ");
-		puts ("7.-  Imprimir palabras disponibles con base a su primer letra");
-		puts ("8.-  Mostrar la definicion de una palabra ");
+
+		puts ("\nOpciones para puntos extra");
+		
+		puts ("\nOpciones de busqueda ");
+		puts ("6.-  Buscar por subcadena ");
+		puts ("7.-  Buscar palabras por su primer letra ");
+		puts ("8.-  Buscar por una frase ");
+	
+		puts ("\nOpciones de exportacion ");
 		puts ("9.-  Exportar lista a un archivo de texto ");
 		puts ("10.- Exportar una palabra con su definicion a un archivo ");
-		puts ("11.- Buscar por subcadena ");
-		puts ("12.- Buscar por una frase");
+
+		puts ("\nOpciones extra ");
+		puts ("11.- Imprimir palabras disponibles ");
+		puts ("12.- Mostrar la definicion de una palabra");
 
 		printf ("\nOpcion: ");
 		fgets (aux, 9, stdin);
 		sscanf (aux, "%d", &opcion);
 
 		switch (opcion){
-			case 1: cargar (dicc); break;
-			case 2: agregarPalabra (dicc); break;
+			case 1: loadFile (dicc); break;
+			case 2: addWord (dicc); break;
 			case 3: changeDefinition (dicc); break;
 			case 4: deleteWord (dicc); break;
 			case 5: puts ("Hasta luego \n"); return; break;
-			case 6: printAvailable(dicc); break;
-			case 7: imprimirConsonante (dicc); break;
-			case 8: printSpecific (dicc); break;
+			case 6: searchSubstring (dicc); break;
+			case 7: searchLetter (dicc); break;
+			case 8: searchSentence (dicc);  break;
 			case 9: exportList (dicc); break;
 			case 10: exportDefinition (dicc); break;
-			case 11: searchSubstring (dicc); break;
-			case 12: searchSentence (dicc); break;
+			case 11: printAvailable (dicc); break;
+			case 12: printSpecific (dicc); break;
 			default: puts ("Opcion no valida"); break;
 		}
 	}
 }
 
 /*	Raiz del programa	*/
-int main (int argc, char *argv[]){
+int 
+main (int argc, char *argv[]){
 	Lista *dicc = (Lista *) calloc (sizeof (Lista), TAMPAL);
 
 	menu (dicc);
