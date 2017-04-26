@@ -98,14 +98,18 @@ showCollisions (Lista *t){
 /*	Funcion que carga el archivo y va llenando la tabla hash con base al mismo.	*/
 void
 loadFile (Lista *t){
-	FILE *fp = fopen ("dicc.txt", "r");
-	int c = 'n'; /* A pesar de que voy a guardar caracteres en la var c, uso un int para el
-					valor EOF (EOF = -1 conforme a la tabla ASCII). Deberia de funcionar
-					con char pero por alguna razon no (al menos en la computadora en donde
-					se corrio el programa). */
+	char nombreArchivo[20];
+	int c = 'n'; 
 	char *nombre;
 	char *def;
 	int i = 0;
+
+	/*	IMPORTANTISIMO que el archivo tenga el formato descrito hasta arriba.	*/
+	printf ("Nombre del archivo (.txt): ");
+	strscan (nombreArchivo, 20);
+	sprintf (nombreArchivo, "%s.txt", nombreArchivo);
+	FILE *fp = fopen (nombreArchivo, "r");
+	
 
 	/*	Recorremos el archivo con un bucle while, mientras que c no sea EOF 
 		(es decir, no lleguemos al final del archivo) vamos recorriendo el 
