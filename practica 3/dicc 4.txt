@@ -73,7 +73,7 @@ Agayudo: Valiente.
 Agrampar: Atrapar, asir.
 Agrandado: Ostentoso.
 Aguantiñar: Afrontar, soportar.
-Águila / Aguilero: Indigente.
+Aguila / Aguilero: Indigente.
 Ainenti: Piedritas (Juego de niños).
 Al bardo: Salir a robar sin un plan determinado:
 Al pucho: De inmediato.
@@ -1700,12 +1700,6 @@ Negraje: Cáfila, mersa.
 Neura: Neurastenia.
 Nísperos: Pies
 Nuria: Voz infrecuente de significado incierto
-Ñaupa: Antiguo,del tiempo del ñaupa.
-Ñapar: Atrapar, agarrar.
-Ñata, la: Muerte.
-Ñata: Nariz.
-Ñato: Tipo innominado.
-Ñudo, al: Inútilmente.
 Oblar: Pegar.
 Ojete: Suerte.
 Ojetudo: Afortunado.

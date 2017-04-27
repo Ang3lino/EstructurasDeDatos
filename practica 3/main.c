@@ -31,6 +31,10 @@
 #define TRUE 1
 #define FALSE 0
 
+#define TAMHASH 26
+
+char nombreArchivo[50];
+
 typedef char boolean;
 
 /*	funcion hash en la que, como argumento recibiremos un puntero char, solo es 
@@ -75,7 +79,7 @@ showCollisions (Lista *t){
 	char k = 'A';
 	Nodo *ptr;
 
-	for (i = 0; i < TAMPAL; i++){
+	for (i = 0; i < TAMHASH; i++){
 		ptr = t[i].cabeza;
 		j = 0;
 		while (ptr){
@@ -98,15 +102,16 @@ showCollisions (Lista *t){
 /*	Funcion que carga el archivo y va llenando la tabla hash con base al mismo.	*/
 void
 loadFile (Lista *t){
-	char nombreArchivo[20];
 	int c = 'n'; 
 	char *nombre;
 	char *def;
 	int i = 0;
 
+	formatearLista (t);
+
 	/*	IMPORTANTISIMO que el archivo tenga el formato descrito hasta arriba.	*/
 	printf ("Nombre del archivo (.txt): ");
-	strscan (nombreArchivo, 20);
+	strscan (nombreArchivo, 40);
 	sprintf (nombreArchivo, "%s.txt", nombreArchivo);
 	FILE *fp = fopen (nombreArchivo, "r");
 	
@@ -115,36 +120,35 @@ loadFile (Lista *t){
 		(es decir, no lleguemos al final del archivo) vamos recorriendo el 
 		archivo, caracter a caracter y vamos guardando en un string su nombre 
 		y definicion por separado.	*/
-	while ((c = fgetc (fp)) != EOF){
+	while (!feof (fp)){
 		nombre = (char *) calloc (TAMNOM, sizeof (char));
 		def = (char *) calloc (TAMDEF, sizeof (char));
 
 		i = 0;
-		nombre[i++] = c;
 
 		/*	Puesto que el archivo tiene el formato:
 			Palabra: definicio. \n
 			se sabe que la palabra abarca desde su primera letra hasta los dos puntos.	*/ 
-		while ((c = fgetc (fp)) != ':' && i < TAMNOM)
+		while (i < TAMNOM && (c = fgetc (fp)) != ':' && c != '\n' && c != EOF)
 			nombre[i++] = c;
 
-		c = fgetc (fp);
+		if(i > 0){
+			nombre[i++] = '\0';
 
-		/*	De manera similar, la definicion abarca desde su primera letra hasta el salto
-			de linea.	*/
-		i = 0;
-		while ((c = fgetc (fp)) != '\n' && i < TAMDEF)
-			def[i++] = c;
+			c = fgetc (fp);
 
-		/*	Insertamos la palabra a la tabla hash.	*/
-		insertarUltimo (&t[hash (nombre)], nombre, def);
-		/*	Borramos los datos del string para que no se inserten strings con palabras de mas
-			(basura).	*/
-		free (nombre);
-		free (def);
+			/*	De manera similar, la definicion abarca desde su primera letra hasta el salto
+				de linea.	*/
+			i = 0;
+			while (i < TAMDEF && (c = fgetc (fp)) != '\n' && c != EOF)
+				def[i++] = c;
+
+			def[i++] = '\0';
+
+			/*	Insertamos la palabra a la tabla hash.	*/
+			insertarUltimo (&t[hash (nombre)], nombre, def);
+		}
 	}
-
-	showCollisions (t);
 	fclose (fp);
 }
 
@@ -155,7 +159,7 @@ printAvailable (Lista *l){
 	int i = 0;
 
 	/*	Nos aseguramos que exista una palabra, como minimo.	*/
-	for (i = 0; i < TAMPAL; i++)
+	for (i = 0; i < TAMHASH; i++)
 		if (l[i].cabeza){
 			b = 1;
 			break;
@@ -166,7 +170,7 @@ printAvailable (Lista *l){
 		char c = 'A';
 		Nodo *ptr = NULL;
 
-		for (i = 0; i < TAMPAL; i++){
+		for (i = 0; i < TAMHASH; i++){
 			ptr = l[i].cabeza;
 
 			printf ("\t ========== %c ========== \n\n", c);
@@ -266,8 +270,8 @@ void
 addWord (Lista *l){
 	char *nombre = (char *) calloc (TAMNOM, sizeof (char));
 	char *definicion = (char *) calloc (TAMDEF, sizeof (char));
-	char *parrafo = (char *) calloc (300, sizeof (char));
-	FILE *fp = fopen ("dicc.txt", "a+");
+	char *parrafo = (char *) calloc (TAMNOM + TAMDEF + 10, sizeof (char));
+	FILE *fp = fopen (nombreArchivo, "a+");
 
 	printf ("Palabra nueva: ");
 	strscan (nombre, TAMNOM);
@@ -278,7 +282,7 @@ addWord (Lista *l){
 	sprintf (parrafo,"%s: %s", nombre, definicion);
 	/*	Escribimos nuestra palabra al final de nuestro archivo, si daniar la palabra 
 		anterior.	*/
-	fprintf (fp, "%s \n", parrafo);
+	fprintf (fp, "%s\n", parrafo);
 	insertarUltimo (&l[hash (nombre)], nombre, definicion);
 
 	free (nombre);
@@ -324,12 +328,11 @@ deleteWord (Lista *t){
 	
 	/*	Comprobamos que exista la palabra y, si existe, procedemos borramos y 
 		escribimos el archivo, saltandonos la palabra no deseada.	*/
-	loadFile (t);
 	if (existWord (t, pbuscada)){
-		FILE *fp = fopen ("dicc.txt", "w");
+		FILE *fp = fopen (nombreArchivo, "w");
 		Nodo *ptr = NULL;
 		int i = 0;
-		for (i = 0; i < TAMPAL; i++){
+		for (i = 0; i < TAMHASH; i++){
 			ptr = t[i].cabeza;
 			while (ptr){
 				if (strncmp (ptr->nombre, pbuscada, TAMNOM))
@@ -354,7 +357,7 @@ changeDefinition (Lista *t){
 
 	/*	Comprobamos si existe la palabra	*/
 	if (existWord (t, pBuscada)){
-		FILE *fp = fopen ("dicc.txt", "w");
+		FILE *fp = fopen (nombreArchivo, "w");
 		Nodo *ptr = NULL;
 		/*	Obtenemos la nueva definicion.	*/
 		printf ("Nueva definicion: ");
@@ -363,13 +366,15 @@ changeDefinition (Lista *t){
 		/*	Recorremos las 26 palabras y reescribimos todo el archivo, cuando nos 
 			encontremos con la palabra a cambiar, escribimos la nueva palabra y nos
 			saltamos la sobreescritura de la palabra anterior, asi como su definicion.*/
-		for (i = 0; i < TAMPAL; i++){
+		for (i = 0; i < TAMHASH; i++){
 			ptr = t[i].cabeza;
 			while (ptr){
-				if (!strncmp (pBuscada, ptr->nombre, TAMNOM))
-					fprintf (fp, "%s: %s \n", pBuscada, nuevaDef);
+				if (!strncmp (pBuscada, ptr->nombre, TAMNOM)){
+					sprintf(ptr->definicion, "%s", nuevaDef);
+					fprintf (fp, "%s: %s\n", pBuscada, nuevaDef);
+				}
 				else
-					fprintf (fp, "%s: %s \n", ptr->nombre, ptr->definicion);
+					fprintf (fp, "%s: %s\n", ptr->nombre, ptr->definicion);
 				ptr = ptr->siguiente;
 			}
 		}
@@ -384,18 +389,18 @@ void
 exportList (Lista *t){
 	int i, j;
 	Nodo *ptr = NULL;
-	char nombre[20];
+	char nombre[50];
 
 	printf ("\nNombre del archivo (.txt): ");
-	strscan (nombre, 9);
+	strscan (nombre, 40);
 	sprintf (nombre, "%s.txt", nombre);
 
 	FILE *fp = fopen (nombre, "w");
 
-	for (i = 0; i < TAMPAL; i++){
+	for (i = 0; i < TAMHASH; i++){
 		ptr = t[i].cabeza;
 		while (ptr){
-			fprintf (fp, "%s: %s \n", ptr->nombre, ptr->definicion);
+			fprintf (fp, "%s: %s\n", ptr->nombre, ptr->definicion);
 			ptr = ptr->siguiente;
 		}
 	}
@@ -413,13 +418,13 @@ exportDefinition (Lista *t){
 	strscan (nombre, TAMNOM);
 
 	if (existWord (t, nombre)){
-		char nombreArchivo[20];
+		char nombreArchivoNuevo[50];
 		Nodo *ptr = t[hash (nombre)].cabeza;
 
 		printf ("Nombre del archivo (.txt): ");
-		strscan (nombreArchivo, 20);
-		sprintf (nombreArchivo, "%s.txt", nombreArchivo);
-		FILE *fp = fopen (nombreArchivo, "w");
+		strscan (nombreArchivoNuevo, 40);
+		sprintf (nombreArchivoNuevo, "%s.txt", nombreArchivoNuevo);
+		FILE *fp = fopen (nombreArchivoNuevo, "w");
 		while (ptr){
 			if (!strncmp (nombre, ptr->nombre, TAMNOM)){
 				fprintf (fp, "%s: %s", ptr->nombre, ptr->definicion);
@@ -428,7 +433,6 @@ exportDefinition (Lista *t){
 			}
 			ptr = ptr->siguiente;
 		}
-		free (ptr);
 		fclose (fp);
 	} else 
 		printf ("la palabra %s no se encuentra en el diccionario. ", nombre);
@@ -447,7 +451,7 @@ searchSubstring (Lista *t){
 	n = strlen (substr);
 
 	/*	Con un bucle recorremos las 26 listas que como maximo puede tener la tabla.	*/
-	for (i = 0; i < TAMPAL; i++){
+	for (i = 0; i < TAMHASH; i++){
 		ptr = t[i].cabeza;
 		while (ptr){
 			N = strlen (ptr->nombre);
@@ -474,7 +478,7 @@ searchSentence (Lista *t){
 
 	printf ("\nFrase: ");
 	strscan (frase, TAMNOM);
-	for (i = 0; i < TAMPAL; i++){
+	for (i = 0; i < TAMHASH; i++){
 		ptr = t[i].cabeza;
 		while (ptr){
 			if (strstr (ptr->definicion, frase)){
@@ -495,12 +499,15 @@ menu (Lista *dicc){
 	int opcion;
 
 	while (1){
-		puts ("\nDiccionario Hash \v");
-		puts ("1.-  cargar archivo y sus definiciones ");
+		puts ("\nDiccionario Hash \n");
+
+		puts ("0.-  Mostrar estadisticas \n");
+
+		puts ("1.-  Cargar archivo y sus definiciones ");
 		puts ("2.-  Agregar una palabra y su definicion");
-		puts ("3.-  Modificar una palabra");
-		puts ("4.-  Eliminar una palabra");
-		puts ("5.-  Salir");
+		puts ("3.-  Mostrar la definicion de una palabra");
+		puts ("4.-  Modificar una palabra");
+		puts ("5.-  Eliminar una palabra");
 
 		puts ("\nOpciones para puntos extra");
 		
@@ -515,25 +522,27 @@ menu (Lista *dicc){
 
 		puts ("\nOpciones extra ");
 		puts ("11.- Imprimir palabras disponibles ");
-		puts ("12.- Mostrar la definicion de una palabra");
+
+		puts ("\n12.- Salir");
 
 		printf ("\nOpcion: ");
 		fgets (aux, 9, stdin);
 		sscanf (aux, "%d", &opcion);
 
 		switch (opcion){
+			case 0: showCollisions (dicc); break;
 			case 1: loadFile (dicc); break;
 			case 2: addWord (dicc); break;
-			case 3: changeDefinition (dicc); break;
-			case 4: deleteWord (dicc); break;
-			case 5: puts ("Hasta luego \n"); return; break;
+			case 3: printSpecific (dicc); break;
+			case 4: changeDefinition (dicc); break;
+			case 5: deleteWord (dicc); break;
 			case 6: searchSubstring (dicc); break;
 			case 7: searchLetter (dicc); break;
 			case 8: searchSentence (dicc);  break;
 			case 9: exportList (dicc); break;
 			case 10: exportDefinition (dicc); break;
 			case 11: printAvailable (dicc); break;
-			case 12: printSpecific (dicc); break;
+			case 12: puts ("Hasta luego \n"); return; break;
 			default: puts ("Opcion no valida"); break;
 		}
 	}
@@ -542,7 +551,7 @@ menu (Lista *dicc){
 /*	Raiz del programa	*/
 int 
 main (int argc, char *argv[]){
-	Lista *dicc = (Lista *) calloc (sizeof (Lista), TAMPAL);
+	Lista *dicc = (Lista *) calloc (sizeof (Lista), TAMHASH);
 
 	menu (dicc);
 

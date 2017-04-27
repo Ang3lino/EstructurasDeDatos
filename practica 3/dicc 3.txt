@@ -30,7 +30,7 @@ Ataque: Acometida, impugnación, disputa.
 Atar: Unir. Amarrar, ligar, encadenar.
 Aterrar: Llenar de tierra. Enterrar. Causar terror.
 Autista: Predominio de la vida interior. Desapego de la realidad.
-¡Ay!: Expresión de dolor. Lamento.
+Ay!: Expresión de dolor. Lamento.
 Ayes: Plural de ay.
 Bachicha: Lo que queda de un cigarrillo consumido.
 Bagaje: Suma de conocimientos. Acervo. Equipaje.
@@ -108,7 +108,7 @@ Estimar: Apreciar. Tasar.
 Estorbo: Cosa que obstaculiza el libre tránsito.
 Estrépito: Hacer ruido. Estruendo. Fragor.
 Etérico: Perteneciente al éter, al orden espiritual.
-Étnica: De la raza, nación, tribu.
+Etnica: De la raza, nación, tribu.
 Evolución: Es el viaje de regreso a casa, desde los niveles más bajos de frecuencia y la materia, hasta los niveles más elevados de conciencia.
 Exabrupto: Brusquedad, salida de tono.
 Excedente: Sobrante.
@@ -171,7 +171,7 @@ Innato: No adquirido. Que ya estaba al nacer.
 Inoculación: Infundir por medio artificial un virus en el organismo. Inyectar.
 Inscrito: Que está grabado, impreso.
 Insípido: Desabrido.
-Íntegro: Probo. Entero, completo, cabal, intacto.
+Integro: Probo. Entero, completo, cabal, intacto.
 Involuntario: Instintivo.
 Jurado: Tribunal que hace que se cumpla la ley.
 Jurar: Afirmación o negación poniendo a Dios por testigo.

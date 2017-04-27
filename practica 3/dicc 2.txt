@@ -1,7 +1,7 @@
-Angel: Enviado del senior, nombre chido.
+Angel: ste carnal
 Abismo: Profundidad muy grande.
 Abyecto: Despreciable, ignominioso.
-Acceder: Consentir en lo que otro quiere.
+Acceder: Consentir en lo que otro quiere. 
 Aducir: Presentar o alegar pruebas, razones, etc.
 Burro: Animal que se depesempenia mejor en primavera.
 Biblioteca: Lugar donde se guardan libros.
@@ -37,6 +37,8 @@ Programacion: Area de las ciencias de la computacion.
 Queso: Alimento que se usa para quesadillas.
 Rio: Region de agua.
 Raton: Animal que le gusta el queso.
+
+
 Salon: Lugar donde se arma la party.
 Sintesis: Balance.
 Software: Programas de una computadora. Datos.
@@ -46,7 +48,7 @@ Usurpar: El pretender tomar el lugar de alguien.
 Uva: Fruta chica.
 Vaca: Animal que da leche.
 Venia: Licencia o permiso para ejecutar algo.
-Vericueto: Enredo. Problematica.
+Vericueto: Eforeachnredo. Problematica.
 Vislumbrar: Conjeturar.
 Vivificante: Que da vida. Reanimar, alentar, fortalecer.
 Waterpolo: Juego que se juega en alberca.
