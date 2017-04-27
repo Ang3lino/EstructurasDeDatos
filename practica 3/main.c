@@ -107,8 +107,6 @@ loadFile (Lista *t){
 	char *def;
 	int i = 0;
 
-	formatearLista (t);
-
 	/*	IMPORTANTISIMO que el archivo tenga el formato descrito hasta arriba.	*/
 	printf ("Nombre del archivo (.txt): ");
 	strscan (nombreArchivo, 40);
