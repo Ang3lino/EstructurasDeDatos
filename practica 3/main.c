@@ -115,7 +115,7 @@ showCollisions (Lista *t){
 	Nodo *ptr;
 
 	for (i = 0; i < TAMHASH; i++){
-		ptr = t[i].cabeza;
+		ptr = t[i].frente;
 		j = 0;
 		while (ptr){
 			j++;
@@ -192,7 +192,7 @@ printAvailable (Lista *l){
 
 	/*	Nos aseguramos que exista una palabra, como minimo.	*/
 	for (i = 0; i < TAMHASH; i++)
-		if (l[i].cabeza){
+		if (l[i].frente){
 			b = 1;
 			break;
 		}
@@ -203,7 +203,7 @@ printAvailable (Lista *l){
 		Nodo *ptr = NULL;
 
 		for (i = 0; i < TAMHASH; i++){
-			ptr = l[i].cabeza;
+			ptr = l[i].frente;
 
 			printf ("\t ========== %c ========== \n\n", c);
 			/*	Imprimimos la palabra, si existe almenos una palabra 
@@ -240,7 +240,7 @@ printSpecific (Lista *t){
 
 	/*	Obtenemos el indice correspondiente a la palabra.	*/
 	indice = hash (comp);
-	ptr = t[indice].cabeza;
+	ptr = t[indice].frente;
 
 	/*	Procedemos a buscar la palabra, si existe se imprimira la palabra
 		con su correspondiente definicion, si no existe se muestra por 
@@ -267,8 +267,8 @@ searchLetter (Lista *t){
 
 	i = hash (ans);
 
-	if (t[i].cabeza){
-		Nodo *ptr = t[i].cabeza;
+	if (t[i].frente){
+		Nodo *ptr = t[i].frente;
 
 		while (ptr){
 			printf ("%s \n", ptr->nombre);
@@ -315,7 +315,7 @@ existWord (Lista *t, char s[]){
 	/*	Obtenemos el indice de s[0]. Se sabe que existe un valor correspondiente puesto que ya paso
 		la condicion anterior.	*/
 	indice = hash (s);
-	Nodo *ptr = t[indice].cabeza;
+	Nodo *ptr = t[indice].frente;
 
 	/*	Buscamos en nuestra fila i-esima de nuestra tabla, si existe, retornamos TRUE	*/
 	while (ptr){
@@ -341,7 +341,7 @@ deleteWord (Lista *t){
 		Nodo *ptr = NULL;
 		int i = 0;
 		for (i = 0; i < TAMHASH; i++){
-			ptr = t[i].cabeza;
+			ptr = t[i].frente;
 			while (ptr){
 				if (strncmp (ptr->nombre, pbuscada, TAMNOM))
 					fprintf (fp, "%s: %s\n", ptr->nombre, ptr->definicion);
@@ -375,7 +375,7 @@ changeDefinition (Lista *t){
 			encontremos con la palabra a cambiar, escribimos la nueva palabra y nos
 			saltamos la sobreescritura de la palabra anterior, asi como su definicion.*/
 		for (i = 0; i < TAMHASH; i++){
-			ptr = t[i].cabeza;
+			ptr = t[i].frente;
 			while (ptr){
 				if (!strncmp (pBuscada, ptr->nombre, TAMNOM)){
 					sprintf(ptr->definicion, "%s", nuevaDef);
@@ -406,7 +406,7 @@ exportList (Lista *t){
 	FILE *fp = fopen (nombre, "wb");
 
 	for (i = 0; i < TAMHASH; i++){
-		ptr = t[i].cabeza;
+		ptr = t[i].frente;
 		while (ptr){
 			fprintf (fp, "%s: %s\n", ptr->nombre, ptr->definicion);
 			ptr = ptr->siguiente;
@@ -427,7 +427,7 @@ exportDefinition (Lista *t){
 
 	if (existWord (t, nombre)){
 		char nombreArchivoNuevo[50];
-		Nodo *ptr = t[hash (nombre)].cabeza;
+		Nodo *ptr = t[hash (nombre)].frente;
 
 		printf ("Nombre del archivo (.txt): ");
 		strscan (nombreArchivoNuevo, 40);
@@ -460,7 +460,7 @@ searchSubstring (Lista *t){
 
 	/*	Con un bucle recorremos las 26 listas que como maximo puede tener la tabla.	*/
 	for (i = 0; i < TAMHASH; i++){
-		ptr = t[i].cabeza;
+		ptr = t[i].frente;
 		while (ptr){
 			N = strlen (ptr->nombre);
 			if (n <= N)
@@ -487,7 +487,7 @@ searchSentence (Lista *t){
 	printf ("\nFrase: ");
 	strscan (frase, TAMNOM);
 	for (i = 0; i < TAMHASH; i++){
-		ptr = t[i].cabeza;
+		ptr = t[i].frente;
 		while (ptr){
 			if (strstr (ptr->definicion, frase)){
 				printf ("%s: %s \n", ptr->nombre, ptr->definicion);

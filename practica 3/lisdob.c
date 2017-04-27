@@ -25,7 +25,7 @@ Lista *
 crearLista (void){
 	Lista *l = (Lista *) malloc (sizeof (Lista));
 
-	l->cabeza = NULL;
+	l->frente = NULL;
 	l->longitud = 0;
 
 	return l;
@@ -35,13 +35,13 @@ void
 insertarPrincipio (Lista *l, char nombre[], char definicion[]){
 	Nodo *n = crearNodo (nombre, definicion);
 
-	if (!l->cabeza)
-		l->cabeza = n;
+	if (!l->frente)
+		l->frente = n;
 	else{
-		n->siguiente = l->cabeza;
+		n->siguiente = l->frente;
 
-		l->cabeza = n;
-		(l->cabeza->siguiente)->anterior = l->cabeza;
+		l->frente = n;
+		(l->frente->siguiente)->anterior = l->frente;
 	}
 
 	l->longitud++;
@@ -51,10 +51,10 @@ void
 insertarUltimo (Lista *l, char *nombre, char *definicion){
 	Nodo *n = crearNodo (nombre, definicion);
 
-	if (!l->cabeza)
-		l->cabeza = n;
+	if (!l->frente)
+		l->frente = n;
 	else{
-		Nodo *ptr = l->cabeza;
+		Nodo *ptr = l->frente;
 
 		while (ptr->siguiente)
 			ptr = ptr->siguiente;
@@ -75,9 +75,9 @@ liberarNodo (Nodo *n){
 
 void
 eliminarPrincipio (Lista *l){
-	if (l->cabeza){
-		Nodo *borrar = l->cabeza;
-		l->cabeza = (l->cabeza)->siguiente;
+	if (l->frente){
+		Nodo *borrar = l->frente;
+		l->frente = (l->frente)->siguiente;
 		liberarNodo (borrar);
 
 		l->longitud--;
@@ -86,7 +86,7 @@ eliminarPrincipio (Lista *l){
 
 void
 formatearLista (Lista *l){
-	while (l->cabeza)	
+	while (l->frente)	
 		eliminarPrincipio (l);
 	free (l);
 }

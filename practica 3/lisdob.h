@@ -16,7 +16,8 @@ typedef struct nodo{
 } Nodo;
 
 typedef struct lista{
-	Nodo *cabeza;
+	struct nodo *frente;
+	struct nodo *final;
 	int longitud;
 } Lista;
 
