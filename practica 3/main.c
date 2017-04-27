@@ -25,7 +25,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include "lisdob.h"
 
 #define TRUE 1
@@ -37,7 +36,31 @@ char nombreArchivo[50];
 
 typedef char boolean;
 
-/*	funcion hash en la que, como argumento recibiremos un puntero char, solo es 
+/*	Funcion que obtiene el modulo de a % b positivo.	*/
+int mod(int a, int b){
+	int r = a % b;
+	if(r < 0)
+		r += b;
+	return r;
+}
+
+/*	Funcion que obtiene el tamanio de un archivo, dado el nombre del archivo.	*/
+int 
+fileSize (char nombre[]){
+
+	int tamano;
+	FILE * archivo = fopen(nombre, "rb");
+
+	fseek(archivo, 0, SEEK_END);
+	tamano = ftell(archivo);
+	
+	/*	rewind (fp) te regresa al principio del archivo.	*/
+	fclose (archivo);
+
+	return tamano;
+}
+
+/*	Funcion hash mejorada en la que, como argumento recibiremos un puntero char, solo es 
 	relevante key[0] y, con base a key[0] retornaremos un digito en donde se corresponde
 	como se muestra a continuacion: 
 	A: 0, B: 1, ..., Z: 26.
@@ -49,7 +72,19 @@ typedef char boolean;
 	A pesar de su simpleza es muy, pero muy util, que la funcion hash reciba a un 
 	caracter alfanumerico en mayusculas es muy importante, de no serlo, ocasionamos
     un SIGSEGV.	*/ 
-int hash (char *key){ return key[0] - 'A'; }
+
+/*	Esta funcion es mejor que la de abajo.	*/
+int hash (char *key){ return mod(key[0] - 'A', TAMHASH); }
+
+/*
+int 
+hash (char *st){
+	int i = 0, acum = 0;
+	for (i = 0; i < strlen (st); i++)
+		acum += st[i];
+	return mod (acum, TAMHASH);
+}
+*/
 
 /*	Funcion muy parecida a fgets (x, y, z), solo que al final del string s, 
 	a diferencia de fgets (), ponemos el caracter nulo. Otra distincion 
@@ -111,9 +146,8 @@ loadFile (Lista *t){
 	printf ("Nombre del archivo (.txt): ");
 	strscan (nombreArchivo, 40);
 	sprintf (nombreArchivo, "%s.txt", nombreArchivo);
-	FILE *fp = fopen (nombreArchivo, "r");
+	FILE *fp = fopen (nombreArchivo, "rb");
 	
-
 	/*	Recorremos el archivo con un bucle while, mientras que c no sea EOF 
 		(es decir, no lleguemos al final del archivo) vamos recorriendo el 
 		archivo, caracter a caracter y vamos guardando en un string su nombre 
@@ -204,18 +238,6 @@ printSpecific (Lista *t){
 	printf ("Escriba la palabra a buscar: ");
 	strscan (comp, 99);
 
-	/*	Nos aseguramos que sea que el caracter sea alfanumerico, de 
-		ser el caso forzamos que el caracter sea mayuscula.	En caso 
-		contrario no procedemos a buscar, no tiene sentido.	*/  
-	if (isalpha (comp[0])){
-		if (islower (comp[0]))
-			comp[0] = toupper (comp[0]);
-	}
-	else {
-		puts ("Error al escribir la palabra");
-		return;
-	}
-
 	/*	Obtenemos el indice correspondiente a la palabra.	*/
 	indice = hash (comp);
 	ptr = t[indice].cabeza;
@@ -243,12 +265,6 @@ searchLetter (Lista *t){
 	printf ("Letra: ");
 	fgets (ans, 3, stdin);
 
-	if (isalpha (ans[0]))
-		ans[0] = toupper (ans[0]);
-	else {
-		puts ("Caracter escrito erroneamente. ");
- 		return;
-	}
 	i = hash (ans);
 
 	if (t[i].cabeza){
@@ -269,7 +285,7 @@ addWord (Lista *l){
 	char *nombre = (char *) calloc (TAMNOM, sizeof (char));
 	char *definicion = (char *) calloc (TAMDEF, sizeof (char));
 	char *parrafo = (char *) calloc (TAMNOM + TAMDEF + 10, sizeof (char));
-	FILE *fp = fopen (nombreArchivo, "a+");
+	FILE *fp = fopen (nombreArchivo, "ab+");
 
 	printf ("Palabra nueva: ");
 	strscan (nombre, TAMNOM);
@@ -296,12 +312,6 @@ boolean
 existWord (Lista *t, char s[]){
 	int indice = 0;
 
-	/*	Comprobamos que el caracter sea alfanumerico.	*/
-	if (isalpha (s[0]))
-		s[0] = toupper (s[0]);
-	else
-		return FALSE;
-
 	/*	Obtenemos el indice de s[0]. Se sabe que existe un valor correspondiente puesto que ya paso
 		la condicion anterior.	*/
 	indice = hash (s);
@@ -327,7 +337,7 @@ deleteWord (Lista *t){
 	/*	Comprobamos que exista la palabra y, si existe, procedemos borramos y 
 		escribimos el archivo, saltandonos la palabra no deseada.	*/
 	if (existWord (t, pbuscada)){
-		FILE *fp = fopen (nombreArchivo, "w");
+		FILE *fp = fopen (nombreArchivo, "wb");
 		Nodo *ptr = NULL;
 		int i = 0;
 		for (i = 0; i < TAMHASH; i++){
@@ -355,7 +365,7 @@ changeDefinition (Lista *t){
 
 	/*	Comprobamos si existe la palabra	*/
 	if (existWord (t, pBuscada)){
-		FILE *fp = fopen (nombreArchivo, "w");
+		FILE *fp = fopen (nombreArchivo, "wb");
 		Nodo *ptr = NULL;
 		/*	Obtenemos la nueva definicion.	*/
 		printf ("Nueva definicion: ");
@@ -393,7 +403,7 @@ exportList (Lista *t){
 	strscan (nombre, 40);
 	sprintf (nombre, "%s.txt", nombre);
 
-	FILE *fp = fopen (nombre, "w");
+	FILE *fp = fopen (nombre, "wb");
 
 	for (i = 0; i < TAMHASH; i++){
 		ptr = t[i].cabeza;
@@ -422,7 +432,7 @@ exportDefinition (Lista *t){
 		printf ("Nombre del archivo (.txt): ");
 		strscan (nombreArchivoNuevo, 40);
 		sprintf (nombreArchivoNuevo, "%s.txt", nombreArchivoNuevo);
-		FILE *fp = fopen (nombreArchivoNuevo, "w");
+		FILE *fp = fopen (nombreArchivoNuevo, "wb");
 		while (ptr){
 			if (!strncmp (nombre, ptr->nombre, TAMNOM)){
 				fprintf (fp, "%s: %s", ptr->nombre, ptr->definicion);
@@ -496,7 +506,7 @@ menu (Lista *dicc){
 	char aux[9];
 	int opcion;
 
-	while (1){
+	do{
 		puts ("\nDiccionario Hash \n");
 
 		puts ("0.-  Mostrar estadisticas \n");
@@ -540,19 +550,24 @@ menu (Lista *dicc){
 			case 9: exportList (dicc); break;
 			case 10: exportDefinition (dicc); break;
 			case 11: printAvailable (dicc); break;
-			case 12: puts ("Hasta luego \n"); return; break;
+			case 12: puts ("Hasta luego \n"); break;
 			default: puts ("Opcion no valida"); break;
 		}
-	}
+	}while(opcion != 12);
 }
 
 /*	Raiz del programa	*/
 int 
 main (int argc, char *argv[]){
-	Lista *dicc = (Lista *) calloc (sizeof (Lista), TAMHASH);
+	Lista *dicc = (Lista *) calloc (TAMHASH, sizeof (Lista));
 
 	menu (dicc);
+	
+	/*int i;
+	for(i = 0; i < TAMHASH; i++)
+		formatearLista (&dicc[i]);*/
 
-	formatearLista (dicc);
-	return EXIT_SUCCESS;
+	//formatearLista (dicc);
+
+	return 0;
 }
