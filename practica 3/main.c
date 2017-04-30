@@ -25,16 +25,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include "Lista.h"
-
-#define TRUE 1
-#define FALSE 0
 
 #define TAMHASH 26
 
 char nombreArchivo[50];
-
-typedef char boolean;
+boolean archivoCargado = FALSE;
 
 /*	Funcion que obtiene el modulo de a % b positivo.	*/
 int mod(int a, int b){
@@ -50,7 +47,10 @@ fileSize (char nombre[]){
 
 	int tamano;
 	FILE * archivo = fopen(nombre, "rb");
-
+	if (!archivo){
+		perror ("El archivo no existe.");
+		exit (1);
+	}
 	fseek(archivo, 0, SEEK_END);
 	tamano = ftell(archivo);
 	
@@ -60,18 +60,19 @@ fileSize (char nombre[]){
 	return tamano;
 }
 
-/*	Funcion hash mejorada en la que, como argumento recibiremos un puntero char, solo es 
-	relevante key[0] y, con base a key[0] retornaremos un digito en donde se corresponde
-	como se muestra a continuacion: 
-	A: 0, B: 1, ..., Z: 26.
+/*	Funcion hash mejorada en la que, como argumento recibiremos un puntero a un arreglo
+ *	de char, solo es relevante key[0] y, con base a key[0] retornaremos un digito en donde 
+ *	se corresponde. Como se muestra a continuacion: 
+	
+		A: 0, B: 1, ..., Z: 26.
 
 	El programa esta diseniado de tal forma que los caracteres de key[0] sean tales que:
 
-	A <= key[0] <= Z	notese que las letras son mayusculas
+		A <= key[0] <= Z	notese que las letras son mayusculas
 	
-	A pesar de su simpleza es muy, pero muy util, que la funcion hash reciba a un 
-	caracter alfanumerico en mayusculas es muy importante, de no serlo, ocasionamos
-    un SIGSEGV.	*/ 
+	A pesar de su simpleza es muy, pero muy util. Que la funcion hash reciba a un 
+	caracter alfanumerico en mayusculas la primera letra del arreglo favorece a la busqueda
+	del programa.	*/ 
 
 int hash (char *key){ return mod(key[0] - 'A', TAMHASH); }
 
@@ -93,8 +94,7 @@ hash (char *st){
 	modo stdin si la comparamos con fgets () en el tercer parametro.	*/
 void
 strscan (char *s, int lim){
-	int i = 0;
-	int c = '0';
+	int i = 0, c = '0';
 
 	while (i < lim && (c = getchar ()) != '\n'){
 		*(s + i) = c;
@@ -133,7 +133,7 @@ showCollisions (lista *t){
 	printf ("\n");
 }
 
-
+/*	Embutimos en un elemento e los arreglos de caracteres.	*/
 void 
 fillElement (elemento *e, char nombre[], char definicion[]){
 	strncpy (e->nombre, nombre, TAMNOM);
@@ -147,10 +147,29 @@ loadFile (lista *t){
 	char *nombre, *def;
 	elemento e;
 
+	/*	Esta condicion sirve para saber si el usuario desea cargar otro archivo.	*/
+	if (archivoCargado){
+		char ans[9];
+		printf ("\nParece ser que el archivo %s ya ha sido cargado\n", nombreArchivo);
+		printf ("Desea cargar otro? (s / n): ");	
+		fgets (ans, 9, stdin);
+		if (ans[0] == 's' || ans[0] == 'S'){
+			for (i = 0; i < TAMHASH; i++)
+				Destroy (&t[i]);
+			/*	Importante la declaracion lista *t, no basta con t = ... 	*/
+			lista *t = (lista *) calloc (TAMHASH, sizeof (lista));
+		} else
+			return;
+	}
 	printf ("Nombre del archivo (.txt): ");
 	strscan (nombreArchivo, 40);
 	sprintf (nombreArchivo, "%s.txt", nombreArchivo);
 	FILE *fp = fopen (nombreArchivo, "rb");
+
+	if (!fp){
+		perror ("El archivo no se encuentra en el directorio");
+		return;
+	}
 	
 	/*	Recorremos el archivo con un bucle while, mientras que c no sea EOF 
 		(es decir, no lleguemos al final del archivo) vamos recorriendo el 
@@ -159,33 +178,27 @@ loadFile (lista *t){
 	while (!feof (fp)){
 		nombre = (char *) calloc (TAMNOM, sizeof (char));
 		def = (char *) calloc (TAMDEF, sizeof (char));
-
 		i = 0;
-
 		/*	Puesto que el archivo tiene el formato:
-			Palabra: definicio. \n
+				Palabra: definicion. \n
 			se sabe que la palabra abarca desde su primera letra hasta los dos puntos.	*/ 
 		while (i < TAMNOM && (c = fgetc (fp)) != ':' && c != '\n' && c != EOF)
 			nombre[i++] = c;
-
 		if(i > 0){
 			nombre[i++] = '\0';
-
 			c = fgetc (fp);
-
-			/*	De manera similar, la definicion abarca desde su primera letra hasta el salto
-				de linea.	*/
 			i = 0;
+			/*	De manera similar, la definicion abarca desde su primera letra hasta el salto 
+			 *	de linea.	*/
 			while (i < TAMDEF && (c = fgetc (fp)) != '\n' && c != EOF)
 				def[i++] = c;
-
 			def[i++] = '\0';
-
 			/*	Insertamos la palabra a la tabla hash.	*/
 			fillElement (&e, nombre, def);
 			AddEnd (&t[hash (nombre)], e);
 		}
 	}
+	archivoCargado = TRUE;
 	fclose (fp);
 }
 
@@ -290,7 +303,10 @@ addWord (lista *l){
 	char nombre[TAMNOM], definicion[TAMDEF], parrafo[TAMNOM + TAMDEF + 10];
 	elemento e;
 	FILE *fp = fopen (nombreArchivo, "ab+");
-
+	if (!fp){
+		perror ("el archivo no se encuentra disponible");
+		return;
+	}
 	printf ("Palabra nueva: ");
 	strscan (nombre, TAMNOM);
 
@@ -329,6 +345,7 @@ existWord (lista *t, char s[]){
 	return FALSE;
 }
 
+/*	Borra la palabra p, tanto en la tabla como en el archivo, si existe.	*/
 void
 deleteWord (lista *t){
 	char pbuscada[TAMNOM];
@@ -347,6 +364,8 @@ deleteWord (lista *t){
 			while (ptr){
 				if (strncmp (ptr->e.nombre, pbuscada, TAMNOM))
 					fprintf (fp, "%s: %s\n", ptr->e.nombre, ptr->e.definicion);
+				else
+					Remove (&t[hash (ptr->e.nombre)], ptr);
 				ptr = ptr->siguiente;
 			}
 		}
@@ -368,6 +387,10 @@ changeDefinition (lista *t){
 	/*	Comprobamos si existe la palabra	*/
 	if (existWord (t, pBuscada)){
 		FILE *fp = fopen (nombreArchivo, "wb");
+		if (!fp){
+			perror ("El archivo no existe.");
+			return;
+		}
 		nodo *ptr = NULL;
 		/*	Obtenemos la nueva definicion.	*/
 		printf ("Nueva definicion: ");
@@ -395,6 +418,7 @@ changeDefinition (lista *t){
 		printf ("La palabra \"%s\" no se encuentra", pBuscada);
 }
 
+/*	Exporta toda la lista a un archivo con el nombre que el usuario desee.	*/
 void 
 exportList (lista *t){
 	int i, j;
@@ -406,6 +430,10 @@ exportList (lista *t){
 	sprintf (nombre, "%s.txt", nombre);
 
 	FILE *fp = fopen (nombre, "wb");
+	if (!fp){
+		perror ("El archivo no existe.");
+		return;
+	}
 
 	for (i = 0; i < TAMHASH; i++){
 		ptr = t[i].frente;
@@ -435,6 +463,10 @@ exportDefinition (lista *t){
 		strscan (nombreArchivoNuevo, 40);
 		sprintf (nombreArchivoNuevo, "%s.txt", nombreArchivoNuevo);
 		FILE *fp = fopen (nombreArchivoNuevo, "wb");
+		if (!fp){
+			perror ("El archivo no existe.");
+			return;
+		}
 		while (ptr){
 			if (!strncmp (nombre, ptr->e.nombre, TAMNOM)){
 				fprintf (fp, "%s: %s", ptr->e.nombre, ptr->e.definicion);
@@ -563,10 +595,13 @@ int
 main (int argc, char *argv[]){
 	lista *dicc = (lista *) calloc (TAMHASH, sizeof (lista));
 	int i;
-
+	
+	/*	con void *calloc no es necesaria la funcion void Initialize (lista *).	
 	for (i = 0; i < TAMHASH; i++)
 		Initialize (&dicc[i]);
+	*/
 	menu (dicc);
+	
 	for (i = 0; i < TAMHASH; i++)
 		Destroy (&dicc[i]);
 
