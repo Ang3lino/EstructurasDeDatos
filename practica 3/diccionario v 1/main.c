@@ -1,6 +1,6 @@
 /* Diccionario usando tablas hash.
 
-   Equipo: Quick Coding
+   Autor (es):  Angel Lopez Manriquez 
    compilacion: gcc main.c lisdob.c	*/
 
 /* 	Algunas implementaciones que dan valor agregado a la califiacion son:
@@ -13,19 +13,19 @@
 
 	Puesto que vamos a trabajar con archivos, es importante que el archivo tenga el formato
 	
-	palabra1: definicion1 \n
-	palabra2: definicion2 \n
+	Palabra1: definicion1 \n
+	Palabra2: definicion2 \n
 	.
 	.
 	.
-	palabraN: defincionN \n
+	PalabraN: defincionN \n
 	
 	para que la funcion loadFile () funcione apropiadamente.	*/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Lista.h"
+#include "lisdob.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -73,6 +73,7 @@ fileSize (char nombre[]){
 	caracter alfanumerico en mayusculas es muy importante, de no serlo, ocasionamos
     un SIGSEGV.	*/ 
 
+/*	Esta funcion es mejor que la de abajo.	*/
 int hash (char *key){ return mod(key[0] - 'A', TAMHASH); }
 
 /*
@@ -108,10 +109,10 @@ strscan (char *s, int lim){
 	la variable l sirve para dar un salto de linea cada 2 veces que se muestren las
 	colisiones de una palabra.	*/
 void 
-showCollisions (lista *t){
+showCollisions (Lista *t){
 	int i, j, l = 0;
 	char k = 'A';
-	nodo *ptr;
+	Nodo *ptr;
 
 	for (i = 0; i < TAMHASH; i++){
 		ptr = t[i].frente;
@@ -133,20 +134,15 @@ showCollisions (lista *t){
 	printf ("\n");
 }
 
-
-void 
-fillElement (elemento *e, char nombre[], char definicion[]){
-	strncpy (e->nombre, nombre, TAMNOM);
-	strncpy (e->definicion, definicion, TAMDEF);
-}
-
 /*	Funcion que carga el archivo y va llenando la tabla hash con base al mismo.	*/
 void
-loadFile (lista *t){
-	int c = 'n', i = 0; 
-	char *nombre, *def;
-	elemento e;
+loadFile (Lista *t){
+	int c = 'n'; 
+	char *nombre;
+	char *def;
+	int i = 0;
 
+	/*	IMPORTANTISIMO que el archivo tenga el formato descrito hasta arriba.	*/
 	printf ("Nombre del archivo (.txt): ");
 	strscan (nombreArchivo, 40);
 	sprintf (nombreArchivo, "%s.txt", nombreArchivo);
@@ -182,8 +178,7 @@ loadFile (lista *t){
 			def[i++] = '\0';
 
 			/*	Insertamos la palabra a la tabla hash.	*/
-			fillElement (&e, nombre, def);
-			AddEnd (&t[hash (nombre)], e);
+			insertarUltimo (&t[hash (nombre)], nombre, def);
 		}
 	}
 	fclose (fp);
@@ -191,7 +186,7 @@ loadFile (lista *t){
 
 /*	Funcion que imprime todas las palabras del archivo.	*/
 void
-printAvailable (lista *l){
+printAvailable (Lista *l){
 	boolean b = 0;
 	int i = 0;
 
@@ -205,7 +200,7 @@ printAvailable (lista *l){
 	if (b){
 		int i = 0, j = 0, tab = 0;
 		char c = 'A';
-		nodo *ptr = NULL;
+		Nodo *ptr = NULL;
 
 		for (i = 0; i < TAMHASH; i++){
 			ptr = l[i].frente;
@@ -216,7 +211,7 @@ printAvailable (lista *l){
 				no entra, asi nos aseguramos de evadir el error SIGSEGV.	*/ 
 			tab = 0;
 			while (ptr){
-				printf ("%s \t", ptr->e.nombre);
+				printf ("%s \t", ptr->nombre);
 				ptr = ptr->siguiente;
 				tab++;
 				if (tab % 4 == 0){
@@ -235,10 +230,10 @@ printAvailable (lista *l){
 
 /*	Funcion que imprime una palabra solicitada, si existe.	*/
 void
-printSpecific (lista *t){
+printSpecific (Lista *t){
 	char comp[99];
 	int indice = 0, i = 0;
-	nodo *ptr = NULL;
+	Nodo *ptr = NULL;
 
 	printf ("Escriba la palabra a buscar: ");
 	strscan (comp, 99);
@@ -251,8 +246,8 @@ printSpecific (lista *t){
 		con su correspondiente definicion, si no existe se muestra por 
 		pantalla que no existe la palabra buscada.	*/
 	while (ptr){
-		if (!strcmp (comp, ptr->e.nombre)){
-			printf ("%s: %s \n", ptr->e.nombre, ptr->e.definicion);
+		if (!strcmp (comp, ptr->nombre)){
+			printf ("%s: %s \n", ptr->nombre, ptr->definicion);
 			return;
 		}
 		ptr = ptr->siguiente;
@@ -263,20 +258,20 @@ printSpecific (lista *t){
 
 /*	Funcion que imprime todas las palabras disponibles con la consonante propuesta.	*/
 void
-searchLetter (lista *t){
+searchLetter (Lista *t){
 	char ans[3];
 	int i = 0;
 
-	printf ("Letra (mayus): ");
+	printf ("Letra: ");
 	fgets (ans, 3, stdin);
 
 	i = hash (ans);
 
 	if (t[i].frente){
-		nodo *ptr = t[i].frente;
+		Nodo *ptr = t[i].frente;
 
 		while (ptr){
-			printf ("%s \n", ptr->e.nombre);
+			printf ("%s \n", ptr->nombre);
 			ptr = ptr->siguiente;
 		}
 	}
@@ -286,9 +281,10 @@ searchLetter (lista *t){
 
 /*	Agregamos una palabra, tanto a el archivo como a la lista.	*/
 void
-addWord (lista *l){
-	char nombre[TAMNOM], definicion[TAMDEF], parrafo[TAMNOM + TAMDEF + 10];
-	elemento e;
+addWord (Lista *l){
+	char *nombre = (char *) calloc (TAMNOM, sizeof (char));
+	char *definicion = (char *) calloc (TAMDEF, sizeof (char));
+	char *parrafo = (char *) calloc (TAMNOM + TAMDEF + 10, sizeof (char));
 	FILE *fp = fopen (nombreArchivo, "ab+");
 
 	printf ("Palabra nueva: ");
@@ -301,9 +297,11 @@ addWord (lista *l){
 	/*	Escribimos nuestra palabra al final de nuestro archivo, si daniar la palabra 
 		anterior.	*/
 	fprintf (fp, "%s\n", parrafo);
-	fillElement (&e, nombre, definicion);
-	AddEnd (&l[hash (nombre)], e);
+	insertarUltimo (&l[hash (nombre)], nombre, definicion);
 
+	free (nombre);
+	free (definicion);
+	free (parrafo);
 	fclose (fp);
 }
 
@@ -311,17 +309,17 @@ addWord (lista *l){
 	del string. Como extra cambia el caracter s[0] a mayuscula, en case de que sea alfanumerico
 	este caracter, obviamente.	*/
 boolean
-existWord (lista *t, char s[]){
+existWord (Lista *t, char s[]){
 	int indice = 0;
 
 	/*	Obtenemos el indice de s[0]. Se sabe que existe un valor correspondiente puesto que ya paso
 		la condicion anterior.	*/
 	indice = hash (s);
-	nodo *ptr = t[indice].frente;
+	Nodo *ptr = t[indice].frente;
 
 	/*	Buscamos en nuestra fila i-esima de nuestra tabla, si existe, retornamos TRUE	*/
 	while (ptr){
-		if (!strncmp (s, ptr->e.nombre, TAMNOM))
+		if (!strncmp (s, ptr->nombre, TAMNOM))
 			return TRUE;
 		ptr = ptr->siguiente;
 	}
@@ -330,7 +328,7 @@ existWord (lista *t, char s[]){
 }
 
 void
-deleteWord (lista *t){
+deleteWord (Lista *t){
 	char pbuscada[TAMNOM];
 
 	printf ("\ningrese la palabra a borrar: ");
@@ -340,13 +338,13 @@ deleteWord (lista *t){
 		escribimos el archivo, saltandonos la palabra no deseada.	*/
 	if (existWord (t, pbuscada)){
 		FILE *fp = fopen (nombreArchivo, "wb");
-		nodo *ptr = NULL;
+		Nodo *ptr = NULL;
 		int i = 0;
 		for (i = 0; i < TAMHASH; i++){
 			ptr = t[i].frente;
 			while (ptr){
-				if (strncmp (ptr->e.nombre, pbuscada, TAMNOM))
-					fprintf (fp, "%s: %s\n", ptr->e.nombre, ptr->e.definicion);
+				if (strncmp (ptr->nombre, pbuscada, TAMNOM))
+					fprintf (fp, "%s: %s\n", ptr->nombre, ptr->definicion);
 				ptr = ptr->siguiente;
 			}
 		}
@@ -358,7 +356,7 @@ deleteWord (lista *t){
 
 /*	Funcion que cambia la definicion de una palabra.	*/
 void
-changeDefinition (lista *t){
+changeDefinition (Lista *t){
 	char nuevaDef[TAMDEF], pBuscada[TAMNOM];
 	int i = 0;
 
@@ -368,7 +366,7 @@ changeDefinition (lista *t){
 	/*	Comprobamos si existe la palabra	*/
 	if (existWord (t, pBuscada)){
 		FILE *fp = fopen (nombreArchivo, "wb");
-		nodo *ptr = NULL;
+		Nodo *ptr = NULL;
 		/*	Obtenemos la nueva definicion.	*/
 		printf ("Nueva definicion: ");
 		strscan (nuevaDef, TAMDEF);
@@ -379,12 +377,12 @@ changeDefinition (lista *t){
 		for (i = 0; i < TAMHASH; i++){
 			ptr = t[i].frente;
 			while (ptr){
-				if (!strncmp (pBuscada, ptr->e.nombre, TAMNOM)){
-					sprintf(ptr->e.definicion, "%s", nuevaDef);
+				if (!strncmp (pBuscada, ptr->nombre, TAMNOM)){
+					sprintf(ptr->definicion, "%s", nuevaDef);
 					fprintf (fp, "%s: %s\n", pBuscada, nuevaDef);
 				}
 				else
-					fprintf (fp, "%s: %s\n", ptr->e.nombre, ptr->e.definicion);
+					fprintf (fp, "%s: %s\n", ptr->nombre, ptr->definicion);
 				ptr = ptr->siguiente;
 			}
 		}
@@ -396,9 +394,9 @@ changeDefinition (lista *t){
 }
 
 void 
-exportList (lista *t){
+exportList (Lista *t){
 	int i, j;
-	nodo *ptr = NULL;
+	Nodo *ptr = NULL;
 	char nombre[50];
 
 	printf ("\nNombre del archivo (.txt): ");
@@ -410,7 +408,7 @@ exportList (lista *t){
 	for (i = 0; i < TAMHASH; i++){
 		ptr = t[i].frente;
 		while (ptr){
-			fprintf (fp, "%s: %s\n", ptr->e.nombre, ptr->e.definicion);
+			fprintf (fp, "%s: %s\n", ptr->nombre, ptr->definicion);
 			ptr = ptr->siguiente;
 		}
 	}
@@ -421,7 +419,7 @@ exportList (lista *t){
 /*	Funcion que exporta una palabra con su definicion a un archivo de texto.
  *	Problema: Se guarda basura al final del archivo creado.		*/
 void 
-exportDefinition (lista *t){
+exportDefinition (Lista *t){
 	char nombre[TAMNOM];
 
 	printf ("\nNombre de la palabra a exportar: ");
@@ -429,15 +427,15 @@ exportDefinition (lista *t){
 
 	if (existWord (t, nombre)){
 		char nombreArchivoNuevo[50];
-		nodo *ptr = t[hash (nombre)].frente;
+		Nodo *ptr = t[hash (nombre)].frente;
 
 		printf ("Nombre del archivo (.txt): ");
 		strscan (nombreArchivoNuevo, 40);
 		sprintf (nombreArchivoNuevo, "%s.txt", nombreArchivoNuevo);
 		FILE *fp = fopen (nombreArchivoNuevo, "wb");
 		while (ptr){
-			if (!strncmp (nombre, ptr->e.nombre, TAMNOM)){
-				fprintf (fp, "%s: %s", ptr->e.nombre, ptr->e.definicion);
+			if (!strncmp (nombre, ptr->nombre, TAMNOM)){
+				fprintf (fp, "%s: %s", ptr->nombre, ptr->definicion);
 				puts ("Palabra exportada exitosamente :D. ");
 				break;
 			}
@@ -451,10 +449,10 @@ exportDefinition (lista *t){
 /*	Funcion que busca todas las palabras disponibles, con su respectiva definicion
     que contengan una subcadena dada (si existe).	*/
 void 
-searchSubstring (lista *t){
+searchSubstring (Lista *t){
 	char substr[TAMNOM];
 	int i, n, N, hayUna = 0;
-	nodo *ptr = NULL;
+	Nodo *ptr = NULL;
 
 	printf ("\nEscriba la subcadena: ");
 	strscan (substr, TAMNOM);
@@ -464,11 +462,11 @@ searchSubstring (lista *t){
 	for (i = 0; i < TAMHASH; i++){
 		ptr = t[i].frente;
 		while (ptr){
-			N = strlen (ptr->e.nombre);
+			N = strlen (ptr->nombre);
 			if (n <= N)
 				/*	La funcion char *strstr (char *A, char *B) retorna true si la subcadena B esta en A	*/ 
-				if (strstr (ptr->e.nombre, substr)){
-					printf ("%s: %s \n", ptr->e.nombre, ptr->e.definicion);
+				if (strstr (ptr->nombre, substr)){
+					printf ("%s: %s \n", ptr->nombre, ptr->definicion);
 					hayUna = 1;
 				}
 			ptr = ptr->siguiente;
@@ -481,9 +479,9 @@ searchSubstring (lista *t){
 /*	Funcion que, pregunta alguna frase y muestra las palabras disponibles en el diccionario 
 	tales que su definicion contengan a la frase.	*/ 
 void 
-searchSentence (lista *t){
+searchSentence (Lista *t){
 	char frase[TAMNOM];
-	nodo *ptr;
+	Nodo *ptr;
 	int i, j, noHay = 1;
 
 	printf ("\nFrase: ");
@@ -491,8 +489,8 @@ searchSentence (lista *t){
 	for (i = 0; i < TAMHASH; i++){
 		ptr = t[i].frente;
 		while (ptr){
-			if (strstr (ptr->e.definicion, frase)){
-				printf ("%s: %s \n", ptr->e.nombre, ptr->e.definicion);
+			if (strstr (ptr->definicion, frase)){
+				printf ("%s: %s \n", ptr->nombre, ptr->definicion);
 				noHay = 0;
 			}	
 			ptr = ptr->siguiente;
@@ -504,7 +502,7 @@ searchSentence (lista *t){
 
 /*	Funcion que muestra las opciones disponibles para el programa. 	*/
 void
-menu (lista *dicc){
+menu (Lista *dicc){
 	char aux[9];
 	int opcion;
 
@@ -561,14 +559,15 @@ menu (lista *dicc){
 /*	Raiz del programa	*/
 int 
 main (int argc, char *argv[]){
-	lista *dicc = (lista *) calloc (TAMHASH, sizeof (lista));
-	int i;
+	Lista *dicc = (Lista *) calloc (TAMHASH, sizeof (Lista));
 
-	for (i = 0; i < TAMHASH; i++)
-		Initialize (&dicc[i]);
 	menu (dicc);
-	for (i = 0; i < TAMHASH; i++)
-		Destroy (&dicc[i]);
+	
+	/*int i;
+	for(i = 0; i < TAMHASH; i++)
+		formatearLista (&dicc[i]);*/
+
+	//formatearLista (dicc);
 
 	return 0;
 }
