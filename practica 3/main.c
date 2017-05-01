@@ -25,16 +25,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
+#include <stdbool.h>
 #include "Lista.h"
-
-#define TAMHASH 26
 
 char nombreArchivo[50];
 boolean archivoCargado = FALSE;
 
 /*	Funcion que obtiene el modulo de a % b positivo.	*/
-int mod(int a, int b){
+int 
+mod(int a, int b){
 	int r = a % b;
 	if(r < 0)
 		r += b;
@@ -48,7 +47,7 @@ fileSize (char nombre[]){
 	int tamano;
 	FILE * archivo = fopen(nombre, "rb");
 	if (!archivo){
-		perror ("El archivo no existe.");
+		printf ("Error, el archivo %s no existe. \n", nombre);
 		exit (1);
 	}
 	fseek(archivo, 0, SEEK_END);
@@ -167,7 +166,7 @@ loadFile (lista *t){
 	FILE *fp = fopen (nombreArchivo, "rb");
 
 	if (!fp){
-		perror ("El archivo no se encuentra en el directorio");
+		printf ("El archivo %s no existe. \n", nombreArchivo);
 		return;
 	}
 	
@@ -205,13 +204,13 @@ loadFile (lista *t){
 /*	Funcion que imprime todas las palabras del archivo.	*/
 void
 printAvailable (lista *l){
-	boolean b = 0;
+	boolean b = FALSE;
 	int i = 0;
 
 	/*	Nos aseguramos que exista una palabra, como minimo.	*/
 	for (i = 0; i < TAMHASH; i++)
 		if (l[i].frente){
-			b = 1;
+			b = TRUE;
 			break;
 		}
 
@@ -241,16 +240,15 @@ printAvailable (lista *l){
 			c++;
 		}
 	}
-	else{
+	else
 		puts ("No se ha cargado ningun archivo");
-	}
 }
 
 /*	Funcion que imprime una palabra solicitada, si existe.	*/
 void
 printSpecific (lista *t){
 	char comp[99];
-	int indice = 0, i = 0;
+	int indice = 0, i = 0, contador = 0;
 	nodo *ptr = NULL;
 
 	printf ("Escriba la palabra a buscar: ");
@@ -266,9 +264,11 @@ printSpecific (lista *t){
 	while (ptr){
 		if (!strcmp (comp, ptr->e.nombre)){
 			printf ("%s: %s \n", ptr->e.nombre, ptr->e.definicion);
+			printf ("Iteraciones para encontrar la palabra: %d. \n", contador++);
 			return;
 		}
 		ptr = ptr->siguiente;
+		contador++;
 	}
 
 	printf ("La palabra \"%s\" no se encuentra en el diccionario. \n", comp);
@@ -278,7 +278,7 @@ printSpecific (lista *t){
 void
 searchLetter (lista *t){
 	char ans[3];
-	int i = 0;
+	int i = 0, contador = 0;
 
 	printf ("Letra (mayus): ");
 	fgets (ans, 3, stdin);
@@ -289,8 +289,9 @@ searchLetter (lista *t){
 		nodo *ptr = t[i].frente;
 
 		while (ptr){
-			printf ("%s \n", ptr->e.nombre);
+			printf ("%d.- %s \n", contador + 1, ptr->e.nombre);
 			ptr = ptr->siguiente;
+			contador++;
 		}
 	}
 	else
@@ -304,7 +305,7 @@ addWord (lista *l){
 	elemento e;
 	FILE *fp = fopen (nombreArchivo, "ab+");
 	if (!fp){
-		perror ("el archivo no se encuentra disponible");
+		printf ("\n El archivo %s no existe. \n", nombreArchivo);
 		return;
 	}
 	printf ("Palabra nueva: ");
@@ -319,6 +320,8 @@ addWord (lista *l){
 	fprintf (fp, "%s\n", parrafo);
 	fillElement (&e, nombre, definicion);
 	AddEnd (&l[hash (nombre)], e);
+
+	puts ("No se requieren iteraciones para agregar una palabra.");
 
 	fclose (fp);
 }
@@ -379,7 +382,7 @@ deleteWord (lista *t){
 void
 changeDefinition (lista *t){
 	char nuevaDef[TAMDEF], pBuscada[TAMNOM];
-	int i = 0;
+	int i = 0, contador = 0;
 
 	printf ("\nIngrese la palabra a cambiar: ");
 	strscan (pBuscada, TAMNOM);
@@ -388,10 +391,10 @@ changeDefinition (lista *t){
 	if (existWord (t, pBuscada)){
 		FILE *fp = fopen (nombreArchivo, "wb");
 		if (!fp){
-			perror ("El archivo no existe.");
+			printf ("\nEl archivo %s no existe. \n", nombreArchivo);
 			return;
 		}
-		nodo *ptr = NULL;
+		nodo *ptr;
 		/*	Obtenemos la nueva definicion.	*/
 		printf ("Nueva definicion: ");
 		strscan (nuevaDef, TAMDEF);
@@ -405,10 +408,12 @@ changeDefinition (lista *t){
 				if (!strncmp (pBuscada, ptr->e.nombre, TAMNOM)){
 					sprintf(ptr->e.definicion, "%s", nuevaDef);
 					fprintf (fp, "%s: %s\n", pBuscada, nuevaDef);
-				}
-				else
+					strncpy (ptr->e.definicion, nuevaDef, TAMDEF);
+					printf ("\nSe realizaron %d iteraciones para localizar la palabra", contador + 1);
+				} else
 					fprintf (fp, "%s: %s\n", ptr->e.nombre, ptr->e.definicion);
 				ptr = ptr->siguiente;
+				contador++;
 			}
 		}
 
@@ -421,7 +426,7 @@ changeDefinition (lista *t){
 /*	Exporta toda la lista a un archivo con el nombre que el usuario desee.	*/
 void 
 exportList (lista *t){
-	int i, j;
+	int i, cont = 1;
 	nodo *ptr = NULL;
 	char nombre[50];
 
@@ -431,7 +436,7 @@ exportList (lista *t){
 
 	FILE *fp = fopen (nombre, "wb");
 	if (!fp){
-		perror ("El archivo no existe.");
+		printf ("\nEl archivo %s no existe. \n", nombre);
 		return;
 	}
 
@@ -440,8 +445,10 @@ exportList (lista *t){
 		while (ptr){
 			fprintf (fp, "%s: %s\n", ptr->e.nombre, ptr->e.definicion);
 			ptr = ptr->siguiente;
+			cont++;
 		}
 	}
+	printf ("Se exportaron %d palabras a %s. \n", cont, nombre);
 	
 	fclose (fp);
 }
@@ -458,22 +465,25 @@ exportDefinition (lista *t){
 	if (existWord (t, nombre)){
 		char nombreArchivoNuevo[50];
 		nodo *ptr = t[hash (nombre)].frente;
+		int cont = 1;
 
 		printf ("Nombre del archivo (.txt): ");
 		strscan (nombreArchivoNuevo, 40);
 		sprintf (nombreArchivoNuevo, "%s.txt", nombreArchivoNuevo);
 		FILE *fp = fopen (nombreArchivoNuevo, "wb");
 		if (!fp){
-			perror ("El archivo no existe.");
+			printf ("\nEl archivo %s no existe.\n", nombreArchivoNuevo);
 			return;
 		}
 		while (ptr){
 			if (!strncmp (nombre, ptr->e.nombre, TAMNOM)){
 				fprintf (fp, "%s: %s", ptr->e.nombre, ptr->e.definicion);
 				puts ("Palabra exportada exitosamente :D. ");
+				printf ("Se requirieron %d iteraciones para localizar la palabra %s. \n", cont, nombre);
 				break;
 			}
 			ptr = ptr->siguiente;
+			cont++;
 		}
 		fclose (fp);
 	} else 
@@ -485,7 +495,7 @@ exportDefinition (lista *t){
 void 
 searchSubstring (lista *t){
 	char substr[TAMNOM];
-	int i, n, N, hayUna = 0;
+	int i, n, N, hayUna = 0, cont = 1;
 	nodo *ptr = NULL;
 
 	printf ("\nEscriba la subcadena: ");
@@ -501,9 +511,11 @@ searchSubstring (lista *t){
 				/*	La funcion char *strstr (char *A, char *B) retorna true si la subcadena B esta en A	*/ 
 				if (strstr (ptr->e.nombre, substr)){
 					printf ("%s: %s \n", ptr->e.nombre, ptr->e.definicion);
+					printf ("Iteraciones para localizar la subcadena %s: %d \n", substr, cont);
 					hayUna = 1;
 				}
 			ptr = ptr->siguiente;
+			cont++;
 		}
 	}	
 	if (!hayUna)
@@ -516,8 +528,8 @@ void
 searchSentence (lista *t){
 	char frase[TAMNOM];
 	nodo *ptr;
-	int i, j, noHay = 1;
-
+	int i, j, noHay = TRUE, cont = 1;
+	
 	printf ("\nFrase: ");
 	strscan (frase, TAMNOM);
 	for (i = 0; i < TAMHASH; i++){
@@ -525,9 +537,11 @@ searchSentence (lista *t){
 		while (ptr){
 			if (strstr (ptr->e.definicion, frase)){
 				printf ("%s: %s \n", ptr->e.nombre, ptr->e.definicion);
+				printf ("%s encontrada despues de %d pasos", frase, cont); 
 				noHay = 0;
 			}	
 			ptr = ptr->siguiente;
+			cont++;
 		}
 	}
 	if (noHay)
