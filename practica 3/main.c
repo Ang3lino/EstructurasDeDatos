@@ -140,23 +140,22 @@ fillElement (elemento *e, char nombre[], char definicion[]){
 }
 
 /*	Inserta alfabeticamente en un arreglo de listas un elemento que contenga un campo nombre.	*/
-//	NO FUNCIONA CON INSERTBEFORE :C
 void 
 insertAlpha (lista *t, elemento e){
 	int i = 0, indice = hash (e.nombre);
 	lista *subl = &t[indice];
 	nodo *pos = t[indice].frente;
 
-	if (IsEmpty (subl))
-		AddBeginning (subl, e);
-	else {
-		while (i < Size (subl) && strncmp (e.nombre, pos->e.nombre, TAMNOM) < 0){
-			pos = pos->siguiente;
-			i++;
-		}
-		// L, e, p
-		InsertBefore (subl, e, pos);
+	while (i < Size (subl) && strncmp (e.nombre, pos->e.nombre, TAMNOM) > 0){
+		//pos = pos->siguiente;
+		pos = Following (subl, pos);
+		i++;
 	}
+	if (pos != NULL)
+		InsertBefore (subl, e, pos);
+	else 
+		AddEnd (subl, e);
+
 }
 
 /*	Funcion que carga el archivo y va llenando la tabla hash con base al mismo.	*/
@@ -237,13 +236,11 @@ printAvailable (lista *l){
 
 	if (b){
 		int i = 0, j = 0, tab = 0;
-		char c = 'A';
 		nodo *ptr = NULL;
 
 		for (i = 0; i < TAMHASH; i++){
 			ptr = l[i].frente;
 
-			printf ("\t ========== %c ========== \n\n", c);
 			/*	Imprimimos la palabra, si existe almenos una palabra 
 				con un caracter en la fila i, se entra al bucle, si no
 				no entra, asi nos aseguramos de evadir el error SIGSEGV.	*/ 
@@ -258,7 +255,6 @@ printAvailable (lista *l){
 				}
 			}
 			printf ("\n \n");
-			c++;
 		}
 	}
 	else
