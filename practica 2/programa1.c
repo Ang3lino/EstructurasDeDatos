@@ -23,6 +23,7 @@ Compilación: gcc programa1.c Cola(Din|Est|EstCirc).c presentacion(Win|Lin).c -o 
 #include <stdio.h>
 #include "presentacion.h"
 #include <time.h>
+#include <stdlib.h>
 
 /*
 Definimos una estructura simulación:
@@ -169,7 +170,7 @@ int main(){
 			printf("%s\n\n", S.nombre);
 
 			for(j = 0; j < m; j++)
-				printf(mensajes[j]);
+				printf("%s", mensajes[j]);
 			printf("\n");
 
 			for(i = 0; i < S.n; i++){
