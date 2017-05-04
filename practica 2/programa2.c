@@ -1,13 +1,9 @@
 /*
 DESCRIPCIÓN:
 Programa que emula la gestion de programas de un sistema operativo.
-
 VERSIÓN: 2.0
-
 FECHA: 14/03/2017
-
 AUTORES: Equipo Quick-Coding
-
 COMPILACIÓN: gcc programa2.c Cola(Din|Est|EstCirc).c presentacion(Win|Lin).c -o programa2.exe
 */
 
@@ -15,6 +11,7 @@ COMPILACIÓN: gcc programa2.c Cola(Din|Est|EstCirc).c presentacion(Win|Lin).c -o 
 #include <string.h>
 #include <stdio.h>
 #include "ColaDin.h"
+#include "presentacion.h"
 
 /*  el elemento e esta conformado por su nombre, actividad (lo que hace), su ID,
     tiempo propuesto para la ejecucion del programa y un contador que se usara

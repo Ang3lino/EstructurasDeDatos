@@ -281,7 +281,7 @@ int main(){
 			BorrarPantalla();
 			printf("Informacion del banco\n\n");
 			for(j = 0; j < i; j++)
-				printf(mensajes[j]);
+				printf("%s", mensajes[j]);
 			printf("\n");
 			for(i = 0; i < 3; i++){
 				printf("Cola de ");

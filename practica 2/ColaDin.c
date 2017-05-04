@@ -57,11 +57,8 @@ Dequeue (cola *c)
 void
 Destroy (cola *c)
 {
-	elemento e;
 	while (c->frente)
-		e = Dequeue (c);
-	free (c);
-	return;
+		Dequeue (c);
 }
 
 int Empty(cola *c){ return c->num_elem == 0; }
