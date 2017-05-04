@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include "Lista.h"
 
 char nombreArchivo[50];
@@ -85,7 +86,7 @@ strscan (char *s, int lim){
 }
 
 /*	Funcion que muestra las colisiones en la tabla hash.	
-	la variable l sirve para dar un salto de linea cada 2 veces que se muestren las
+	la variable l sirve para dar un salto de linea cada 3 veces que se muestren las
 	colisiones de una palabra.	*/
 void 
 showCollisions (lista *t){
@@ -93,6 +94,7 @@ showCollisions (lista *t){
 	char k = 'A';
 	nodo *ptr;
 
+	puts ("\tEstadisticas\t");
 	for (i = 0; i < TAMHASH; i++){
 		ptr = t[i].frente;
 		j = 0;
@@ -100,16 +102,15 @@ showCollisions (lista *t){
 			j++;
 			ptr = ptr->siguiente;
 		}
-		printf ("Se encontraron %d colisiones en %c.", j, k);
+		printf ("%d colisiones en %c.", j, k);
 		k++;
 		l++;
-		if (l % 2 == 0){
+		if (l % 3 == 0){
 			printf ("\n");
 			l = 0;
 		} else
 			printf ("\t");
 	}
-
 	printf ("\n");
 }
 
@@ -128,7 +129,6 @@ insertAlpha (lista *t, elemento e){
 	nodo *pos = t[indice].frente;
 
 	while (i < Size (subl) && strncmp (e.nombre, pos->e.nombre, TAMNOM) > 0){
-		//pos = pos->siguiente;
 		pos = Following (subl, pos);
 		i++;
 	}
@@ -136,6 +136,7 @@ insertAlpha (lista *t, elemento e){
 		InsertBefore (subl, e, pos);
 	else 
 		AddEnd (subl, e);
+	
 	return i;
 }
 
@@ -314,13 +315,15 @@ addWord (lista *l){
 	printf ("Definicion: ");
 	strscan (definicion, TAMDEF);
 
+	/*	Hacemos que el primer caracter sea mayus. si la primera letra es alfabetica.	*/
+	nombre[0] = toupper (nombre[0]);
 	sprintf (parrafo,"%s: %s", nombre, definicion);
 	/*	Escribimos nuestra palabra al final de nuestro archivo, si daniar la palabra 
 		anterior.	*/
 	fprintf (fp, "\n%s", parrafo);
 	fillElement (&e, nombre, definicion);
 	//AddEnd (&l[hash (nombre)], e);
-	iteraciones = insertAlpha (&l[hash (nombre)], e);
+	iteraciones = insertAlpha (l, e);
 	printf ("Se usaron %d iteraciones. \n", iteraciones);
 
 	fclose (fp);
@@ -619,12 +622,7 @@ main (int argc, char *argv[]){
 	lista *dicc = (lista *) calloc (TAMHASH, sizeof (lista));
 	int i;
 	
-	/*	con void *calloc no es necesaria la funcion void Initialize (lista *).	
-	for (i = 0; i < TAMHASH; i++)
-		Initialize (&dicc[i]);
-	*/
 	menu (dicc);
-	
 	for (i = 0; i < TAMHASH; i++)
 		Destroy (&dicc[i]);
 
