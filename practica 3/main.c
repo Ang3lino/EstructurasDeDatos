@@ -29,11 +29,11 @@
 #include "Lista.h"
 
 char nombreArchivo[50];
-boolean archivoCargado = FALSE;
+bool archivoCargado = false;
 
 /*	Funcion que obtiene el modulo de a % b positivo.	*/
 int 
-mod(int a, int b){
+mod (int a, int b){
 	int r = a % b;
 	if(r < 0)
 		r += b;
@@ -139,6 +139,26 @@ fillElement (elemento *e, char nombre[], char definicion[]){
 	strncpy (e->definicion, definicion, TAMDEF);
 }
 
+/*	Inserta alfabeticamente en un arreglo de listas un elemento que contenga un campo nombre.	*/
+//	NO FUNCIONA CON INSERTBEFORE :C
+void 
+insertAlpha (lista *t, elemento e){
+	int i = 0, indice = hash (e.nombre);
+	lista *subl = &t[indice];
+	nodo *pos = t[indice].frente;
+
+	if (IsEmpty (subl))
+		AddBeginning (subl, e);
+	else {
+		while (i < Size (subl) && strncmp (e.nombre, pos->e.nombre, TAMNOM) < 0){
+			pos = pos->siguiente;
+			i++;
+		}
+		// L, e, p
+		InsertBefore (subl, e, pos);
+	}
+}
+
 /*	Funcion que carga el archivo y va llenando la tabla hash con base al mismo.	*/
 void
 loadFile (lista *t){
@@ -194,23 +214,24 @@ loadFile (lista *t){
 			def[i++] = '\0';
 			/*	Insertamos la palabra a la tabla hash.	*/
 			fillElement (&e, nombre, def);
-			AddEnd (&t[hash (nombre)], e);
+			//AddEnd (&t[hash (nombre)], e);
+			insertAlpha (t, e);
 		}
 	}
-	archivoCargado = TRUE;
+	archivoCargado = true;
 	fclose (fp);
 }
 
 /*	Funcion que imprime todas las palabras del archivo.	*/
 void
 printAvailable (lista *l){
-	boolean b = FALSE;
+	bool b = false;
 	int i = 0;
 
 	/*	Nos aseguramos que exista una palabra, como minimo.	*/
 	for (i = 0; i < TAMHASH; i++)
 		if (l[i].frente){
-			b = TRUE;
+			b = true;
 			break;
 		}
 
@@ -246,7 +267,7 @@ printAvailable (lista *l){
 
 /*	Funcion que imprime una palabra solicitada, si existe.	*/
 void
-printSpecific (lista *t){
+showDefinition (lista *t){
 	char comp[99];
 	int indice = 0, i = 0, contador = 0;
 	nodo *ptr = NULL;
@@ -329,7 +350,7 @@ addWord (lista *l){
 /*	Funcion que recibe la lista * y un string s, en la funcion solo nos importa la primera letra 
 	del string. Como extra cambia el caracter s[0] a mayuscula, en case de que sea alfanumerico
 	este caracter, obviamente.	*/
-boolean
+bool
 existWord (lista *t, char s[]){
 	int indice = 0;
 
@@ -338,14 +359,14 @@ existWord (lista *t, char s[]){
 	indice = hash (s);
 	nodo *ptr = t[indice].frente;
 
-	/*	Buscamos en nuestra fila i-esima de nuestra tabla, si existe, retornamos TRUE	*/
+	/*	Buscamos en nuestra fila i-esima de nuestra tabla, si existe, retornamos true	*/
 	while (ptr){
 		if (!strncmp (s, ptr->e.nombre, TAMNOM))
-			return TRUE;
+			return true;
 		ptr = ptr->siguiente;
 	}
 
-	return FALSE;
+	return false;
 }
 
 /*	Borra la palabra p, tanto en la tabla como en el archivo, si existe.	*/
@@ -495,7 +516,8 @@ exportDefinition (lista *t){
 void 
 searchSubstring (lista *t){
 	char substr[TAMNOM];
-	int i, n, N, hayUna = 0, cont = 1;
+	int i, n, N, cont = 1;
+	bool hayUna = false; 
 	nodo *ptr = NULL;
 
 	printf ("\nEscriba la subcadena: ");
@@ -528,7 +550,7 @@ void
 searchSentence (lista *t){
 	char frase[TAMNOM];
 	nodo *ptr;
-	int i, j, noHay = TRUE, cont = 1;
+	int i, j, noHay = true, cont = 1;
 	
 	printf ("\nFrase: ");
 	strscan (frase, TAMNOM);
@@ -589,7 +611,7 @@ menu (lista *dicc){
 			case 0: showCollisions (dicc); break;
 			case 1: loadFile (dicc); break;
 			case 2: addWord (dicc); break;
-			case 3: printSpecific (dicc); break;
+			case 3: showDefinition (dicc); break;
 			case 4: changeDefinition (dicc); break;
 			case 5: deleteWord (dicc); break;
 			case 6: searchSubstring (dicc); break;
