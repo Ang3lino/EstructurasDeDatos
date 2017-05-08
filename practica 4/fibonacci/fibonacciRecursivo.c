@@ -51,9 +51,9 @@ main (void){
 	printf ("Introduce el valor de n para calcular el n-esimo termino de la serie de fibonacci: ");
 	scanf ("%d", &n);
 
-	//Forzamos que n >= 1
-	while (n < 1){
-		printf ("La funcion de fibonacci no esta definida para n < 1 \n");
+	//Forzamos que n >= 0
+	while (n < 0){
+		printf ("La funcion de fibonacci no esta definida para n < 0 \n");
 		printf ("Introduzca un valor valido: ");
 		scanf ("%d", &n);
 	}
