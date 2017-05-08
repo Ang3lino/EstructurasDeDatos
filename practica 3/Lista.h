@@ -14,8 +14,6 @@ typedef char boolean;
 typedef struct{
 	char nombre[TAMNOM];
 	char definicion[TAMDEF];
-	struct nodo *siguiente;
-	struct nodo *anterior;
 } elemento;
 
 typedef struct nodo{
