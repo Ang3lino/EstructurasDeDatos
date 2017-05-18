@@ -176,14 +176,19 @@ int main(){
 			for(i = 0; i < S.n; i++){
 				printf("Cajera %d (%d): ", i + 1, Size(&S.cajeras[i]));
 				for(j = 1; j <= Size(&S.cajeras[i]); j++){
-					if(j > 1)
-						printf(" <-- ");
-					cliente = Element(&S.cajeras[i], j);
-					printf("%d", cliente.ID);
+					if(Size(&S.cajeras[i]) > 10 && j >= 6 && j <= (Size(&S.cajeras[i]) - 5)){
+						printf(" <-- ...");
+						j = Size(&S.cajeras[i]) - 5;
+					}else{
+						if(j > 1)
+							printf(" <-- ");
+						cliente = Element(&S.cajeras[i], j);
+						printf("%d", cliente.ID);
+					}
 				}
 				printf("\n");
 			}
-			printf("\nClientes atendidos: %d\nTiempo actual: %d\n\n\n", n_cliente, tiempo_actual);
+			printf("\nClientes atendidos: %d\nTiempo actual: %dms\n\n\n", n_cliente, tiempo_actual);
 			refrescar = 0;
 		}
 

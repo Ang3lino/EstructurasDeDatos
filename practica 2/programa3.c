@@ -292,10 +292,15 @@ int main(){
 				else if(i == 2)
 					printf("usuarios    (%d): ", Size(&S.colas[i]));
 				for(j = 1; j <= Size(&S.colas[i]); j++){
-					e = Element(&S.colas[i], j);
-					printf("%d", e.ID);
-					if(j < Size(&S.colas[i]))
-						printf(" <-- ");
+					if(Size(&S.colas[i]) > 10 && j >= 6 && j <= (Size(&S.colas[i]) - 5)){
+						printf("... <-- ");
+						j = Size(&S.colas[i]) - 5;
+					}else{
+						e = Element(&S.colas[i], j);
+						printf("%d", e.ID);
+						if(j < Size(&S.colas[i]))
+							printf(" <-- ");
+					}
 				}
 				printf("\n\n");
 			}
@@ -322,7 +327,7 @@ int main(){
 					printf("desocupado");
 				printf("\n");
 			}
-			printf("\nTiempo actual: %d\n\n\n", tiempo_actual);
+			printf("\nTiempo actual: %dms\n\n\n", tiempo_actual);
 			refrescar = 0;
 		}
 	}
