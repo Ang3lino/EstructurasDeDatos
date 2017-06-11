@@ -22,8 +22,6 @@
 
 //LIBRERIAS
 #include "ColaDin.h"
-//#include "ColaEst.h"
-//#include "ColaEstCirc.h"
 #include <stdio.h>
 #include "presentacion.h"
 
@@ -171,7 +169,7 @@ void ProcesarLlegadaPersona(int n_persona, int tipo, simulacion * S){
 
 /*
 	Descripción: esta función se ejecuta cada que es tiempo de atención,
-	y determina si las personas esperando al frente de cala cola pueden pasar a algún cajero.
+	y determina si las personas esperando al frente de cada cola pueden pasar a algún cajero.
 	Si sí pueden, las pasa y las desencola.
 	Recibe: simulacion * S
 	Devuelve: el número de personas que lograron pasar a algun cajero

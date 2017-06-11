@@ -1,6 +1,6 @@
 ﻿/*
 PROBLEMA DE LAS N REINAS
-Sea n un etnero tal que 3 < n < 10. Este programa halla todas las posibles
+Sea n un entero tal que 3 < n < 10. Este programa halla todas las posibles
 configuraciones de tableros de n*n, tal que existen n reinas colocadas
 de tal forma que ninguna ataque a otra. Decimos que dos reinas se atacan
 si y solo si están en la misma fila, columna o diagonal del tablero.

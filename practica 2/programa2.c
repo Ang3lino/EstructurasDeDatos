@@ -195,10 +195,11 @@ pedirDatos (cola *c){
 
         printf ("Desea encolar otro programa? (s/n): ");
         strscan (aux, 9);
-        if (aux[0] == 'n' || aux[0] == 'N')
+        if (aux[0] == 'n' || aux[0] == 'N'){
+            BorrarPantalla ();
             return;
+        }
     }
-    BorrarPantalla ();
 }
 
 /*  Manda a llamar a la funcion pedirDatos (), forma los programas en la cola c.
