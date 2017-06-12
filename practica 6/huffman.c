@@ -22,11 +22,10 @@ COMPILACIÓN: gcc ArbolBin.c huffman.c -o huffman.exe
 #include <string.h>
 
 /*
-Esta estructura almacena un caracter, su codificación (en 0 y 1 char),
+Esta estructura almacena la codificación de un caracter (en 0 y 1 char),
 y el tamaño de dicha codificación.
 */
 typedef struct{
-	Char c;
 	Char * codificacion;
 	ull tamano;
 } InfoCaracter;
@@ -36,9 +35,9 @@ DESCRIPCIÓN: Esta función prende un bit específico de un arreglo de Chars
 RECIBE: arreglo de Chars y una posición entera
 */
 void PrenderBit(Char * datos, ull posicion){
-	ull i = posicion >> 3;				//Calculamos en qué byte está el bit que buscamos
-	int j = posicion % 8;				//Calculamos la posición del bit dentro del byte
-	datos[i] = datos[i] | (128 >> j);	//Mediante un OR, prendemos el bit correspondiente
+	ull i = posicion >> 3;		//Calculamos en qué byte está el bit que buscamos
+	int j = posicion & 7;		//Calculamos la posición del bit dentro del byte
+	datos[i] |= (128 >> j);		//Mediante un OR, prendemos el bit correspondiente
 	return;
 }
 
@@ -47,9 +46,9 @@ DESCRIPCIÓN: Esta función apaga un bit específico de un arreglo de Chars
 RECIBE: arreglo de Chars y una posición entera
 */
 void ApagarBit(Char * datos, ull posicion){
-	ull i = posicion >> 3;				//Calculamos en qué byte está el bit que buscamos
-	int j = posicion % 8;				//Calculamos la posición del bit dentro del byte
-	datos[i] = datos[i] & ~(128 >> j);	//Mediante un AND, apagamos el bit correspondiente
+	ull i = posicion >> 3;		//Calculamos en qué byte está el bit que buscamos
+	int j = posicion & 7;		//Calculamos la posición del bit dentro del byte
+	datos[i] &= ~(128 >> j);	//Mediante un AND, apagamos el bit correspondiente
 	return;
 }
 
@@ -92,7 +91,6 @@ los enteros '0' y '1', usando el '0' para la izquierda y el '1' para la derecha.
 */
 void copiar(Char c, Char * camino, ull tamano, InfoCaracter * info){
 	ull i;
-	info[c].c = c;
 	info[c].tamano = tamano;
 	info[c].codificacion = malloc(tamano * sizeof(Char));
 	for(i = 0; i < tamano; i++)
@@ -110,11 +108,11 @@ RECIBE: nodo * p, Char * camino, ull pos, InfoCaracter * info
 */
 void obtener_codificaciones(nodo * p, Char * camino, ull pos, InfoCaracter * info){
 	if(p != NULL){
-		camino[pos] = 0;	//Vamos por la izquierda recursivamente
-		obtener_codificaciones(p->izq, camino, pos + 1, info);
 		if(IsLeaf(p)){		//Si la posición es una hoja, almacenamos la codificación de su Char
 			copiar(p->c, camino, pos, info);
 		}
+		camino[pos] = 0;	//Vamos por la izquierda recursivamente
+		obtener_codificaciones(p->izq, camino, pos + 1, info);
 		camino[pos] = 1;	//Vamos por la derecha recursivamente
 		obtener_codificaciones(p->der, camino, pos + 1, info);
 	}
@@ -156,7 +154,7 @@ ull codificar(Char * mensaje, nodo ** arbol_huffman, Char * resultado, ull longi
 	ull i, j;							//Contadores auxiliares
 	ull bits = 0;						//Aquí se irán contabilizando los bits del mensaje codificado
 	int n_arboles = 0;					//Aquí contabilizamos cuántos árboles tenemos
-	nodo * nodo_izq, * nodo_der;			//Elementos auxiliares para el momento de ejecutar el algoritmo de ordenar los árboles
+	nodo * nodo_izq, * nodo_der;		//Elementos auxiliares para el momento de ejecutar el algoritmo de ordenar los árboles
 	Char actual;						//Caracter actual que se va a estar leyendo del mensaje original
 
 	obtener_frecuencias(mensaje, frecuencias, longitud);		//Obtenemos las frecuencias por caracter del mensaje original
@@ -169,13 +167,13 @@ ull codificar(Char * mensaje, nodo ** arbol_huffman, Char * resultado, ull longi
 	}
 
 	while(n_arboles > 1){										//Mientras tengamos más de un árbol, ejecutamos el algoritmo
-		qsort(arboles, n_arboles, sizeof(nodo*), comparador);//Ordenamos el arreglo de elementos, de mayor a menor
+		qsort(arboles, n_arboles, sizeof(nodo*), comparador);	//Ordenamos el arreglo de elementos, de mayor a menor
 		nodo_izq = arboles[n_arboles - 1];						//Obtenemos el último árbol del arreglo, es decir, el de menor frecuencia
 		nodo_der = arboles[n_arboles - 2];						//Obtenemos el penúltimo árbol del areglo, el que tiene la segunda menor frecuencia.
 		arboles[n_arboles - 2] = NewNode(0);					//Juntamos los dos árboles anteriores
 		arboles[n_arboles - 2]->frecuencia = nodo_izq->frecuencia + nodo_der->frecuencia;	//Sumamos sus frecuencias
-		arboles[n_arboles - 2]->izq = nodo_izq;						//Asignamos el hijo izquierdo
-		arboles[n_arboles - 2]->der = nodo_der;						//Aignamos el hijo derecho
+		arboles[n_arboles - 2]->izq = nodo_izq;					//Asignamos el hijo izquierdo
+		arboles[n_arboles - 2]->der = nodo_der;					//Aignamos el hijo derecho
 		n_arboles--;											//Disminuímos en uno el número de árboles, puesto que los últimos dos se convirtieron en uno
 	}
 
@@ -206,7 +204,7 @@ ull decodificar(Char * mensaje, nodo * arbol_huffman, Char * resultado, ull bits
 	ull bits_a_leer;							//En cada iteración excepto en la última, leeremos 8 bits
 	ull bytes = 0;								//Aquí se contabilizan los bytes del mensaje decodificado
 	ull longitud = techo(bits, 8);				//Obtenemos la longitud en bytes del mensaje codificado
-	nodo * actual = arbol_huffman;		//Leemos la raíz del árbol
+	nodo * actual = arbol_huffman;				//Leemos la raíz del árbol
 	if(IsLeaf(actual)){							//Este if se ejecutará si y solo si la cadena decodificada consta de 1 byte,
 		resultado[bytes++] = actual->c;			//es decir, si la raíz también es la única hoja del árbol.
 		actual = arbol_huffman;
@@ -223,7 +221,7 @@ ull decodificar(Char * mensaje, nodo * arbol_huffman, Char * resultado, ull bits
 				actual = actual->izq;			//Si el bit está apagado, nos vamos por la izquierda
 			if(IsLeaf(actual)){					//Si estamos en una hoja, almacenamos su caracter en el mensaje decodificado
 				resultado[bytes++] = actual->c;	//Además, también incrementamos el contador de bytes
-				actual = arbol_huffman;	//Nos regresamos a la raíz de nuevo
+				actual = arbol_huffman;			//Nos regresamos a la raíz de nuevo
 			}
 		}
 	}
@@ -257,7 +255,7 @@ en el archivo especificado: el número de bits, el número de bytes y la represe
 */
 void serializar_arbol(Char * archivo_info, nodo * arbol_huffman, ull bits, ull bytes){
 	FILE * archivo = fopen(archivo_info, "wb");
-	fprintf(archivo, "%llu %llu ", bits, bytes);
+	fprintf(archivo, "%lld %lld ", bits, bytes);
 	preorden_serializar(arbol_huffman, archivo);
 	fclose(archivo);
 	return;
@@ -291,7 +289,7 @@ RECIBE: Char * archivo_info, nodo ** arbol_huffman, ull * bits, ull * tamano
 */
 void reconstruir_arbol(Char * archivo_info, nodo ** arbol_huffman, ull * bits, ull * tamano){
 	FILE * archivo = fopen(archivo_info, "rb");
-	fscanf(archivo, "%llu %llu", bits, tamano);
+	fscanf(archivo, "%lld %lld", bits, tamano);
 	preorden_reconstruir(arbol_huffman, archivo);
 	fclose(archivo);
 	return;
@@ -420,7 +418,7 @@ int main(){
 				//Codificamos el archivo y mostramos a cuánto se comprimió
 				bits = codificar_archivo(nombre);
 
-				printf("El archivo se comprimio a %llu bytes (%llu bits).\n\n", techo(bits, 8), bits);
+				printf("El archivo se comprimio a %lld bytes (%lld bits).\n\n", techo(bits, 8), bits);
 				break;
 			}
 			case '2':{

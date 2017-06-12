@@ -16,8 +16,8 @@ typedef unsigned char boolean;
 de realizar operaciones de bits*/
 typedef unsigned char Char;
 
-//Definimos un entero sin signo para almacenar grandes tamaños de archivo
-typedef unsigned long long int ull;
+//Definimos un entero largo para almacenar grandes tamaños de archivo
+typedef long long int ull;
 
 /*
 Definimos al nodo del árbol binario, el cuál contendrá dos
