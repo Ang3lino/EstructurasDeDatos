@@ -1,4 +1,4 @@
-﻿
+
 /*` Biblioteca del TAD queue dinamica 								     IPN-ESCOM
  *  =================================================================================
  *  
@@ -40,7 +40,7 @@
 /*	Variables de la estructura element, puedes modificarla. */
 typedef struct element {
 	char Char,
-		 String[100];
+String[100];
 	int Integer;
 	double Double;
 	long Long;
@@ -69,8 +69,8 @@ element dequeue (Queue *c);	/* Retorna un elemento y lo elimina a la vez. */
 void clear  (Queue *c);  /* Limpia la queue, se puede utilizar nuevamente. */
 
 /* Operaciones de consulta */
-int size (Queue *c);		
-bool empty (Queue *c);			
+static int queueSize (Queue *c);		
+bool queueEmpty (Queue *c);			
 element front (Queue *c);		
 element back (Queue *c);		
 element Element (Queue *c, int n); /* Elemento (Element): Recibe una Queue y una posicion, y devuelve 

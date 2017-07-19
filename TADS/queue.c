@@ -49,19 +49,19 @@ clear (Queue *c) {
 		e = dequeue (c);
 }
 
-bool empty(Queue *c){ return c->size == 0; }
+bool queueEmpty(Queue *c){ return c->size == 0; }
 
 element front (Queue *c){ return c->front->e; }
 
 element back (Queue *c){ return c->back->e; }
 
-int size(Queue *c){ return c->size; }
+static int queueSize(Queue *c){ return c->size; }
 
 element Element(Queue *c, int n) {
 	int pos = 1;
 	node * aux = c->front;
 	element e;
-	if (n <= size(c)) {
+	if (n <= queueSize(c)) {
 		while (pos < n) {
 			aux = aux->next;
 			pos++;

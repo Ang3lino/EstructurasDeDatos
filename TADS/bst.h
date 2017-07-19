@@ -24,6 +24,8 @@ typedef struct bst {
 void bstInsert (Bst **, const double);
 void insert (Bst **, const double);
 void bstInorder (Bst *);
+void bstDelete (Bst *, const double);
+void bstTransplant (Bst *, Bst *, Bst *);
 bool isLeaf (const Bst *);
 bool bstExists (Bst *, const double);
 Bst *newBst (void);

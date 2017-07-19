@@ -8,7 +8,7 @@ newBst(void) {
 }
 
 Bst *
-bstCreateNode (const double data) {
+bstNewNode (const double data) {
 	Bst *tree = (Bst *) calloc (sizeof (Bst), 1);
 	tree->left = NULL;
 	tree->right = NULL;
@@ -20,9 +20,9 @@ bstCreateNode (const double data) {
 static void 
 insertBstHelper (Bst **tree, Bst *parent, const double data) {
 	if (*tree == NULL) {
-		*tree = bstCreateNode (data);
+		*tree = bstNewNode (data);
 		(*tree)->parent = parent;
-	} else if ((*tree)->comparator >= data)
+	} else if (data <= (*tree)->comparator)
 		insertBstHelper (&(*tree)->left, *tree, data);
 	else 
 		insertBstHelper (&(*tree)->right, *tree, data);
@@ -43,17 +43,46 @@ insert (Bst **tree, const double data) {
 		else 
 			*tree = (*tree)->right;
 	}
-	*tree = bstCreateNode (data);
+	*tree = bstNewNode (data);
 	(*tree)->parent = before;
 }
 
+// Cambiamos el subarbol u por el subarbol v
 void 
 bstTransplant (Bst *tree, Bst *u, Bst *v) {
 	if (u->parent == NULL)
-		tree = u;
-
+		tree = v;
+	else if (u == u->parent->left) 
+		u->parent->left = v;
+	else 
+		u->parent->right = v;
+	if (v) 
+		v->parent = u->parent;
 }
-	
+
+void 
+bstDelete (Bst *tree, const double data) {
+	Bst *z = bstSearch (tree, data);
+	if (z) {
+		if (z->left == NULL) 
+			bstTransplant (tree, z, z->right);
+		else if (z->right == NULL) 
+			bstTransplant (tree, z, z->left);
+		else { // Sigsegv error en este caso solucionado era la funcion bstMin
+			Bst *y = bstMin (z->right);
+			printf("%f\n", y->parent->comparator);
+			if (y->parent != z) {	// Falta revisar este caso
+				bstTransplant (tree, y, y->right);
+				y->right = z->right;
+				y->right->parent = y;
+			}
+			y->left = z->left;
+			y->left->parent = y;
+			bstTransplant (tree, z, y);
+		}
+	}
+}
+
 bool 
 isLeaf (const Bst *tree) {
 	if (tree->left == NULL && tree->right == NULL)
@@ -77,7 +106,7 @@ bstExists (Bst *tree, const double data) {
 void 
 bstInorder (Bst *tree) {
 	if (!tree)
-		printf ("-");
+		printf ("- ");
 	else if (tree) {
 		printf("(");
 		bstInorder (tree->left);
@@ -95,18 +124,17 @@ Bst *bstSearch (Bst *bst, const double data) {
 			return bstSearch (bst->left, data);
 		else
 			return bstSearch (bst->right, data);
-	} 
-	return newBst();
+	} else return newBst(); // No se encontro tal nodo
 }
 
 Bst *bstMin (Bst *bst) {
-	while (bst) 
+	while (bst->left) 
 		bst = bst->left;
 	return bst;
 }
 
 Bst *bstMax (Bst *bst) {
-	while (bst) 
+	while (bst->right) 
 		bst = bst->right;
 	return bst;
 }
