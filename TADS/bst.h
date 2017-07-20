@@ -34,6 +34,7 @@ Bst *bstMin (Bst *);
 Bst *bstMax (Bst *);
 Bst *bstPredecessor (Bst *, const double);
 Bst *bstSuccessor (Bst *, const double);
+Bst *bstRoot (Bst *);
 
 
 #endif

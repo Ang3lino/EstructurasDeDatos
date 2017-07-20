@@ -2,7 +2,7 @@
 #include "bst.h"
 
 Bst *
-newBst(void) {
+newBst (void) {
 	Bst *tree = 0;
 	return tree;
 }
@@ -28,11 +28,12 @@ insertBstHelper (Bst **tree, Bst *parent, const double data) {
 		insertBstHelper (&(*tree)->right, *tree, data);
 }
 
-void 
+inline void 
 bstInsert (Bst **tree, const double data) {
 	insertBstHelper (&(*tree), NULL, data);
 }
 
+// NO modifica al arbol (por que?)
 void 
 insert (Bst **tree, const double data) {
 	Bst *before = NULL;
@@ -47,12 +48,20 @@ insert (Bst **tree, const double data) {
 	(*tree)->parent = before;
 }
 
+Bst *
+bstRoot (Bst *bst) {
+	while (bst->parent)
+		bst = bst->parent;
+	return bst;
+}
+
 // Cambiamos el subarbol u por el subarbol v
 void 
 bstTransplant (Bst *tree, Bst *u, Bst *v) {
-	if (u->parent == NULL)
-		tree = v;
-	else if (u == u->parent->left) 
+	if (u->parent == NULL) {  // u es la raiz del arbol
+		Bst *root = bstRoot (tree);	
+		root = v;
+	} else if (u == u->parent->left) 
 		u->parent->left = v;
 	else 
 		u->parent->right = v;
@@ -62,24 +71,24 @@ bstTransplant (Bst *tree, Bst *u, Bst *v) {
 
 void 
 bstDelete (Bst *tree, const double data) {
-	Bst *z = bstSearch (tree, data);
-	if (z) {
-		if (z->left == NULL) 
-			bstTransplant (tree, z, z->right);
-		else if (z->right == NULL) 
-			bstTransplant (tree, z, z->left);
-		else { // Sigsegv error en este caso solucionado era la funcion bstMin
-			Bst *y = bstMin (z->right);
-			printf("%f\n", y->parent->comparator);
-			if (y->parent != z) {	// Falta revisar este caso
-				bstTransplant (tree, y, y->right);
-				y->right = z->right;
-				y->right->parent = y;
+	Bst *del = bstSearch (tree, data);
+	if (del) {
+		if (del->left == NULL) 
+			bstTransplant (tree, del, del->right);
+		else if (del->right == NULL) 
+			bstTransplant (tree, del, del->left);
+		else {
+			Bst *min = bstMin (del->right);	// caso a checar pendiente
+			if (min->parent != del) {	// min no es hijo del nodo a borrar del
+				bstTransplant (tree, min, min->right);
+				min->right = del->right;
+				min->right->parent = min;
 			}
-			y->left = z->left;
-			y->left->parent = y;
-			bstTransplant (tree, z, y);
+			min->left = del->left;
+			min->left->parent = min;
+			bstTransplant (tree, del, min);
 		}
+		free (del);
 	}
 }
 
@@ -116,7 +125,8 @@ bstInorder (Bst *tree) {
 	}
 }
 
-Bst *bstSearch (Bst *bst, const double data) {
+Bst *
+bstSearch (Bst *bst, const double data) {
 	if (bst) {
 		if (bst->comparator == data) 
 			return bst;
@@ -127,25 +137,32 @@ Bst *bstSearch (Bst *bst, const double data) {
 	} else return newBst(); // No se encontro tal nodo
 }
 
-Bst *bstMin (Bst *bst) {
+Bst *
+bstMin (Bst *bst) {
 	while (bst->left) 
 		bst = bst->left;
 	return bst;
 }
 
-Bst *bstMax (Bst *bst) {
+Bst *
+bstMax (Bst *bst) {
 	while (bst->right) 
 		bst = bst->right;
 	return bst;
 }
 
-Bst *bstSuccessor (Bst *bst, const double data) { 
+Bst *
+bstSuccessor (Bst *bst, const double data) { 
 	Bst *x = bstSearch (bst, data);
-	return bstMin (x->right);
+	if (x->right)
+		return bstMin (x->right);
+	// ...
 }
 
-Bst *bstPredecessor (Bst *bst, const double data) {
+Bst *
+bstPredecessor (Bst *bst, const double data) {
 	Bst *x = bstSearch (bst, data);
-	return bstMax (x->left);
+	if (x->left)
+		return bstMax (x->left);
 }
 
