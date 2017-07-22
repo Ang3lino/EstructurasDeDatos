@@ -63,18 +63,19 @@ bstInsert (Bst **tree, const double data) {
 	}
 }
 
-// Cambiamos el subarbol u por el subarbol v
+// Cambiamos el subarbol u por el subarbol v. Ambos pertenecen a tree 
 void 
-bstTransplant (Bst *tree, Bst *u, Bst *v) {
-	if (u->parent == NULL) {  // u es la raiz del arbol
+bstTransplant (Bst *tree, Bst *old, Bst *newSubTree) {
+	if (old->parent == NULL) {  // old es la raiz del arbol
 		Bst *root = bstRoot (tree);	
-		root = v;
-	} else if (u == u->parent->left) 
-		u->parent->left = v;
+		root = newSubTree;
+	} else if (old == old->parent->left) 
+		old->parent->left = newSubTree;
 	else 
-		u->parent->right = v;
-	if (v) 
-		v->parent = u->parent;
+		old->parent->right = newSubTree;
+	if (newSubTree) 
+		newSubTree->parent = old->parent;
+	free (old);
 }
 
 bool 
@@ -82,6 +83,21 @@ bstIsRoot (Bst *tree) {
 	if (!(tree->parent))
 		return true;
 	return false; 
+}
+
+static void 
+bstLinking (Bst *del, Bst *rep) {
+	rep->left = del->left;
+	rep->right = del->right;
+	del->left->parent = rep;
+	del->right->parent = rep;
+	rep->parent = del->parent;
+	if (!bstIsRoot (del)) { 
+		if (del->parent->left == del)
+			del->parent->left = rep;
+		else 
+			del->parent->right = rep;
+	}
 }
 
 void 
@@ -94,17 +110,11 @@ bstDelete (Bst *tree, const double data) {
 			bstTransplant (tree, del, del->left);
 		else { // el nodo del tiene dos hijos 
 			Bst *rep = bstMin (del->right);
-			rep->left = del->left;
-			rep->right = del->right;
-			del->left->parent = rep;
-			del->right->parent = rep;
-			rep->parent = del->parent;
-			if (!bstIsRoot (del)) { 
-				if (del->parent->left == del)
-					del->parent->left = rep;
-				else 
-					del->parent->right = rep;
-			}
+			bstLinking (del, rep);
+			if (bstIsLeaf (rep)) 
+				bstDelete (del->right, rep->comparator);
+			else 
+				bstTransplant (tree, rep, rep->right);
 			bstTransplant (tree, del, rep);
 		}
 		free (del);
@@ -125,7 +135,7 @@ bstDelete (Bst *tree, const double data) {
 //	free (del);
 
 bool 
-isLeaf (const Bst *tree) {
+bstIsLeaf (const Bst *tree) {
 	if (tree->left == NULL && tree->right == NULL)
 		return true;
 	return false;

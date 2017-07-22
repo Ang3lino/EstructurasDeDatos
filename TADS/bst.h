@@ -27,7 +27,7 @@ void insert (Bst **, const double);
 void bstInorder (Bst *);
 void bstDelete (Bst *, const double);
 void bstTransplant (Bst *, Bst *, Bst *);
-bool isLeaf (const Bst *);
+bool bstIsLeaf (const Bst *);
 bool bstExists (Bst *, const double);
 Bst *newBst (void);
 Bst *bstSearch (Bst *, const double);
