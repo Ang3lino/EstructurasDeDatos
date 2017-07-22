@@ -40,7 +40,6 @@ bstRoot (Bst *bst) {
 	return bst;
 }
 
-// NO modifica al arbol (por que?)
 void 
 bstInsert (Bst **tree, const double data) {
 	Bst *before = NULL;
@@ -63,18 +62,21 @@ bstInsert (Bst **tree, const double data) {
 	}
 }
 
-// Cambiamos el subarbol u por el subarbol v. Ambos pertenecen a tree 
+// Caracteristicas: Cambiamos el subarbol old por el subarbol new. 
+// Ambos pertenecen a tree
+// Errores: El subarb old se borra, pero no se pone en su lugar al subarbol new
+// Ayuda plox 
 void 
-bstTransplant (Bst *tree, Bst *old, Bst *newSubTree) {
-	if (old->parent == NULL) {  // old es la raiz del arbol
+bstTransplant (Bst *tree, Bst *old, Bst *new) {
+	if (bstIsRoot (old)) { 
 		Bst *root = bstRoot (tree);	
-		root = newSubTree;
+		root = new;
 	} else if (old == old->parent->left) 
-		old->parent->left = newSubTree;
+		old->parent->left = new;
 	else 
-		old->parent->right = newSubTree;
-	if (newSubTree) 
-		newSubTree->parent = old->parent;
+		old->parent->right = new;
+	if (new) 
+		new->parent = old->parent;
 	free (old);
 }
 
