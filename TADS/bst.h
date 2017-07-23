@@ -26,7 +26,7 @@ void bstInsert (Bst **, const double);
 void insert (Bst **, const double);  // Hace lo mismo que bstInorder
 void bstInorder (Bst *);
 void bstDelete (Bst *, const double); // Las dos funciones no hacen su trabajo
-void bstTransplant (Bst *, Bst *, Bst *);
+void bstTransplant (Bst *, Bst *);
 bool bstIsLeaf (const Bst *);
 bool bstExists (Bst *, const double);
 bool bstIsRoot (Bst *); 

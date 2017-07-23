@@ -66,6 +66,15 @@ bstInsert (Bst **tree, const double data) {
 // Ambos pertenecen a tree
 // Errores: El subarb old se borra, pero no se pone en su lugar al subarbol new
 // Ayuda plox 
+//
+void bstTransplant(Bst *old, Bst *new) {
+	double data = new->comparator;
+	old->left = new->left;
+	old->right = new->right;
+	old->comparator = data;
+}
+
+/*
 void 
 bstTransplant (Bst *tree, Bst *old, Bst *new) {
 	if (bstIsRoot (old)) { 
@@ -79,7 +88,7 @@ bstTransplant (Bst *tree, Bst *old, Bst *new) {
 		new->parent = old->parent;
 	free (old);
 }
-
+*/
 bool 
 bstIsRoot (Bst *tree) {
 	if (!(tree->parent))
@@ -106,18 +115,18 @@ void
 bstDelete (Bst *tree, const double data) {
 	Bst *del = bstSearch (tree, data);
 	if (del) {
-		if (del->left == NULL) 
-			bstTransplant (tree, del, del->right);
-		else if (del->right == NULL) 
-			bstTransplant (tree, del, del->left);
+		if (!(del->left)) 
+			bstTransplant (del, del->right);
+		else if (!(del->right)) 
+			bstTransplant (del, del->left);
 		else { // el nodo del tiene dos hijos 
 			Bst *rep = bstMin (del->right);
 			bstLinking (del, rep);
 			if (bstIsLeaf (rep)) 
 				bstDelete (del->right, rep->comparator);
 			else 
-				bstTransplant (tree, rep, rep->right);
-			bstTransplant (tree, del, rep);
+				bstTransplant (rep, rep->right);
+			bstTransplant (del, rep);
 		}
 		free (del);
 	} else 
@@ -178,8 +187,8 @@ bstSearch (Bst *bst, const double data) {
 			return bstSearch (bst->left, data);
 		else
 			return bstSearch (bst->right, data);
-	} else 
-		return newBst(); // No se encontro tal nodo
+	} 
+	puts ("\nNo existe el elemento en el arbol ");
 }
 
 Bst *
