@@ -63,32 +63,17 @@ bstInsert (Bst **tree, const double data) {
 }
 
 // Caracteristicas: Cambiamos el subarbol old por el subarbol new. 
-// Ambos pertenecen a tree
-// Errores: El subarb old se borra, pero no se pone en su lugar al subarbol new
-// Ayuda plox 
-//
-void bstTransplant(Bst *old, Bst *new) {
-	double data = new->comparator;
-	old->left = new->left;
-	old->right = new->right;
-	old->comparator = data;
+void 
+bstTransplant(Bst *old, Bst *new) {
+	if (new) {
+		double data = new->comparator;
+		old->left = new->left;
+		old->right = new->right;
+		old->comparator = data;
+	} else
+		puts ("\nbstTransplant: new es vacio por dentro u-u");
 }
 
-/*
-void 
-bstTransplant (Bst *tree, Bst *old, Bst *new) {
-	if (bstIsRoot (old)) { 
-		Bst *root = bstRoot (tree);	
-		root = new;
-	} else if (old == old->parent->left) 
-		old->parent->left = new;
-	else 
-		old->parent->right = new;
-	if (new) 
-		new->parent = old->parent;
-	free (old);
-}
-*/
 bool 
 bstIsRoot (Bst *tree) {
 	if (!(tree->parent))
@@ -130,7 +115,7 @@ bstDelete (Bst *tree, const double data) {
 		}
 		free (del);
 	} else 
-		puts ("No se puede borrar el vacio.");
+		puts ("\nbstDelete: No se puede borrar el vacio.");
 }
 
 //		Bst *min = bstMin (del->right);	// caso a checar pendiente
@@ -157,12 +142,12 @@ bstExists (Bst *tree, const double data) {
 	if (tree) {
 		if (tree->comparator == data)
 			return true;
-		else if (data <= tree->comparator)
-			bstExists (tree->left, data);
+		else if (data < tree->comparator)
+			return bstExists (tree->left, data);
 		else if (data > tree->comparator)
-			bstExists (tree->right, data);
-	} else 
-		return false;
+			return bstExists (tree->right, data);
+	}
+	return false;
 }
 
 void 
@@ -188,7 +173,7 @@ bstSearch (Bst *bst, const double data) {
 		else
 			return bstSearch (bst->right, data);
 	} 
-	puts ("\nNo existe el elemento en el arbol ");
+	puts ("\nbstSearch: No existe el elemento en el arbol ");
 }
 
 Bst *
@@ -205,6 +190,7 @@ bstMax (Bst *bst) {
 	return bst;
 }
 
+// Falta complementar las funciones
 Bst *
 bstSuccessor (Bst *bst, const double data) { 
 	Bst *x = bstSearch (bst, data);
