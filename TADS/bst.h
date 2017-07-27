@@ -7,11 +7,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <string.h>
 
 typedef struct element {
 	/* what you want */
-	double comparator;
+	double Double;
+	int Integer;
+	char Char;
 } element;
 
 typedef struct bst {
@@ -23,14 +24,15 @@ typedef struct bst {
 } Bst;
 
 void bstInsert (Bst **, const double);
-void insert (Bst **, const double);  // Hace lo mismo que bstInorder
 void bstInorder (Bst *);
-void bstDelete (Bst *, const double); // Las dos funciones no hacen su trabajo
-void bstTransplant (Bst *, Bst *);
+void bstDelete (Bst *, const double); 
+void bstTransplant (Bst *, Bst *); // Sustituye subarbol del primer parametro por el segundo
+
 bool bstIsLeaf (const Bst *);
 bool bstExists (Bst *, const double);
 bool bstIsRoot (Bst *); 
-Bst *newBst (void);
+
+Bst *newBst (void); // Se declara un arbol nuevo haciendo Bst *name = newBst();
 Bst *bstSearch (Bst *, const double);
 Bst *bstMin (Bst *);
 Bst *bstMax (Bst *);

@@ -46,8 +46,7 @@ bstInsert (Bst **tree, const double data) {
 	}
 }
 
-// Caracteristicas: Cambiamos el subarbol old por el subarbol new. En caso de que new sea 
-//   vacio, haremos que old tambien.
+// Cambiamos el subarbol old por el subarbol new. 
 void 
 bstTransplant(Bst *old, Bst *new) {
 	if (!old) {
@@ -58,38 +57,43 @@ bstTransplant(Bst *old, Bst *new) {
 		old->left = new->left;
 		old->right = new->right;
 		old->comparator = new->comparator;
-		//new->parent = old->parent;
-	} else if (!new) {
-		if (!bstIsRoot (old)) {
-				if (old == old->parent->right)
-					old->parent->right = 0;
-				else
-					old->parent->left = 0;
-		}
 	} 
-	free (old);
+}
+
+void
+bstDeleteLeaf (Bst *leaf) {
+	Bst *del = leaf;
+	if (!bstIsRoot (leaf)) {
+		if (leaf == leaf->parent->right)
+			leaf->parent->right = 0;
+		else
+			leaf->parent->left = 0;
+	} else 
+		leaf = 0;
+	free (del);
 }
 
 void 
 bstDelete (Bst *tree, const double data) {
 	Bst *del = bstSearch (tree, data);
 	if (del) {
-		if (!(del->left)) {
+		if (bstIsLeaf (del))
+			bstDeleteLeaf (del);
+		else if (!(del->left)) {
 			bstTransplant (del, del->right);
-			//free (del);
+			free (del->right);
 		} else if (!(del->right)) {
 			bstTransplant (del, del->left);
-			//free (del);
+			free (del->left);
 		} else { // el nodo del tiene dos hijos 
 			Bst *min = bstMin (del->right); // min sera hoja o tendra un subarbol derecho
-			double temp;
-			temp = min->comparator;
+			double temp = min->comparator;
 			bstDelete (tree, min->comparator);
 			del->comparator = temp;
 		}
 	} else 
 		puts ("\nbstDelete: No se puede borrar el vacio.");
-}				
+}
 
 bool 
 bstIsRoot (Bst *tree) {
@@ -121,11 +125,11 @@ bstExists (Bst *tree, const double data) {
 void 
 bstInorder (Bst *tree) {
 	if (!tree)
-		printf ("- ");
+		printf ("-");
 	else {
 		printf("(");
 		bstInorder (tree->left);
-		printf ("%.2f ", tree->comparator);
+		printf ("%.1f", tree->comparator);
 		bstInorder (tree->right);
 		printf(")");
 	}
@@ -159,19 +163,35 @@ bstMax (Bst *bst) {
 	return bst;
 }
 
-// Falta complementar las funciones
+// Se asume que data pertenece al arbol, algo lenta pues se verifica que no 
+// exista un predecesor o sucesor al valor data.
 Bst *
 bstSuccessor (Bst *bst, const double data) { 
 	Bst *x = bstSearch (bst, data);
+	if (bstIsRoot (x) || x == bstMax (bst)) {
+		printf ("bstSuccessor: No existe un sucesor para %f \n", x->comparator);
+		return 0;
+	} 
 	if (x->right)
 		return bstMin (x->right);
-	// ...
+	Bst *y = x->parent;
+	while (y->parent && y->comparator < x->comparator)
+		y = y->parent;
+	return y;
 }
 
 Bst *
 bstPredecessor (Bst *bst, const double data) {
 	Bst *x = bstSearch (bst, data);
+	if (bstIsRoot (x) || x == bstMin (bst)) {
+		printf ("bstPredecessor: No existe un predecesor para %f \n", x->comparator);
+		return 0;
+	}
 	if (x->left)
 		return bstMax (x->left);
+	Bst *y = x->parent;
+	while (y->parent && y->comparator > x->comparator)
+		y = y->parent;
+	return y;
 }
 
