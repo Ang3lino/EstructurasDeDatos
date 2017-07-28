@@ -41,58 +41,49 @@ bstInsert (Bst **tree, const double data) {
 	if (before) { // El arbol no estaba vacio al principio
 		if ((*tree)->parent->left == *tree) 
 			(*tree)->parent->left = *tree;
-		else if ((*tree)->parent->right== *tree) 
+		else if ((*tree)->parent->right == *tree) 
 			(*tree)->parent->right = *tree;
 	}
 }
 
-// Cambiamos el subarbol old por el subarbol new. 
+// Cambiamos el subarbol old por el subarbol new. Si old es hoja, puede usarse para quitar la 
+// referencia de este haciendo que new sea NULL.
 void 
-bstTransplant(Bst *old, Bst *new) {
-	if (!old) {
-		puts ("\nbstTransplant: old es vacio por dentro u-u");
-		return;
-	}
-	if (new) {
-		old->left = new->left;
-		old->right = new->right;
-		old->comparator = new->comparator;
+bstTransplant (Bst *old, Bst *new) {
+	if (old->parent) {
+		if (old == old->parent->left)
+			old->parent->left = new;
+		else if (old == old->parent->right)
+			old->parent->right = new;
 	} 
+	if (new)
+		new->parent = old->parent;
+	if (bstIsRoot (old) && !new) // Caso donde del sea hoja y raiz, no hace nada
+		old = 0;
 }
 
-void
-bstDeleteLeaf (Bst *leaf) {
-	Bst *del = leaf;
-	if (!bstIsRoot (leaf)) {
-		if (leaf == leaf->parent->right)
-			leaf->parent->right = 0;
-		else
-			leaf->parent->left = 0;
-	} else 
-		leaf = 0;
-	free (del);
+static void
+deleteHelper (Bst *del) {
+	if (!(del->left)) { // El caso donde del sea hoja es contemplado aqui
+		bstTransplant (del, del->right); 
+		free (del);
+	} else if (!(del->right)) {
+		bstTransplant (del, del->left);
+		free (del);
+	} else { // el nodo del tiene dos hijos 
+		Bst *min = bstMin (del->right); // min sera hoja o tendra un subarbol derecho
+		del->comparator = min->comparator;
+		deleteHelper (min);
+	}
 }
 
 void 
 bstDelete (Bst *tree, const double data) {
 	Bst *del = bstSearch (tree, data);
-	if (del) {
-		if (bstIsLeaf (del))
-			bstDeleteLeaf (del);
-		else if (!(del->left)) {
-			bstTransplant (del, del->right);
-			free (del->right);
-		} else if (!(del->right)) {
-			bstTransplant (del, del->left);
-			free (del->left);
-		} else { // el nodo del tiene dos hijos 
-			Bst *min = bstMin (del->right); // min sera hoja o tendra un subarbol derecho
-			double temp = min->comparator;
-			bstDelete (tree, min->comparator);
-			del->comparator = temp;
-		}
-	} else 
-		puts ("\nbstDelete: No se puede borrar el vacio.");
+	if (del)
+		deleteHelper (del);
+	else
+		puts ("bstDelete: No se puede borrar el vacio."); 
 }
 
 bool 
@@ -122,17 +113,41 @@ bstExists (Bst *tree, const double data) {
 	return false;
 }
 
-void 
-bstInorder (Bst *tree) {
+static void 
+inorderHelper (Bst *tree) {
 	if (!tree)
 		printf ("-");
 	else {
-		printf("(");
-		bstInorder (tree->left);
+		printf("( ");
+		inorderHelper (tree->left);
 		printf ("%.1f", tree->comparator);
-		bstInorder (tree->right);
-		printf(")");
+		inorderHelper (tree->right);
+		printf(" )");
 	}
+}
+
+void 
+bstInorder (Bst *tree) {
+	inorderHelper (tree);
+	puts ("");
+}
+
+void 
+showHelper (Bst *tree, int cont) {
+	if (!tree)
+		return;
+	else {
+		int i;
+		showHelper (tree->right, ++cont);
+		for (i = 0; i < cont; i++)
+			printf ("  ");
+		printf ("%.0f \n", tree->comparator);
+		showHelper (tree->left, ++cont);
+	}
+}
+
+inline void bstShow (Bst *tree) {
+	showHelper (tree, 0);
 }
 
 Bst *
@@ -140,7 +155,7 @@ bstSearch (Bst *bst, const double data) {
 	if (bst) {
 		if (bst->comparator == data) 
 			return bst;
-		if (data <= bst->comparator)
+		if (data < bst->comparator)
 			return bstSearch (bst->left, data);
 		else
 			return bstSearch (bst->right, data);

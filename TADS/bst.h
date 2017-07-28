@@ -27,6 +27,7 @@ void bstInsert (Bst **, const double);
 void bstInorder (Bst *);
 void bstDelete (Bst *, const double); 
 void bstTransplant (Bst *, Bst *); // Sustituye subarbol del primer parametro por el segundo
+void bstShow (Bst *);
 
 bool bstIsLeaf (const Bst *);
 bool bstExists (Bst *, const double);
