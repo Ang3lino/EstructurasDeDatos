@@ -16,6 +16,12 @@ int main(int argc, char *argv[])
 		bstInsert (&tree, v1[i]);
 	bstShow (tree);
 
+	for (i = SIZE(v1) - 1; i >= 0; i--) {
+		bstDelete (tree, v1[i]);
+		bstInorder (tree);
+	}
+
+	/*
 	bstDelete (tree, 5);
 	bstShow (tree);
 	puts ("");
@@ -46,7 +52,7 @@ int main(int argc, char *argv[])
 	
 	bstDelete (tree, 15);
 	bstShow (tree);
-	puts ("");
+	puts ("");*/
 	
 	return 0;
 }
