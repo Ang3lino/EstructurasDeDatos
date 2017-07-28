@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[])
 {
-	double v1[] = { 10, 5, 3 }; 
+	double v1[] = { 10, 5, 3, 8, 6, 7, 9, 15 }; 
 	int i = 0;
 	Bst *tree = newBst();
 
@@ -18,11 +18,35 @@ int main(int argc, char *argv[])
 
 	bstDelete (tree, 5);
 	bstShow (tree);
+	puts ("");
 
 	bstDelete (tree, 3);
 	bstShow (tree);
+	puts ("");
 	
 	bstDelete (tree, 10);
 	bstShow (tree);
+	puts ("");
+
+	bstDelete (tree, 8);
+	bstShow (tree);
+	puts ("");
+
+	bstDelete (tree, 6);
+	bstShow (tree);
+	puts ("");
+
+	bstDelete (tree, 7);
+	bstShow (tree);
+	puts ("");
+
+	bstDelete (tree, 9);
+	bstShow (tree);
+	puts ("");
+	
+	bstDelete (tree, 15);
+	bstShow (tree);
+	puts ("");
+	
 	return 0;
 }
